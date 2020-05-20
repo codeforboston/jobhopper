@@ -12,6 +12,9 @@ Many workers have limited outside options for career and wage progression outsid
 - [ ] How might we equip policymakers with labor market data?
 - [ ] How might we identify where the labor market is headed and what skills and abilities are needed in the new jobs?
 - [ ] How might we equip workforce development systems with job transfer data to understand regional trends in employee movements?
+1. occupational trends in their national, regional, or local labor market
+2. what skills and abilities their area has, and what it might need in the future
+3. how their local labor market might respond to positive or negative shocks
 
 ## Personas
 TBD
@@ -64,3 +67,4 @@ Are you looking to join the project? If so please familiarize yourself with the 
 Once you've reviewed those links, please complete a new row in the following Google sheet so we may better understand your background and present interests in the project:
 
 - [JobHopper Skills List](https://docs.google.com/spreadsheets/d/19bJoO-wbfbxbsEV0EHclG4H0Y-SjwxpPGKncMnXihh4/edit#gid=0)
+
