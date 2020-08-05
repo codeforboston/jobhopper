@@ -8,8 +8,8 @@ Many workers have limited outside options for career and wage progression outsid
 
 ## How to Install
 
-1. Install [Python 3.7](#).
-2. Install [virtualenv](#) from `pip`:
+1. Install [Python 3.7](https://www.python.org/downloads/release/python-378/).
+2. Install [virtualenv](https://pypi.org/project/virtualenv/) from `pip`:
    ```sh
    python3.7 -m pip install virtualenv
    ```
