@@ -6,6 +6,20 @@ Jobhopper is an application for analyzing and querying career mobility and outsi
 ## Scope & Problem Statement
 Many workers have limited outside options for career and wage progression outside their current occupations. The quality of outside options matter for workers’ wages but limited data exists to provide guidance and training to workers on occupational mobility and outside-options (Monopsony and Outside Options. Schubert, Stansbury,and Taska. Harvard University, March 2020). The problem that we are tryingto solve is to provide better insight than standard data sets for improving occupational mobility options, improving worker wages, and improving policies related to investments and training.
 
+How to Install
+Install Python 3.7.
+Install virtualenv from pip:
+python3.7 -m pip install virtualenv
+Clone this repo to local:
+git clone https://github.com/codeforboston/jobhopper.git
+Create a virtual environment of Python 3.7 in the root of the local repo:
+cd jobhopper
+python3.7 -m virtualenv --python=3.7 venv
+Activate venv:
+. ./venv/bin/activate
+Install project dependencies from requirements.txt:
+pip install -r requirements.txt
+
 ### Questions That JobHopper Will Be Trying To Answer
 - [ ] How might we enable citizens to have better information about the career paths that they could move into from their current job?
 - [ ] How can citizens weigh and negotiate options for a new career path?
