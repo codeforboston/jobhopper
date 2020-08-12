@@ -19,6 +19,7 @@ from django.urls import path
 import src.jobhopper.views as views
 
 urlpatterns = [
+    path('', views.index, name='index'),
     path('admin/', admin.site.urls),
     # ex: /polls/5/
     path('<int:question_id>/', views.detail, name='detail'),
