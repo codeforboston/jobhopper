@@ -4,7 +4,6 @@ from django.template import loader
 
 
 def index(request):
-    # TODO: Resolve not getting template despite created template.
     template = loader.get_template('jobhopper/index.html')
     context = {}
     return HttpResponse(template.render(context, request))
