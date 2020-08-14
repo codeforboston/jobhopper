@@ -81,4 +81,3 @@ Are you looking to join the project? If so please familiarize yourself with the 
 Once you've reviewed those links, please complete a new row in the following Google sheet so we may better understand your background and present interests in the project:
 
 - [JobHopper Skills List](https://docs.google.com/spreadsheets/d/19bJoO-wbfbxbsEV0EHclG4H0Y-SjwxpPGKncMnXihh4/edit#gid=0)
-
