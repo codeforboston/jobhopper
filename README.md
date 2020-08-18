@@ -30,6 +30,17 @@ Many workers have limited outside options for career and wage progression outsid
    ```sh
    pip install -r requirements.txt
    ```
+7. Create a personal `.env` file to include environment variables for the app:
+   (Note: Don't include `.env` in commit, thus it's in `.gitignore`):
+   ```sh
+   SECRET_KEY=[Insert a generated key]
+   ```
+   You can get your own 50 character secret key from [here](https://miniwebtool.com/django-secret-key-generator/).
+
+8. Now run the server via this script:
+   ```sh
+   python manage.py runserver
+   ```
 
 ### Questions That JobHopper Will Be Trying To Answer
 - [ ] How might we enable citizens to have better information about the career paths that they could move into from their current job?
