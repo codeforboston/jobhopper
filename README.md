@@ -6,6 +6,7 @@ Jobhopper is an application for analyzing and querying career mobility and outsi
 ## Scope & Problem Statement
 Many workers have limited outside options for career and wage progression outside their current occupations. The quality of outside options matter for workers’ wages but limited data exists to provide guidance and training to workers on occupational mobility and outside-options (Monopsony and Outside Options. Schubert, Stansbury,and Taska. Harvard University, March 2020). The problem that we are tryingto solve is to provide better insight than standard data sets for improving occupational mobility options, improving worker wages, and improving policies related to investments and training.
 
+<<<<<<< HEAD
 How to Install
 Install Python 3.7.
 Install virtualenv from pip:
@@ -19,6 +20,43 @@ Activate venv:
 . ./venv/bin/activate
 Install project dependencies from requirements.txt:
 pip install -r requirements.txt
+=======
+## How to Install
+
+1. Install [Python 3.7](https://www.python.org/downloads/release/python-378/).
+2. Install [virtualenv](https://pypi.org/project/virtualenv/) from `pip`:
+   ```sh
+   python3.7 -m pip install virtualenv
+   ```
+3. Clone this repo to local:
+   ```sh
+   git clone https://github.com/codeforboston/jobhopper.git
+   ```
+4. Create a virtual environment of Python 3.7 in the root of the local repo:
+   ```sh
+   cd jobhopper
+   python3.7 -m virtualenv --python=3.7 venv
+   ```
+5. Activate venv:
+   ```sh
+   . ./venv/bin/activate
+   ```
+6. Install project dependencies from `requirements.txt`:
+   ```sh
+   pip install -r requirements.txt
+   ```
+7. Create a personal `.env` file to include environment variables for the app:
+   (Note: Don't include `.env` in commit, thus it's in `.gitignore`):
+   ```sh
+   SECRET_KEY=[Insert a generated key]
+   ```
+   You can get your own 50 character secret key from [here](https://miniwebtool.com/django-secret-key-generator/).
+
+8. Now run the server via this script:
+   ```sh
+   python manage.py runserver
+   ```
+>>>>>>> d17a997e1061c3c6abbdfa3c36346afee160bdb7
 
 ### Questions That JobHopper Will Be Trying To Answer
 - [ ] How might we enable citizens to have better information about the career paths that they could move into from their current job?
