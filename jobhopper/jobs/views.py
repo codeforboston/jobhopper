@@ -15,3 +15,6 @@ def description(request):
     title = JOBCLASS.title
     description = JOBCLASS.description
     return HttpResponse(soc, title, description)
+
+def detail(request, detail):
+    return HttpResponse("You're looking at detail view")
