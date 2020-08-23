@@ -1,19 +1,19 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import JOBCLASS
+from .models import JobClass
 from django.template import loader
 
 # Create your views here.
 def index(request):
-    jobs  =JOBCLASS.objects.all()
+    jobs  =JobClass.objects.all()
     template = loader.get_template('jobs/index.html')
     context = { 'jobs': jobs }
     return HttpResponse(template.render(context, request))
 
 def description(request):
-    soc= JOBCLASS.jobcode
-    title = JOBCLASS.title
-    description = JOBCLASS.description
+    soc= JobClass.jobcode
+    title = JobClass.title
+    description = JobClass.description
     return HttpResponse(soc, title, description)
 
 def detail(request, detail):

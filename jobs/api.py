@@ -1,10 +1,10 @@
-from jobs.models import SOCs
+from jobs.models import Socs
 from rest_framework import viewsets, permissions
 from .serializers import LeadSerializer
 
 # Lead Viewset
 class LeadViewSet(viewsets.ModelViewSet):
-    queryset = SOCs.objects.all()
+    queryset = Socs.objects.all()
     permission_classes = [
         permissions.AllowAny
 
