@@ -41,7 +41,12 @@ Many workers have limited outside options for career and wage progression outsid
    ```sh
    python manage.py runserver
    ```
-
+9. Create Postgres DB:
+  ```sh
+  python manage.py migrate
+  python manage.py makemigrations jobs
+  python manage.py migrate
+  ```
 ### Questions That JobHopper Will Be Trying To Answer
 - [ ] How might we enable citizens to have better information about the career paths that they could move into from their current job?
 - [ ] How can citizens weigh and negotiate options for a new career path?

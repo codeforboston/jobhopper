@@ -1,5 +1,5 @@
 """
-WSGI config for src project.
+WSGI config for jobhopper project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -8,9 +8,12 @@ https://docs.djangoproject.com/en/3.1/howto/deployment/wsgi/
 """
 
 import os
+from dotenv import load_dotenv
+project_folder = os.path.expanduser('~/jobhopper')  # adjust as appropriate
+load_dotenv(os.path.join(project_folder, '.env'))
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'src.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'jobhopper.settings')
 
 application = get_wsgi_application()
