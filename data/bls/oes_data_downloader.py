@@ -1,5 +1,6 @@
 from lxml import html
 import requests
+import pandas as pd
 
 from urllib.request import urlopen
 from tempfile import NamedTemporaryFile
@@ -12,6 +13,8 @@ import logging
 
 log = logging.getLogger()
 
+
+# TODO: *, #, and ** are not returned as NA
 
 class OESDataDownloader(object):
     """
@@ -52,7 +55,7 @@ class OESDataDownloader(object):
         log.info('Download path: {}'.format(oes_download_path))
         return oes_download_path
     
-    def download_zip_folder(self, clean_up = True) -> pd.DataFrame:
+    def download_oes_data(self, clean_up = True) -> pd.DataFrame:
         """
         Download the zip folder into the tempfile_dir, and load the Excel file
         Estimated number of rows: 350K+
