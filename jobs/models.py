@@ -16,3 +16,11 @@ class Socs(models.Model):
     majorName = models.CharField(max_length=200)
     minorName = models.CharField(max_length=200)
     broadName = models.CharField(max_length=200)
+
+class OccupationTransitions(models.Model):
+    id = models.IntegerField(primary_key=True)
+    soc1 = models.CharField(max_length=7)
+    soc2 = models.CharField(max_length=7)
+    total_soc = models.CharField(max_length=9)
+    pi = models.CharField(max_length=50)
+    occleaveshare = models.CharField(max_length=50)
