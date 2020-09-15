@@ -22,5 +22,5 @@ class OccupationTransitions(models.Model):
     soc1 = models.CharField(max_length=7)
     soc2 = models.CharField(max_length=7)
     total_soc = models.CharField(max_length=9)
-    pi = models.CharField(max_length=50)
-    occleaveshare = models.CharField(max_length=50)
+    pi = models.CharField(max_length=200)
+    occleaveshare = models.CharField(max_length=200)
