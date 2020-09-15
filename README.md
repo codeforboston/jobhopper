@@ -38,9 +38,8 @@ Many workers have limited outside options for career and wage progression outsid
    ```
    You can get your own 50 character secret key from [here](https://miniwebtool.com/django-secret-key-generator/).
 
-8. Ensure you have PostgreSQL downloaded. Create a database in your local PostgreSQL server.
-   Confirm that the name and port of your database is in the jobhopper/settings.py
-   "DATABASES" section.
+8. Create a database in your local PostgreSQL server. Confirm that the name and port
+   of your database is in the jobhopper/settings.py "DATABASES" section.
 
    Ex. Name: Jobhopper; Port: 5432
    ```sh
