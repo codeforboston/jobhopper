@@ -40,7 +40,9 @@ Many workers have limited outside options for career and wage progression outsid
 
 8. Ensure you have PostgreSQL downloaded. Create a database in your local PostgreSQL server.
    Confirm that the name and port of your database is in the jobhopper/settings.py
-   "DATABASES" section. Ex. Name: Jobhopper; Port: 5432
+   "DATABASES" section.
+
+   Ex. Name: Jobhopper; Port: 5432
    ```sh
    DATABASES = {
        'default' : {
