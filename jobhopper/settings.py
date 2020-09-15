@@ -21,8 +21,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 import os
-# SECRET_KEY = os.getenv("SECRET_KEY")
-SECRET_KEY = '%=#lw85qys97f=y@nxrf!myd8+cr4ea(=y$@o0#xh7rrnm^c#9'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,9 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_swagger',
     'jobs.apps.JobsConfig',
-    
-    
+
+
 ]
 
 MIDDLEWARE = [
@@ -87,7 +87,7 @@ DATABASES = {
 
     'default' : {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'jobhopperdatabase',
+        'NAME': 'Jobhopper',
         'PORT': '5432',
     }
 }
