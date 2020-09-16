@@ -84,8 +84,8 @@ WSGI_APPLICATION = 'jobhopper.wsgi.application'
 DATABASES = {
     'default' : {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Jobhopper',
-        'PORT': '5432',
+        'NAME': os.getenv("DATABASE"),
+        'PORT': os.getenv("PORT"),
     }
 }
 
