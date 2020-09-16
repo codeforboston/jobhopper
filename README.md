@@ -39,9 +39,9 @@ Many workers have limited outside options for career and wage progression outsid
    You can get your own 50 character secret key from [here](https://miniwebtool.com/django-secret-key-generator/).
 
 8. Create a database in your local PostgreSQL server. Add the name of your database
-   and port to your .env file in the format "DATABASE: '[NAME]'" "PORT: '[PORT]'"
+   and port to your .env file in the format listed below
 
-   Ex. Name: Jobhopper; Port: 5432
+   Example: Jobhopper 5432
    ```sh
    DATABASE='Jobhopper'
    PORT='5432'
