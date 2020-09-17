@@ -1,3 +1,15 @@
+# Database Setup
+Follow the project readme to install Postgres
+
+## Run the Load Processes
+1. <path to python3> data\scripts\loadOnet.py
+2. `python data/load_jobhopper_data.py`
+
+
+# Data Description
+
+## Transitions Data (Burning Glass)
+
 ****************************************************************************************************************
 Data Description for Occupation Transitions Public Dataset
 from Schubert, Stansbury and Taska (2019) "Mitigating Monopsony: Occupational Mobility and Outside Options"
@@ -42,4 +54,5 @@ they submit their resume, effectively making it a longitudinal data set.
 FOR MORE DETAILS on the data please see our paper at 
 https://scholar.harvard.edu/files/stansbury/files/schubert-stansbury-taska-20191106.pdf
 or go to the authors’ websites for the latest version.
+
 

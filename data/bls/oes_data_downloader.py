@@ -4,10 +4,10 @@ import pandas as pd
 
 from urllib.request import urlopen
 from tempfile import NamedTemporaryFile
+import shutil
 from shutil import unpack_archive
 
 import os
-import zipfile
 
 import logging
 
@@ -80,12 +80,9 @@ class OESDataDownloader(object):
                 for file in files:
                     if expected_filename in file:
                         filepath = '{}/{}'.format(root, file)
-                        log.info('Reading Excel file: {} --- This may take a moment.'.format(filepath))
-                        try:
-                            return pd.read_excel(filepath,
-                                                 **OES_XLSX_PARAMS)
-                        except:
-                            return pd.read_excel(filepath)
+                        log.info('Reading Excel file: {} --- This may take a few minutes.'.format(filepath))
+
+                    return pd.read_excel(filepath)
             
             # Remove directory
             if clean_up:
