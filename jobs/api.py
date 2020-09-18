@@ -11,3 +11,11 @@ class LeadViewSet(viewsets.ModelViewSet):
     ]
 
     serializer_class = LeadSerializer
+
+class SocViewSet(viewsets.ModelViewSet):
+    #queryset = # TODO
+    permission_classes = [
+        permissions.AllowAny
+    ]
+
+    serializer_class = SocSerializer

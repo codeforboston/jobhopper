@@ -6,3 +6,8 @@ class LeadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Socs
         fields = '__all__'
+
+class SocSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = 
+        fields = '__all--'
