@@ -113,7 +113,6 @@ Many workers have limited outside options for career and wage progression outsid
 
 11. Go to the URL `[baseurl]/jobs/api/leads/` and test out creating entries.
 
->>>>>>> d202cdc32b1fe71dc8cb9c10439ed10b210580b7
 ### Questions That JobHopper Will Be Trying To Answer
 - [ ] How might we enable citizens to have better information about the career paths that they could move into from their current job?
 - [ ] How can citizens weigh and negotiate options for a new career path?
