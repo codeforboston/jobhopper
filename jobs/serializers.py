@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from jobs.models import Socs
+from jobs.models import Socs, BlsOesFakes
 
 # Lead Serializer
 class LeadSerializer(serializers.ModelSerializer):
@@ -7,7 +7,7 @@ class LeadSerializer(serializers.ModelSerializer):
         model = Socs
         fields = '__all__'
 
-class SocSerializer(serializers.ModelSerializer):
+class BlsOesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = 
-        fields = '__all--'
+        model = BlsOesFakes
+        fields = '__all__'
