@@ -19,6 +19,8 @@ pip install xlrd
 
 If you run into trouble, you might choose to download a year of data manually with this url: https://www.bls.gov//oes/special.requests/oesm19all.zip
 
+The code assumes you will have a user defined as jobuser with password jobuser for your database. If not you may need to edit underlying files. 
+
 Then edit the sql_loader_jed.py file in the data\scripts directory. The calls at the bottom can be edited to run one or both with the paths that work on your system. 
 
 Once done, you should be able to run both of these queries in the psql command tool and get data back: 
