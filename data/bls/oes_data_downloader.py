@@ -2,21 +2,20 @@ from lxml import html
 import requests
 import pandas as pd
 
-from urllib.request import urlopen
-from tempfile import NamedTemporaryFile
-import shutil
-from shutil import unpack_archive
+from pathlib import Path
 
-import os
+from io import BytesIO
+from zipfile import ZipFile
+from urllib.request import urlopen
 
 import logging
 
+logging.basicConfig(format='%(asctime)s %(message)s')
 log = logging.getLogger()
+log.setLevel(logging.INFO)
 
 
 # TODO: *, #, and ** are not returned as NA
-
-
 class OESDataDownloader(object):
     """
     Download BLS data on Occupational Employment Statistics (OES). Data for various years provided
@@ -25,7 +24,7 @@ class OESDataDownloader(object):
     Data format: Zip folder, with a single Excel file containing OES data, at least for 2018 and 2019
     """
 
-    def __init__(self, year="2019", tempfile_dir="/tmp/bls_oesm"):
+    def __init__(self, year="2019"):
         """
         :param year: String indicating the year for the download. Zip names are in
             oesm<last 2 digits of year>all.zip format.
@@ -34,7 +33,6 @@ class OESDataDownloader(object):
         self.base_url = "https://www.bls.gov/"
         self.oes_data_url = "https://www.bls.gov/oes/tables.htm"
         self.oes_zipname = "oesm{}all".format(year[2:4])
-        self.tempfile_dir = tempfile_dir
         self.year = year
 
         self.oes_download_path = self._get_oes_download_path()
@@ -64,35 +62,30 @@ class OESDataDownloader(object):
         Estimated number of rows: 350K+
         """
         log.info("Downloading OES data from {}".format(self.oes_download_path))
-        # Download the zip folder
-        with urlopen(self.oes_download_path) as response, NamedTemporaryFile() as tfile:
-            log.info(f"Files stored temporarily here: {self.tempfile_dir}")
-            tfile.write(response.read())
-            tfile.seek(0)
+        # Download the zip folder and find the file
+        response = urlopen(self.oes_download_path)
+        zipfile = ZipFile(BytesIO(response.read()))
+        dir = Path(__file__).parent / 'downloads'
+        log.info('Downloading to directory {}'.format(dir))
+        zipfile.extractall(dir)
 
-            log.info(f"about to unpack file: {tfile.name}")
+        expected_filename = "all_data_M_{}.xlsx".format(self.year)
 
-            # Unzip folder + files
-            unpack_archive(tfile.name, self.tempfile_dir, format="zip")
+        zipped_files = zipfile.namelist()
+        log.info("Files found: {}".format(zipped_files))
+        for filename in zipped_files:
+            if expected_filename in filename:
+                log.info("Check the data/bls/downloads directory for the xlsx file downloaded")
+                log.info(
+                    "Reading Excel file: {} --- This may take a few minutes.".format(
+                        filename
+                    )
+                )
+                excelfile = zipfile.open(filename)
+                df = pd.read_excel(excelfile)
+                return df
 
-            # BLS OES data filename format
-            expected_filename = "all_data_M_{}.xlsx".format(self.year)
 
-            # Download file
-            for root, subdirs, files in os.walk(self.tempfile_dir):
-                log.info("Files found: {}".format(files))
-                for file in files:
-                    if expected_filename in file:
-                        filepath = "{}/{}".format(root, file)
-                        log.info(
-                            "Reading Excel file: {} --- This may take a few minutes.".format(
-                                filepath
-                            )
-                        )
-
-                    return pd.read_excel(filepath)
-
-            # Remove directory
-
-            if clean_up:
-                shutil.rmtree(self.tempfile_dir)
+if __name__ == '__main__':
+    test = OESDataDownloader(year="2019")
+    test.download_oes_data()
