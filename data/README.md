@@ -1,10 +1,30 @@
 # Database Setup
 Follow the project readme to install Postgres
 
-## Run the Load Processes
-1. <path to python3> data\scripts\loadOnet.py
-2. `python data/load_jobhopper_data.py`
+Activate the venv environment to be sure you have python3 
 
+Install the following additional packages:
+pip install pandas
+pip install sqlalchemy
+pip install lxml
+pip install requests
+pip install xlrd
+
+
+## Run the Load Processes
+
+1. If you're not sure, set PYTHONPATH=.
+2. Ensure you are in the jobhopper project root directory (there should be a data\scripts\sql_loader.py underneath)
+3. Run python data\load_jobhopper_data.py
+
+If you run into trouble, you might choose to download a year of data manually with this url: https://www.bls.gov//oes/special.requests/oesm19all.zip
+
+Then edit the sql_loader_jed.py file in the data\scripts directory. The calls at the bottom can be edited to run one or both with the paths that work on your system. 
+
+Once done, you should be able to run both of these queries in the psql command tool and get data back: 
+
+jobhopperdatabase=# select * from bls_oes limit 5 \g
+jobhopperdatabase=# select * from occupation_transition limit 5 \g
 
 # Data Description
 
