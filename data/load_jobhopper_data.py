@@ -1,7 +1,7 @@
 from data.scripts.sql_loader import load_bls_oes_to_sql, load_occupation_transitions_to_sql
 from pathlib import Path
 
-def run():
+def run(bls_year="2019"):
     """
     Load BLS OES wage/employment data and job transitions data into a locally configured postgres database.
     Refer to the jobhopper README for notes on installing and configuring postgres.
@@ -28,8 +28,8 @@ def run():
      """
     path=Path(__file__).parent / 'occupation_transitions_public_data_set.csv'
     load_occupation_transitions_to_sql(path)
-    load_bls_oes_to_sql()
+    load_bls_oes_to_sql(year=bls_year)
 
 
 if __name__ == '__main__':
-    run()
+    run(bls_year="2019")

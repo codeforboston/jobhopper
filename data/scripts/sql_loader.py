@@ -15,7 +15,7 @@ from data.bls.oes_data_downloader import OESDataDownloader
 from data.bls.utils.dtype_conversion import to_float, to_int
 
 
-logging.basicConfig()
+logging.basicConfig(format='%(asctime)s %(message)s')
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
@@ -50,7 +50,7 @@ def create_sqlalchemyengine(
         log.error(e)
 
 
-def load_bls_oes_to_sql(file_to_load=""):
+def load_bls_oes_to_sql(file_to_load="", year: str = "2019"):
     """
     Load BLS OES data from 2019 to Postgres.
 
@@ -62,7 +62,7 @@ def load_bls_oes_to_sql(file_to_load=""):
         username=USERNAME, password=PASSWORD, port=PORT, host=HOST
     )
     if file_to_load == "":
-        bls_oes_data = OESDataDownloader().download_oes_data("2019")
+        bls_oes_data = OESDataDownloader().download_oes_data(year)
     else:
         bls_oes_data = pd.read_excel(file_to_load)
 
@@ -175,8 +175,8 @@ if __name__ == "__main__":
     """
 
     load_bls_oes_to_sql(
-        "C:/Users/jedpi/OneDrive/Documents/GitHub/jobhopper/oesm19all/all_data_M_2019.xlsx"
+        ""
     )
     load_occupation_transitions_to_sql(
-        "C:/Users/jedpi/OneDrive/Documents/GitHub/jobhopper/data/occupation_transitions_public_data_set.csv"
+        ""
     )
