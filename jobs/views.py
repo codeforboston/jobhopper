@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from .models import JobClass
+from django.http import HttpResponse, JsonResponse
+from .models import JobClass, BlsOesFakes
+from .serializers import BlsOesSerializer
 from django.template import loader
 
 # Create your views here.
