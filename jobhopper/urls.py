@@ -19,7 +19,7 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('jobs/', include('jobs.urls')),
-    path('', views.index, name='index'),
-
+    path("jobs/", include("jobs.urls")),
+    path("", views.index, name="index"),
+    path("api/v1/health", views.health, name="health"),
 ]
