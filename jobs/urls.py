@@ -1,16 +1,12 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 from rest_framework import routers
-from .api import LeadViewSet
-
-# urlpatterns =[
-#     path('', views.index, name='index'),
-#     path('<int:soccode>/',views.description, name='description'),
-#     path('<str:detail>',views.detail, name = 'detail'),
-
-# ]
+from .api import LeadViewSet, BlsOesViewSet
 
 router = routers.DefaultRouter()
-router.register('api/leads', LeadViewSet, 'leads')
+router.register('leads', LeadViewSet)
+router.register('soc-codes', BlsOesViewSet)
 
-urlpatterns = router.urls
+urlpatterns = [
+    path('', include(router.urls)),
+]

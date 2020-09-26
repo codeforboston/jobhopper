@@ -17,13 +17,15 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-# Load environment variables from .env
-load_dotenv()
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -42,9 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_swagger',
     'jobs.apps.JobsConfig',
-    
-    
+
+
 ]
 
 MIDDLEWARE = [
@@ -82,11 +85,6 @@ WSGI_APPLICATION = 'jobhopper.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-
     'default' : {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv("DB_NAME"),

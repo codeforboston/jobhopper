@@ -16,3 +16,20 @@ class Socs(models.Model):
     majorName = models.CharField(max_length=200)
     minorName = models.CharField(max_length=200)
     broadName = models.CharField(max_length=200)
+
+class OccupationTransitions(models.Model):
+    id = models.IntegerField(primary_key=True)
+    soc1 = models.CharField(max_length=7)
+    soc2 = models.CharField(max_length=7)
+    total_soc = models.CharField(max_length=9)
+    pi = models.CharField(max_length=200)
+    occleaveshare = models.CharField(max_length=200)
+
+class BlsOesFakes(models.Model):
+    area_title = models.CharField(max_length=10)
+    soc_code = models.CharField(max_length=7)
+    soc_title = models.CharField(max_length=200)
+    hourly_mean_wage = models.DecimalField(max_digits=10,decimal_places=2)
+    annual_mean_wage = models.DecimalField(max_digits=10,decimal_places=2)
+    total_employment = models.BigIntegerField()
+    soc_decimal_code = models.CharField(max_length=200)

@@ -16,6 +16,7 @@ Many workers have limited outside options for career and wage progression outsid
    ```sh
    python3.7 -m pip install virtualenv
    ```
+
 3. Clone this repo to local:
    ```sh
    git clone https://github.com/codeforboston/jobhopper.git
@@ -39,48 +40,47 @@ Many workers have limited outside options for career and wage progression outsid
    SECRET_KEY='[generated key]'
    ```
    You can get your own 50 character secret key from [here](https://miniwebtool.com/django-secret-key-generator/).
+
+
 8. Create Postgres DB:
 
    a. Install [Postgres 12](https://www.postgresql.org/download/)
 
    b. Start postgresql service and check if clusters are running.
 
-   ```sh
-   sudo service postgresql start
-   pg_lsclusters
-   ```
-
-   If the text is green, it's working.
+      ```sh
+      sudo service postgresql start
+      pg_lsclusters
+      ```
+      If the text is green, it's working.
 
    c. Run `psql` through the newly created `postgres` user.
-
-   ```sh
-   sudo -i -u postgres
-   psql
-   ```
+      ```sh
+      sudo -i -u postgres
+      psql
+      ```
 
    d. Create a new user/role for the site to access the database to. Name it
-   however you like as long as you note the username and password for putting
-   it in `.env`.
-
-   ```sql
-   CREATE ROLE [user]
-   SUPERUSER
-   LOGIN
-   PASSWORD '[password]';
-   ```
+      however you like as long as you note the username and password for putting
+      it in `.env`.
+      ```sql
+      CREATE ROLE [user]
+      SUPERUSER
+      LOGIN
+      PASSWORD '[password]';
+      ```
 
    e. Create a new database for the site to access. Name it however you like
-   (preferably 'jobhopperdatabase') as long as you note the name of the
-   database for putting it in `.env`.
-
-   ```sql
-   CREATE DATABASE [database name]
-     WITH OWNER = [user];
-   ```
+      (preferably 'jobhopperdatabase') as long as you note the name of the
+      database for putting it in `.env`.
+      ```sql
+      CREATE DATABASE [database name]
+        WITH OWNER = [user];
+      ```
 
    f. Exit out of `psql` and `postgres` user with the `exit` command for both
-   cases.
+      cases.
+
 
    g. Add those information you written into the `.env` file.
 
@@ -97,6 +97,7 @@ Many workers have limited outside options for career and wage progression outsid
    ```sh
    python manage.py migrate
    ```
+
 10. Now run the server via this script:
 
     ```sh
