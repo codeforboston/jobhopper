@@ -1,44 +1,25 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# JobHopper Frontend
 
-## Available Scripts
+## Environment Setup
 
-In the project directory, you can run:
+1. Follow the [Node setup instructions](../README.md#node-setup) to set up Node, Yarn, and project dependencies.
+2. Start the app with `yarn start` from this directory or `yarn workspace frontend start` from the project root.
 
-### `npm start`
+## VSCode Editor Setup
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The frontend is set up to show linting/syntax/types and automatically format code in VSCode. Here's how you set it up:
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+1. [Install VSCode](https://code.visualstudio.com/download).
+2. Open `project.code-workspace` in the project root, and follow the prompt to open the workspace.
+3. Install the recommended extensions.
+4. Remember to open the workspace in the future, not just the jobhopper directory.
 
-### `npm test`
+## Running the App
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+In your terminal/command prompt run `yarn start` to start the app. It will open automatically in a browser window.
 
-### `npm run build`
+To stop the local server press ctrl + c in your terminal.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Testing
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+We use Jest for DOM and unit tests. Run `yarn test` to get started.

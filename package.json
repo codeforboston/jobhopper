@@ -13,6 +13,10 @@
     "lint-staged": "^10.4.0",
     "prettier": "^2.1.2"
   },
+  "scripts": {
+    "lint": "prettier --check .; yarn workspace frontend run lint",
+    "fix": "prettier --write .; yarn workspace frontend run fix"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"

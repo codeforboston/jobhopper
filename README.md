@@ -8,7 +8,7 @@ Jobhopper is an application for analyzing and querying career mobility and outsi
 
 Many workers have limited outside options for career and wage progression outside their current occupations. The quality of outside options matter for workers’ wages but limited data exists to provide guidance and training to workers on occupational mobility and outside-options (Monopsony and Outside Options. Schubert, Stansbury,and Taska. Harvard University, March 2020). The problem that we are tryingto solve is to provide better insight than standard data sets for improving occupational mobility options, improving worker wages, and improving policies related to investments and training.
 
-## How to Install
+## How to Install the Database and Analysis Tools
 
 1. Install [Python 3.7](https://www.python.org/downloads/release/python-378/).
 
@@ -118,6 +118,18 @@ Many workers have limited outside options for career and wage progression outsid
 1. occupational trends in their national, regional, or local labor market
 2. what skills and abilities their area has, and what it might need in the future
 3. how their local labor market might respond to positive or negative shocks
+
+## Node Setup
+
+This is optional if you do not work on the frontend.
+
+The frontend uses Node, NPM, and Yarn for building, linting, and running tests. The project uses it for code admin and formatting. We use a Yarn workspace to separate scripts and dependencies for the frontend from those for the overall project. There is a `package.json` here and in the frontend workspace. Here's how you set it up:
+
+1. Install [Node 14](https://nodejs.org/en/download/)
+2. Install [Yarn](https://classic.yarnpkg.com/en/docs/install). Follow the instructions to avoid installing another version of Node.
+3. From the project root (this directory), install project dependencies with `yarn install`.
+
+You should run `yarn install` whenever a `package.json` changes, and **only run `yarn install` from the root directory** so the workspace is detected properly.
 
 ## Directory
 
