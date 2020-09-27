@@ -23,3 +23,9 @@ To stop the local server press ctrl + c in your terminal.
 ## Testing
 
 We use Jest for DOM and unit tests. Run `yarn test` to get started.
+
+## Committing Code
+
+We use husky and lint-staged to run linting and fix code formatting whenever you commit code. This helps keep the codebase healthy. If you need to commit without running these checks, use `git commit --no-verify`.
+
+You can run these manually from the root directory with `yarn lint` and `yarn fix`.
