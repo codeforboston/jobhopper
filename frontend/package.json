@@ -1,6 +1,6 @@
 {
-  "name": "jobhopper_react",
-  "version": "0.1.0",
+  "name": "frontend",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -35,5 +35,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^7.10.0",
+    "eslint-config-react-app": "^5.2.1"
   }
 }

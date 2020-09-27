@@ -1,0 +1,26 @@
+{
+  "name": "jobhopper",
+  "version": "1.0.0",
+  "repository": "https://github.com/codeforboston/jobhopper.git",
+  "author": "alexjball <me@alexjball.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "./frontend"
+  ],
+  "devDependencies": {
+    "husky": "^4.3.0",
+    "lint-staged": "^10.4.0",
+    "prettier": "^2.1.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "frontend/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
+  }
+}
