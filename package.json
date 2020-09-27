@@ -14,17 +14,12 @@
     "prettier": "^2.1.2"
   },
   "scripts": {
-    "lint": "prettier --check .; yarn workspace frontend run lint",
-    "fix": "prettier --write .; yarn workspace frontend run fix"
+    "lint": "yarn workspace frontend run lint",
+    "fix": "prettier --write frontend && yarn workspace frontend run fix"
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  },
-  "lint-staged": {
-    "frontend/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write"
-    ]
   }
 }

@@ -20,7 +20,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint .",
+    "eslint": "eslint .",
+    "check-types": "tsc --noemit",
+    "lint": "yarn run eslint && yarn run check-types",
     "fix": "eslint --fix ."
   },
   "eslintConfig": {
