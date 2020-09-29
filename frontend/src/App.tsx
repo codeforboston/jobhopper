@@ -1,14 +1,18 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { Button } from './ui/Button';
+import { Select } from './ui/Select';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <Button label="asdf" />
+        <Select
+          options={[{ label: 'option1', value: 'value1' }]}
+          getOptionLabel={({ label }) => label}
+          getOptionValue={({ value }) => value}
+        />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
