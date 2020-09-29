@@ -1,24 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import logo from "./logo.svg";
+import Placeholder from "./components/shared/Placeholder";
+import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
+      <img src={logo} className="App-logo" alt="logo" />
+      <p>
+        What occupation do <Placeholder innerText="Select Job Dropdown" /> move
+        to?
+      </p>
+      <p>
+        <b>Option: </b>Select State for to display wage data:{" "}
+        <Placeholder innerText="Select State Dropdown" />
+      </p>
+
+      <p>
+        <Placeholder innerText="Show Table of data here" />
+      </p>
+      <p>
+        <b>Jobhopper Vocabulary</b>
+        <br />
+        The acronyms are from the&nbsp;
         <a
           className="App-link"
-          href="https://reactjs.org"
+          href="https://bls.gov"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Bureau of Labor Statistics
         </a>
-      </header>
+        <br />
+        <b>SOC</b>&nbsp;Standard Occupational Classification
+      </p>
     </div>
   );
 }
