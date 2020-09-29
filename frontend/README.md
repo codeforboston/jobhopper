@@ -7,6 +7,7 @@ The frontend uses Node and NPM for building, linting, and running tests. Here's 
 1. Install [Node 14](https://nodejs.org/en/download/)
 2. Instal project dependencies by running `npm install` from this directory.
 3. Start the app with `npm start` from this directory.
+4. Start the storybook UI with `npm run storybook` from this directory.
 
 You should run `npm install` whenever `package.json` changes.
 
@@ -24,6 +25,10 @@ The frontend is set up to show linting/syntax/types and automatically format cod
 In your terminal/command prompt run `npm start` to start the app. It will open automatically in a browser window.
 
 To stop the local server press ctrl + c in your terminal.
+
+## Running Storybook
+
+Storybook is a tool for developing UI components and pages. It allows you to write test cases for your components and render them in a UI separate from the application. This makes it easy to test your UI different configurations. To start the storybook UI, run `npm run storybook`.
 
 ## Testing
 
