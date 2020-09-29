@@ -22,8 +22,8 @@
     "eject": "react-scripts eject",
     "eslint": "eslint .",
     "check-types": "tsc --noemit",
-    "lint": "yarn run eslint && yarn run check-types",
-    "fix": "eslint --fix ."
+    "lint": "set -x; npm run eslint .; npm run check-types",
+    "fix": "set -x; prettier --write .; eslint --fix ."
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -41,7 +41,15 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^7.10.0",
-    "eslint-config-react-app": "^5.2.1"
+    "eslint": "7.10.0",
+    "eslint-config-react-app": "^5.2.1",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.4.0",
+    "prettier": "2.1.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
