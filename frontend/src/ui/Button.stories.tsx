@@ -9,12 +9,12 @@ export default {
 } as Meta;
 
 export const Default: Story<ButtonProps> = args => <Button {...args} />;
-Default.args = { children: 'Default' };
+Default.args = { label: 'Default' };
 
 export const Primary: Story<ButtonProps> = args => <PrimaryButton {...args} />;
-Primary.args = { children: 'Primary' };
+Primary.args = { label: 'Primary' };
 
 export const Secondary: Story<ButtonProps> = args => (
   <SecondaryButton {...args} />
 );
-Secondary.args = { children: 'Secondary' };
+Secondary.args = { label: 'Secondary' };

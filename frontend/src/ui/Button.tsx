@@ -3,11 +3,25 @@ import {
   default as MButton,
   ButtonProps as MButtonProps,
 } from '@material-ui/core/Button';
+import styled from 'styled-components';
 
-export type ButtonProps = MButtonProps;
-const Button = (props: ButtonProps): JSX.Element => (
-  <MButton variant={'contained'} {...props} />
+export interface ButtonProps extends MButtonProps {
+  label: string;
+}
+
+const UnstyledButton = ({ label, ...props }: ButtonProps): JSX.Element => (
+  <MButton variant={'contained'} {...props}>
+    {label}
+  </MButton>
 );
+
+const Button = styled(UnstyledButton)`
+  && {
+    font-weight: bold;
+    color: white;
+    text-transform: none;
+  }
+`;
 
 export const PrimaryButton = (props: ButtonProps): JSX.Element => (
   <Button color="primary" {...props} />

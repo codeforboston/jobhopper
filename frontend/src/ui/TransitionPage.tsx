@@ -56,8 +56,8 @@ const TransitionPage = ({
       <StateSelect states={states} />
     </Section>
     <Row>
-      <StyledPrimary>See transition data</StyledPrimary>
-      <StyledSecondary>Save data</StyledSecondary>
+      <StyledPrimary label="See transition data" />
+      <StyledSecondary label="Save data" />
     </Row>
     <TransitionTable transitionData={transitions} />
   </PageContainer>
