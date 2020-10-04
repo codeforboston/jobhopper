@@ -33,3 +33,7 @@ class BlsOesFakes(models.Model):
     annual_mean_wage = models.DecimalField(max_digits=10,decimal_places=2)
     total_employment = models.BigIntegerField()
     soc_decimal_code = models.CharField(max_length=200)
+
+class StateAbbPairs(models.Model):
+    state_name = models.CharField(max_length=100)
+    abbreviation = models.CharField(max_length= 2)
