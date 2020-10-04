@@ -133,7 +133,11 @@ DB_EXTERNAL_PORT=5432
 
 4. Start the database and server by running `./docker-restart.sh` if you are using Mac/Linux/Git Bash. If you are using Command Prompt or PowerShell, run `docker-compose down; docker-compose up`.
 
-5. By default, the database is destroyed and recreated every time you start/stop the server. You can persist the database by uncommenting the `volumes` section of the `docker-compose.yml` file.
+You can start a shell in the Django container with `docker-compose exec api bash`, and a shell in the database container with `docker-compose exec db bash`.
+
+To load occupation transition and BLS data, open a Django shell and run `PYTHONPATH=. python data/load_jobhopper_data.py`.
+
+To start `psql`, an interactive PostgresQL shell, open a database shell and run `psql -U [your username] -d jobhopper_dev`.
 
 ## Questions That JobHopper Will Be Trying To Answer
 
