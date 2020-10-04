@@ -3,3 +3,7 @@ __pycache__
 
 *.sqlite3
 .env
+data/bls/downloads
+
+# NPM/Yarn
+node_modules

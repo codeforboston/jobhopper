@@ -1,6 +1,6 @@
-from jobs.models import Socs
+from jobs.models import Socs, BlsOesFakes
 from rest_framework import viewsets, permissions
-from .serializers import LeadSerializer
+from .serializers import LeadSerializer, BlsOesSerializer
 
 # Lead Viewset
 class LeadViewSet(viewsets.ModelViewSet):
@@ -9,5 +9,11 @@ class LeadViewSet(viewsets.ModelViewSet):
         permissions.AllowAny
 
     ]
-
     serializer_class = LeadSerializer
+
+class BlsOesViewSet(viewsets.ModelViewSet):
+    queryset = BlsOesFakes.objects.all()
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = BlsOesSerializer
