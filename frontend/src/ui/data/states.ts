@@ -1,8 +1,6 @@
-import { State } from '../jobs';
+import { createStates } from '../../domain/state';
 
-const createState = (name: string): State => ({ name });
-
-const states: Array<State> = [
+export default createStates([
   'Alabama',
   'Alaska',
   'Arizona',
@@ -53,6 +51,4 @@ const states: Array<State> = [
   'West Virginia',
   'Wisconsin',
   'Wyoming',
-].map(createState);
-
-export default states;
+]);
