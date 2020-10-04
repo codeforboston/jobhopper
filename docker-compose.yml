@@ -4,9 +4,9 @@ services:
     image: postgres:12.4-alpine
     ports:
       - "${DB_EXTERNAL_PORT}:5432"
-    # Uncomment this volume section to persist the database to a local directory.
-    # volumes:
-    #   - ./postgres-data:/var/lib/postgresql/data
+    # Comment this volume section to spin up a new database every time you run docker-compose up
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
