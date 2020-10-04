@@ -1,11 +1,15 @@
-import React from 'react';
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
-import { Story, Meta } from '@storybook/react/types-6-0';
-
-import { Select, SelectProps } from './Select';
+import { Meta, Story } from '@storybook/react/types-6-0';
+import React from 'react';
 import occupations from './data/occupations';
-import { Occupation, State } from './jobs';
 import states from './data/states';
+import {
+  OccupationSelect,
+  OccupationSelectProps,
+  Select,
+  StateSelect,
+  StateSelectProps,
+} from './Select';
 
 export default {
   title: 'JobHopper/Select',
@@ -22,20 +26,12 @@ export default {
   ],
 } as Meta;
 
-const TypedTemplate = <T,>(): Story<SelectProps<T>> => args => (
-  <Select {...args} />
+export const Occupations: Story<OccupationSelectProps> = args => (
+  <OccupationSelect {...args} />
 );
+Occupations.args = { occupations };
 
-export const Occupations = TypedTemplate<Occupation>();
-Occupations.args = {
-  options: occupations,
-  getOptionLabel: ({ name }) => name,
-  getOptionValue: ({ code }) => code,
-};
-
-export const States = TypedTemplate<State>();
-States.args = {
-  options: states,
-  getOptionLabel: ({ name }) => name,
-  getOptionValue: ({ name }) => name,
-};
+export const States: Story<StateSelectProps> = args => (
+  <StateSelect {...args} />
+);
+States.args = { states };
