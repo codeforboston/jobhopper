@@ -1,0 +1,14 @@
+.dockerignore
+Dockerfile
+.git
+.gitignore
+.env
+.postgres-data
+node_modules
+venv
+__pycache__
+*.sqlite3
+.env
+data/bls/downloads
+
+

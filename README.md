@@ -10,9 +10,12 @@ Many workers have limited outside options for career and wage progression outsid
 
 ## How to Install the Database and Analysis Tools
 
+### Option 1: local machine
+
 1. Install [Python 3.7](https://www.python.org/downloads/release/python-378/).
 
 2. Install [virtualenv](https://pypi.org/project/virtualenv/) from `pip`:
+
    ```sh
    python3.7 -m pip install virtualenv
    ```
@@ -36,11 +39,12 @@ Many workers have limited outside options for career and wage progression outsid
    ```
 7. Create a personal `.env` file to include environment variables for the app:
    (Note: Don't include `.env` in commit, thus it's in `.gitignore`):
+
    ```sh
    SECRET_KEY='[generated key]'
    ```
-   You can get your own 50 character secret key from [here](https://miniwebtool.com/django-secret-key-generator/).
 
+   You can get your own 50 character secret key from [here](https://miniwebtool.com/django-secret-key-generator/).
 
 8. Create Postgres DB:
 
@@ -48,39 +52,42 @@ Many workers have limited outside options for career and wage progression outsid
 
    b. Start postgresql service and check if clusters are running.
 
-      ```sh
-      sudo service postgresql start
-      pg_lsclusters
-      ```
-      If the text is green, it's working.
+   ```sh
+   sudo service postgresql start
+   pg_lsclusters
+   ```
+
+   If the text is green, it's working.
 
    c. Run `psql` through the newly created `postgres` user.
-      ```sh
-      sudo -i -u postgres
-      psql
-      ```
+
+   ```sh
+   sudo -i -u postgres
+   psql
+   ```
 
    d. Create a new user/role for the site to access the database to. Name it
-      however you like as long as you note the username and password for putting
-      it in `.env`.
-      ```sql
-      CREATE ROLE [user]
-      SUPERUSER
-      LOGIN
-      PASSWORD '[password]';
-      ```
+   however you like as long as you note the username and password for putting
+   it in `.env`.
+
+   ```sql
+   CREATE ROLE [user]
+   SUPERUSER
+   LOGIN
+   PASSWORD '[password]';
+   ```
 
    e. Create a new database for the site to access. Name it however you like
-      (preferably 'jobhopperdatabase') as long as you note the name of the
-      database for putting it in `.env`.
-      ```sql
-      CREATE DATABASE [database name]
-        WITH OWNER = [user];
-      ```
+   (preferably 'jobhopperdatabase') as long as you note the name of the
+   database for putting it in `.env`.
+
+   ```sql
+   CREATE DATABASE [database name]
+     WITH OWNER = [user];
+   ```
 
    f. Exit out of `psql` and `postgres` user with the `exit` command for both
-      cases.
-
+   cases.
 
    g. Add those information you written into the `.env` file.
 
@@ -94,6 +101,7 @@ Many workers have limited outside options for career and wage progression outsid
    ```
 
 9. Migrate from `manage.py` in root.
+
    ```sh
    python manage.py migrate
    ```
@@ -108,7 +116,26 @@ Many workers have limited outside options for career and wage progression outsid
 12. Go to the url `[baseurl]/api/v1/health` and ensure it returns json data.
 13. Go to the url `[baseurl]/jobs` and ensure it returns data.
 
-### Questions That JobHopper Will Be Trying To Answer
+### Option 2: Docker
+
+1. Install [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/). It is recommended to install Docker Desktop, which includes Docker Compose.
+
+2. Create a `.env` file in this directory with the following contents:
+
+```
+SECRET_KEY=[your secret, see above]
+DB_USER=[your username]
+DB_PASSWORD=[your password]
+DB_EXTERNAL_PORT=5432
+```
+
+3. Build the Docker image by running `docker-compose build`. You will need to run this whenever the `requirements.txt` files changes.
+
+4. Start the database and server by running `./docker-restart.sh` if you are using Mac/Linux/Git Bash. If you are using Command Prompt or PowerShell, run `docker-compose down; docker-compose up`.
+
+5. By default, the database is destroyed and recreated every time you start/stop the server. You can persist the database by uncommenting the `volumes` section of the `docker-compose.yml` file.
+
+## Questions That JobHopper Will Be Trying To Answer
 
 - [ ] How might we enable citizens to have better information about the career paths that they could move into from their current job?
 - [ ] How can citizens weigh and negotiate options for a new career path?
