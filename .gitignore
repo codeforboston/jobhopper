@@ -8,4 +8,4 @@ data/bls/downloads
 # NPM/Yarn
 node_modules
 
-.postgres-data
+postgres-data
