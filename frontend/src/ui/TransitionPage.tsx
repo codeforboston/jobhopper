@@ -1,3 +1,4 @@
+import { useTheme } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
 import { Occupation } from '../domain/occupation';
@@ -39,25 +40,33 @@ const TransitionPage = ({
   occupations,
   states,
   transitions,
-}: TransitionPageProps): JSX.Element => (
-  <PageContainer>
-    <Logo />
-    <Section>
-      <Header>Enter occupation</Header>
-      <Body>This is your current job, or a job you are interested in.</Body>
-      <OccupationSelect occupations={occupations} />
-    </Section>
-    <Section>
-      <Header>(Optional) Enter state</Header>
-      <Body>Select a state for which you'd like to view wage data.</Body>
-      <StateSelect states={states} />
-    </Section>
-    <Row>
-      <StyledPrimary label="See transition data" />
-      <StyledSecondary label="Save data" />
-    </Row>
-    <TransitionTable transitionData={transitions} />
-  </PageContainer>
-);
+}: TransitionPageProps): JSX.Element => {
+  const theme = useTheme();
+  return (
+    <PageContainer>
+      <Logo />
+      <Section>
+        <Header>Enter occupation</Header>
+        <Body>This is your current job, or a job you are interested in.</Body>
+        <OccupationSelect occupations={occupations} />
+      </Section>
+      <Section>
+        <Header style={{ color: theme.palette.secondary.main }}>
+          Optional
+        </Header>
+        <Body>
+          Select a state for wage data, otherwise, national data will be
+          displayed.
+        </Body>
+        <StateSelect states={states} />
+      </Section>
+      <Row>
+        <StyledPrimary label="See transition data" />
+        <StyledSecondary label="Save data" />
+      </Row>
+      <TransitionTable transitionData={transitions} />
+    </PageContainer>
+  );
+};
 
 export default TransitionPage;
