@@ -29,9 +29,6 @@ const [StyledPrimary, StyledSecondary] = [PrimaryButton, SecondaryButton].map(
     `
 );
 
-// TODO: add stories for this page
-// TODO: Add intrinsic styling to table component
-
 export interface TransitionPageProps {
   occupations: Occupation[];
   states: State[];
