@@ -36,4 +36,4 @@ class BlsOesFakes(models.Model):
 
 class StateAbbPairs(models.Model):
     state_name = models.CharField(max_length=100)
-    abbreviation = models.CharField(max_length= 2)
+    abbreviation = models.CharField(max_length=2, primary_key=True)
