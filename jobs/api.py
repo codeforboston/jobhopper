@@ -19,11 +19,8 @@ class BlsOesViewSet(viewsets.ModelViewSet):
     serializer_class = BlsOesSerializer
 
 class StateViewSet(viewsets.ModelViewSet):
-    
-    def get_queryset(self, *args, **kwargs):
-        # return StateAbbPairs.objects.filter(abbreviation=self.kwargs['state_abb'])
-        # return StateAbbPairs.objects.filter(pk = self.kwargs['pk'])
-        return StateAbbPairs.objects.all();
-       
-    
+    queryset = StateAbbPairs.objects.all() 
+    permission_classes = [
+        permissions.AllowAny
+    ]
     serializer_class = StateNamesSerializer
