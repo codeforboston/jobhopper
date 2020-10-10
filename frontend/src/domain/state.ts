@@ -1,6 +1,9 @@
 export interface State {
   name: string;
+  abbreviation: string;
 }
 
-export const createStates = (states: string[]): State[] =>
-  states.map(name => ({ name }));
+type StateTuple = [string, string];
+
+export const createStates = (states: StateTuple[]): State[] =>
+  states.map(([name, abbreviation]) => ({ name, abbreviation }));
