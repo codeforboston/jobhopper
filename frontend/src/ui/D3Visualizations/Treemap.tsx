@@ -172,6 +172,7 @@ export const Treemap2 = ({
         .data(root.children.concat(root))
         .join('g');
 
+      // add click events to parent node 'rects'
       node
         .filter((d: any) => (d === root ? d.parent : d.children))
         .attr('cursor', 'pointer')
@@ -292,7 +293,7 @@ export const Treemap2 = ({
       }
     }
 
-    // return the top box's name based on the node category selected
+    // return the top rect's name based on the node category selected
     function name(d: any) {
       return d
         .ancestors()
