@@ -1,6 +1,6 @@
-from jobs.models import Socs, BlsOesFakes
-from rest_framework import viewsets, permissions
-from .serializers import LeadSerializer, BlsOesSerializer
+from jobs.models import Socs, BlsOesFakes, StateAbbPairs
+from rest_framework import viewsets, permissions, generics
+from .serializers import LeadSerializer, BlsOesSerializer, StateNamesSerializer
 
 # Lead Viewset
 class LeadViewSet(viewsets.ModelViewSet):
@@ -17,3 +17,10 @@ class BlsOesViewSet(viewsets.ModelViewSet):
         permissions.AllowAny
     ]
     serializer_class = BlsOesSerializer
+
+class StateViewSet(viewsets.ModelViewSet):
+    queryset = StateAbbPairs.objects.all() 
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = StateNamesSerializer
