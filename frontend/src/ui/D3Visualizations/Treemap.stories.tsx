@@ -1,7 +1,7 @@
 import React from 'react';
 import { Story, Meta } from '@storybook/react/types-6-0';
 import Treemap, { TreemapProps } from './Treemap';
-import data from '../data/hierarchy';
+import data from '../../testing/data/hierarchy';
 
 export default {
   title: 'JobHopper/Treemap',
