@@ -11,43 +11,40 @@ In order for d3.hierarchy to create a hierarchical layout, data must be in below
 ```
 {
   name: 'Waiters and Waitresses',
-  soc: '35-301',
   children: [
     {
-      name: 'Sales and Retail',
-      children: [
-        {
-          category: 'Sales and Retail',
-          name: 'Retail salespersons',
-          value: 0.0427,
-        },
-        {
-          category: 'Sales and Retail',
-          name: 'Cashiers',
-          value: 0.0312,
-        },
-      ],
+      annualSalary: 29360
+      code: "41-2031"
+      hourlyPay: 14.1
+      name: "Retail salespersons"
+      transitionRate: 0.0427
     },
     {
-      name: 'Office and Administration',
-      children: [
-        {
-          category: 'Office and Administration',
-          name: 'Customer services representatives',
-          value: 0.0421,
-        },
-        {
-          category: 'Office and Administration',
-          name: 'Hotel, motel, and resort desk clerks',
-          value: 0.0148,
-        },
-      ],
+      annualSalary: 37300
+      code: "43-4051"
+      hourlyPay: 17.9
+      name: "Customer service representatives"
+      transitionRate: 0.0421
+    },
+    {
+      annualSalary: 59820
+      code: "11-9051"
+      hourlyPay: 28.76
+      name: "Food service managers"
+      transitionRate: 0.0407
+    },
+    {
+      annualSalary: 28000
+      code: "35-3011"
+      hourlyPay: 13.46
+      name: "Bartenders"
+      transitionRate: 0.039
     },
   ],
 }
 ```
 
-The property name 'children' is the accessor used by d3.hierarchy and must return an iterable of data representing the children.
+This can be achieved by retrieving the data from the relevant API, passing it into the 'createTransitions' function and passing the resulting array into the 'createHierarchies' function found in their respective files under the 'domain' directory.
 
 ## Rendering the Treemap
 
