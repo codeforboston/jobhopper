@@ -1,3 +1,4 @@
+import { useTheme } from '@material-ui/core';
 import React from 'react';
 
 import ReactSelect, { Props } from 'react-select';
@@ -11,19 +12,30 @@ export const Select = <T,>({
   getOptionValue,
   placeholder,
   ...rest
-}: SelectProps<T>): JSX.Element => (
-  <ReactSelect
-    placeholder={placeholder}
-    isSearchable
-    options={options}
-    getOptionLabel={getOptionLabel}
-    getOptionValue={getOptionValue}
-    styles={{
-      menu: base => ({ ...base, zIndex: 100 }),
-    }}
-    {...rest}
-  />
-);
+}: SelectProps<T>): JSX.Element => {
+  const theme = useTheme();
+  return (
+    <ReactSelect
+      placeholder={placeholder}
+      isSearchable
+      options={options}
+      getOptionLabel={getOptionLabel}
+      getOptionValue={getOptionValue}
+      styles={{
+        menu: base => ({ ...base, zIndex: 100 }),
+        control: base => ({
+          ...base,
+          backgroundColor: theme.palette.primary.light,
+        }),
+        placeholder: base => ({
+          ...base,
+          color: theme.palette.primary.main,
+        }),
+      }}
+      {...rest}
+    />
+  );
+};
 
 export interface OccupationSelectProps
   extends Omit<SelectProps<Occupation>, 'options'> {
