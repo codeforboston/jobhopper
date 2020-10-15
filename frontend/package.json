@@ -28,10 +28,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "eslint": "eslint .",
+    "eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "check-types": "tsc --noemit",
-    "lint": "set -x; npm run eslint .; npm run check-types",
-    "fix": "set -x; prettier --write .; eslint --fix .",
+    "lint": "node scripts/npm.js lint",
+    "ci:lint-and-test": "CI=true node scripts/npm.js lint-and-test",
+    "fix": "node scripts/npm.js fix",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
   },
@@ -64,7 +65,8 @@
     "husky": "^4.3.0",
     "lint-staged": "^10.4.0",
     "prettier": "2.1.2",
-    "react-is": "^16.13.1"
+    "react-is": "^16.13.1",
+    "shelljs": "^0.8.4"
   },
   "husky": {
     "hooks": {
