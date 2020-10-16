@@ -1,9 +1,12 @@
 import { fetchStates } from '../states';
+import { fetchTransitions } from '../transitions';
 import { fetchOccupations } from '../occupations';
 import { createStore } from '../store';
 import api from '../../services/api';
+import { GetTransitionRequest } from '../../services/api/Api';
 import states from '../../testing/data/states';
 import occupations from '../../testing/data/occupations';
+import transitions from '../../testing/data/transitionData';
 import { mocked } from 'ts-jest/utils';
 
 jest.mock('../../services/api');
@@ -59,5 +62,32 @@ describe('Occupations', () => {
 
     await store.dispatch(fetchOccupations());
     expect(store.getState().occupations.error).toEqual(errorMessage);
+  });
+});
+
+describe('Transitions', () => {
+  it('updates the list of transitions', async () => {
+    const store = createStore();
+    expect(store.getState().transitions.transitions).toHaveLength(0);
+
+    mockedApi.getTransitions.mockResolvedValue(transitions);
+
+    const payload: GetTransitionRequest = { occupation: { code: '1' } };
+
+    await store.dispatch(fetchTransitions(payload));
+    expect(store.getState().transitions.transitions).toEqual(transitions);
+  });
+
+  it('handles update error', async () => {
+    const store = createStore();
+    expect(store.getState().transitions.transitions).toHaveLength(0);
+
+    const errorMessage = 'test error fetching';
+    mockedApi.getTransitions.mockRejectedValue(new Error(errorMessage));
+
+    const payload: GetTransitionRequest = { occupation: { code: '1' } };
+
+    await store.dispatch(fetchTransitions(payload));
+    expect(store.getState().transitions.error).toEqual(errorMessage);
   });
 });
