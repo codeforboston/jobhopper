@@ -17,10 +17,11 @@ class Socs(models.Model):
     minorName = models.CharField(max_length=200)
     broadName = models.CharField(max_length=200)
 
+# This is the burning glass data. 
 class OccupationTransitions(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     soc1 = models.CharField(max_length=7)
-    soc2 = models.CharField(max_length=7)
+    soc2 = models.CharField(max_length=7, null=True)
     total_soc = models.CharField(max_length=9)
     pi = models.CharField(max_length=200)
     occleaveshare = models.CharField(max_length=200)

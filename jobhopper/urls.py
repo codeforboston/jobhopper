@@ -21,7 +21,7 @@ from . import views
 schema_view = get_swagger_view(title="Jobhopper")
 
 urlpatterns = [
-    path("jobs/", include("jobs.urls")),
+    path("api/v1/jobs/", include("jobs.urls")),
     path("", views.index, name="index"),
     path("api/v1/health", views.health, name="health"),
 ]
