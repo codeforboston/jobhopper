@@ -1,5 +1,9 @@
-from data.scripts.sql_loader import load_bls_oes_to_sql, load_occupation_transitions_to_sql
+from data.scripts.sql_loader import (
+    load_bls_oes_to_sql,
+    load_occupation_transitions_to_sql,
+)
 from pathlib import Path
+
 
 def run(bls_year="2019"):
     """
@@ -25,11 +29,11 @@ def run(bls_year="2019"):
      11-1011 | 33-9032 |   1425400 |            0.0028994256 |    0.14635982
      11-1011 | 53-7073 |   1425400 |          0.000013282203 |    0.14635982
      11-1011 | 19-4031 |   1425400 |  0.00004537824000000001 |    0.14635982
-     """
-    path=Path(__file__).parent / 'occupation_transitions_public_data_set.csv'
+    """
+    path = Path(__file__).parent / "occupation_transitions_public_data_set.csv"
     load_occupation_transitions_to_sql(path)
     load_bls_oes_to_sql(year=bls_year)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run(bls_year="2019")

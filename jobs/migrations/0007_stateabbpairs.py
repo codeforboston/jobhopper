@@ -6,15 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('jobs', '0006_blsoesfakes'),
+        ("jobs", "0006_blsoesfakes"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='StateAbbPairs',
+            name="StateAbbPairs",
             fields=[
-                ('state_name', models.CharField(max_length=100)),
-                ('abbreviation', models.CharField(max_length=2, primary_key=True, serialize=False)),
+                ("state_name", models.CharField(max_length=100)),
+                (
+                    "abbreviation",
+                    models.CharField(max_length=2, primary_key=True, serialize=False),
+                ),
             ],
         ),
     ]
