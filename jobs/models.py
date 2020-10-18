@@ -7,6 +7,7 @@ class JobClass(models.Model):
     description = models.CharField(max_length=400)
     date = models.DateTimeField(auto_now_add=True)
 
+
 class Socs(models.Model):
     detailedOccupation = models.IntegerField(unique=True)
     detailName = models.CharField(max_length=400)
@@ -17,22 +18,26 @@ class Socs(models.Model):
     minorName = models.CharField(max_length=200)
     broadName = models.CharField(max_length=200)
 
+
+# This is the burning glass data.
 class OccupationTransitions(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True, auto_created=True)
     soc1 = models.CharField(max_length=7)
-    soc2 = models.CharField(max_length=7)
+    soc2 = models.CharField(max_length=7, null=True)
     total_soc = models.CharField(max_length=9)
     pi = models.CharField(max_length=200)
     occleaveshare = models.CharField(max_length=200)
+
 
 class BlsOesFakes(models.Model):
     area_title = models.CharField(max_length=10)
     soc_code = models.CharField(max_length=7)
     soc_title = models.CharField(max_length=200)
-    hourly_mean_wage = models.DecimalField(max_digits=10,decimal_places=2)
-    annual_mean_wage = models.DecimalField(max_digits=10,decimal_places=2)
+    hourly_mean_wage = models.DecimalField(max_digits=10, decimal_places=2)
+    annual_mean_wage = models.DecimalField(max_digits=10, decimal_places=2)
     total_employment = models.BigIntegerField()
     soc_decimal_code = models.CharField(max_length=200)
+
 
 class StateAbbPairs(models.Model):
     state_name = models.CharField(max_length=100)

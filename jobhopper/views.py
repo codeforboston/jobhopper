@@ -50,4 +50,3 @@ def health(request):
         },
     }
     return JsonResponse(data)
-
