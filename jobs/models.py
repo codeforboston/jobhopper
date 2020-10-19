@@ -39,6 +39,17 @@ class BlsOesFakes(models.Model):
     soc_decimal_code = models.CharField(max_length=200)
 
 
+class BlsOes(models.Model):
+    id = models.AutoField(auto_created=True, primary_key=True, serialize=False)
+    area_title = models.CharField(max_length=255, null=True)
+    soc_code = models.CharField(max_length=10, null=True)
+    soc_title = models.CharField(max_length=255, null=True)
+    hourly_mean_wage = models.DecimalField(decimal_places=2, max_digits=10, null=True)
+    annual_mean_wage = models.DecimalField(decimal_places=2, max_digits=10, null=True)
+    total_employment = models.BigIntegerField(null=True)
+    soc_decimal_code = models.CharField(max_length=10, null=True)
+
+
 class StateAbbPairs(models.Model):
     state_name = models.CharField(max_length=100)
     abbreviation = models.CharField(max_length=2, primary_key=True)
