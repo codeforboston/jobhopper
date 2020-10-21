@@ -18,7 +18,7 @@ const Svg = styled.svg``;
 const fontSize = 12;
 const white = '#ffffff';
 
-export type TreeNode = { name?: string; children: Transition[] } | Transition;
+export type TreeNode = { children: Transition[] } | Transition;
 
 export type TreemapProps = {
   data: Transition[];
@@ -32,6 +32,10 @@ function createHierarchy(data: Transition[]): TreeNode {
 
 function isTransition(node: TreeNode): node is Transition {
   return (node as Transition).transitionRate !== undefined;
+}
+
+function name(node: TreeNode): string {
+  return isTransition(node) ? node.name : '';
 }
 
 function transitionRate(node: TreeNode): number {
@@ -93,7 +97,7 @@ export default function Treemap({ data }: TreemapProps) {
     // add node labels
     nodes
       .append('text')
-      .text(d => `${d.data.name} ${transitionRate(d.data)}`)
+      .text(d => `${name(d.data)} ${transitionRate(d.data)}`)
       .attr('width', d => d.x1 - d.x0)
       .attr('font-size', `${fontSize}px`)
       .attr('x', 3)
