@@ -7,3 +7,6 @@ data/bls/downloads
 
 # NPM/Yarn
 node_modules
+
+# IDE settings
+.idea
