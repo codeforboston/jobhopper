@@ -9,7 +9,10 @@ interface Dimensions {
 const useResizeObserver = (
   ref: React.RefObject<HTMLDivElement>
 ): Dimensions => {
-  const [dimensions, setDimensions] = useState({ width: 600, height: 300 });
+  const [dimensions, setDimensions] = useState<Dimensions>({
+    width: 0,
+    height: 0,
+  });
 
   useEffect(() => {
     const observeTarget = ref.current!;
