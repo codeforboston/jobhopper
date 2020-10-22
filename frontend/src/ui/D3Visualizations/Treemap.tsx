@@ -11,12 +11,9 @@ const Container = styled.div`
 
 const Svg = styled.svg``;
 
-// #357ea1
-// #6ab6c4
-// #bce4d9
-
 const fontSize = 12;
 const white = '#ffffff';
+const colorRange = ['#bce4d9', '#6ab6c4', '#357ea1'];
 
 export type TreeNode = { children: Transition[] } | Transition;
 
@@ -77,28 +74,24 @@ export default function Treemap({ data }: TreemapProps) {
       .append('g')
       .attr('transform', d => `translate(${d.x0},${d.y0})`);
 
-    // lighten colors
-    const fader = (color: string): string =>
-      d3.interpolateRgb(color, white)(0.3);
-
     // select color within d3.schemeSet3 (contains array of 12 colors)
-    const colorScale = d3.scaleOrdinal(d3.schemeSet3.map(fader));
+    const colorScale = d3
+      .scaleQuantile()
+      .domain(data.map(d => d.transitionRate))
+      .range(colorRange);
 
     // create and fill svg 'rects' based on the node data selected
     nodes
       .append('rect')
       .attr('width', d => d.x1 - d.x0)
       .attr('height', d => d.y1 - d.y0)
-      .attr(
-        'fill',
-        d => colorScale(transitionRate(d.data).toString()) || white
-      );
+      .attr('fill', d => colorScale(transitionRate(d.data)) || white);
 
     // add node labels
     nodes
       .append('text')
       .text(d => `${name(d.data)} ${transitionRate(d.data)}`)
-      .attr('width', d => d.x1 - d.x0)
+      .attr('data-width', d => d.x1 - d.x0)
       .attr('font-size', `${fontSize}px`)
       .attr('x', 3)
       .attr('y', fontSize)
@@ -108,7 +101,7 @@ export default function Treemap({ data }: TreemapProps) {
     function wrap(selection: d3.Selection<SVGTextElement, any, any, any>) {
       selection.each(function () {
         const node = d3.select(this);
-        const width = +node.attr('width');
+        const width = +node.attr('data-width');
         let word: string;
         const words: Array<string> = node.text().split(' ').reverse();
         let line: Array<string> = [];
