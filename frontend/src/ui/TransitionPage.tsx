@@ -9,26 +9,13 @@ import Logo from './Logo';
 import { OccupationSelect, StateSelect } from './Select';
 import TransitionTable from './TransitionTable';
 import { Body, Header } from './Typography';
-
-const PageContainer = styled.div`
-  max-width: 800px;
-  margin: auto;
-`;
-
-const Section = styled.section``;
-
-const Row = styled.div`
-  display: flex;
-`;
-
-const [StyledPrimary, StyledSecondary] = [PrimaryButton, SecondaryButton].map(
-  B =>
-    styled(B)`
-      && {
-        margin: 20px 10px 20px 0px;
-      }
-    `
-);
+import {
+  PageContainer,
+  Section,
+  StyledPrimary,
+  StyledSecondary,
+  Row,
+} from './Common';
 
 export interface TransitionPageProps {
   occupations: Occupation[];
