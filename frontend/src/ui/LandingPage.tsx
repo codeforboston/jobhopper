@@ -52,8 +52,8 @@ const TopBar = () => {
           justifyContent: 'space-between',
         }}
       >
-        <ShadowButton text={'About'} />
-        <ShadowButton text={'Contact'} />
+        <ShadowButton label={'About'} />
+        <ShadowButton label={'Contact'} />
       </Row>
     </Row>
   );

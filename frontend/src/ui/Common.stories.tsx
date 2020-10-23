@@ -1,11 +1,29 @@
 import React from 'react';
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
-import { Meta } from '@storybook/react/types-6-0';
-import { ShadowButton } from './Common';
+import { Story, Meta } from '@storybook/react/types-6-0';
+import { ShadowButton, StyledPrimary, StyledSecondary } from './Common';
+// List.stories.tsx
+
+interface ButtonProps {
+  label: string;
+}
 
 export default {
-  title: 'JobHopper/ShadowButton',
-  component: ShadowButton,
+  title: 'JobHopper/Common',
+  components: [ShadowButton, StyledPrimary, StyledSecondary],
 } as Meta;
 
-export const Default = () => <ShadowButton text="shadow" />;
+export const ShadowNavButton: Story<ButtonProps> = args => (
+  <ShadowButton {...args} />
+);
+ShadowNavButton.args = { label: 'button' };
+
+export const StyledPrimaryButton: Story<ButtonProps> = args => (
+  <StyledPrimary {...args} />
+);
+StyledPrimaryButton.args = { label: 'primary button' };
+
+export const StyledSecondaryButton: Story<ButtonProps> = args => (
+  <StyledSecondary {...args} />
+);
+StyledSecondaryButton.args = { label: 'secondary button' };

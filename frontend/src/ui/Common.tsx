@@ -44,18 +44,19 @@ const Shadow = styled.img.attrs({ src: shadow, alt: '' })`
 `;
 
 export interface ShadowButtonProps {
-  text: string;
+  label: string;
 }
 
-export const ShadowButton = ({ text }: ShadowButtonProps): JSX.Element => {
+export const ShadowButton = ({ label }: ShadowButtonProps): JSX.Element => {
   return (
     <Section
       style={{
         flexDirection: 'column',
         justifyContent: 'center',
+        width: '100px',
       }}
     >
-      <ShadowText>{text}</ShadowText>
+      <ShadowText>{label}</ShadowText>
       <Shadow />
     </Section>
   );
