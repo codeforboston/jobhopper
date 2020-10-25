@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from jobs.models import Socs, BlsOesFakes, StateAbbPairs, OccupationTransitions
+from jobs.models import Socs, BlsOes, StateAbbPairs, OccupationTransitions
 
 # Lead Serializer
 class SocSerializer(serializers.ModelSerializer):
@@ -10,8 +10,14 @@ class SocSerializer(serializers.ModelSerializer):
 
 class BlsOesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = BlsOesFakes
-        fields = "__all__"
+        model = BlsOes
+        fields = ("area_title",
+                  "soc_code",
+                  "soc_title",
+                  "hourly_mean_wage",
+                  "annual_mean_wage",
+                  "total_employment",
+                  "soc_decimal_code")
 
 
 class StateNamesSerializer(serializers.ModelSerializer):
