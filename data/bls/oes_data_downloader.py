@@ -4,9 +4,11 @@ import pandas as pd
 
 from pathlib import Path
 
+import os
 from io import BytesIO
 from zipfile import ZipFile
 from urllib.request import urlopen
+from data.bls.utils.dtype_conversion import to_float, to_int
 
 import logging
 
@@ -56,36 +58,83 @@ class OESDataDownloader(object):
         log.info("Download path: {}".format(oes_download_path))
         return oes_download_path
 
+    def _clean_oes_data(self, bls_oes_data: pd.DataFrame) -> pd.DataFrame:
+        """
+        Clean BLS OES data. Basic cleaning for prototype.
+        """
+        bls_oes_data = (
+            bls_oes_data[
+                ["area_title", "occ_code", "occ_title", "h_mean", "a_mean", "tot_emp"]
+            ]
+                .assign(
+                soc_decimal_code=bls_oes_data["occ_code"].apply(
+                    lambda x: "{}.00".format(x)
+                ),
+                h_mean=bls_oes_data["h_mean"].apply(lambda x: to_float(x)),
+                a_mean=bls_oes_data["a_mean"].apply(lambda x: to_float(x)),
+                tot_emp=bls_oes_data["tot_emp"].apply(lambda x: to_int(x)),
+            )
+                .rename(
+                {
+                    "occ_code": "soc_code",
+                    "occ_title": "soc_title",
+                    "h_mean": "hourly_mean_wage",
+                    "a_mean": "annual_mean_wage",
+                    "tot_emp": "total_employment",
+                },
+                axis=1,
+            )
+        )
+
+        return bls_oes_data
+
     def download_oes_data(self, clean_up=False) -> pd.DataFrame:
         """
         Download the zip folder into the tempfile_dir, and load the Excel file
         Estimated number of rows: 350K+
         """
-        log.info("Downloading OES data from {}".format(self.oes_download_path))
+        log.info("Downloading OES data from {} if it has not been downloaded already".format(self.oes_download_path))
         # Download the zip folder and find the file
         response = urlopen(self.oes_download_path)
-        zipfile = ZipFile(BytesIO(response.read()))
         dir = Path(__file__).parent / "downloads"
-        log.info("Downloading to directory {}".format(dir))
-        zipfile.extractall(dir)
 
-        expected_filename = "all_data_M_{}.xlsx".format(self.year)
+        download_filepath = str(dir) + "/{}/all_data_M_{}.xlsx".format(self.oes_zipname, self.year)
+        csv_path = download_filepath.split(".")[0] + ".csv"
 
-        zipped_files = zipfile.namelist()
-        log.info("Files found: {}".format(zipped_files))
-        for filename in zipped_files:
-            if expected_filename in filename:
-                log.info(
-                    "Check the data/bls/downloads directory for the xlsx file downloaded"
-                )
-                log.info(
-                    "Reading Excel file: {} --- This may take a few minutes.".format(
-                        filename
+        if not os.path.exists(csv_path):
+            zipfile = ZipFile(BytesIO(response.read()))
+
+            log.info("Downloading to directory {}".format(dir))
+            zipfile.extractall(dir)
+
+            expected_filename = "all_data_M_{}.xlsx".format(self.year)
+
+            zipped_files = zipfile.namelist()
+            log.info("Files found: {}".format(zipped_files))
+            for filename in zipped_files:
+                if expected_filename in filename:
+                    log.info(
+                        "Check the data/bls/downloads directory for the xlsx file downloaded"
                     )
-                )
-                excelfile = zipfile.open(filename)
-                df = pd.read_excel(excelfile)
-                return df
+                    log.info(
+                        "Reading Excel file: {} --- This may take a few minutes.".format(
+                            filename
+                        )
+                    )
+                    excelfile = zipfile.open(filename)
+                    df = pd.read_excel(excelfile)
+
+                    if clean_up:
+                        log.info("Cleaning file and saving as a csv for faster loading in future runs.")
+                        df = self._clean_oes_data(bls_oes_data=df)
+
+                        # Save as CSV for faster loading in future rounds
+                        df.to_csv(csv_path,
+                                  index=False)
+                    return df
+        else:
+            log.info("OES data year {} was found in {}. Loading it in.".format(self.year, csv_path))
+            return pd.read_csv(csv_path)
 
 
 if __name__ == "__main__":
