@@ -1,34 +1,36 @@
 # Database Setup
-Follow the project readme to install Postgres
+Follow the project readme to install Postgres. Activate the venv environment, making sure you have Python 3.
 
-Activate the venv environment to be sure you have python3 
+In particular, make sure the following additional packages are installed:
 
-Install the following additional packages:
-pip install pandas
-pip install sqlalchemy
-pip install lxml
-pip install requests
-pip install xlrd
+* pip install pandas
+* pip install sqlalchemy
+* pip install lxml
+* pip install requests
+* pip install xlrd
 
 
 ## Run the Load Processes
 
-1. If you're not sure, set PYTHONPATH=.
-2. Ensure you are in the jobhopper project root directory (there should be a data\scripts\sql_loader.py underneath)
-3. Run python data\load_jobhopper_data.py
-
-If you run into trouble, you might choose to download a year of data manually with this url: https://www.bls.gov//oes/special.requests/oesm19all.zip
-
-The code assumes you will have a user defined as jobuser with password jobuser for your database. If not you may need to edit underlying files. 
-
-Then edit the sql_loader_jed.py file in the data\scripts directory. The calls at the bottom can be edited to run one or both with the paths that work on your system. 
+1. If you're not sure, set `PYTHONPATH=.`
+2. Ensure you are in the jobhopper project root directory (there should be a `data\scripts\sql_loader.py` underneath)
+3. Run `python data\load_jobhopper_data.py` to load the `occupation_transitions_public_data_set.csv` (see `Data Description for Occupation Transitions Public Dataset`) and BLS Occupational Employment Statistics datasets.
 
 Once done, you should be able to run both of these queries in the psql command tool and get data back: 
 
 jobhopperdatabase=# select * from bls_oes limit 5 \g
 jobhopperdatabase=# select * from occupation_transition limit 5 \g
 
-# Data Description
+## Troubleshooting
+
+* The code assumes you will have a user defined as `jobuser` with password `jobuser` for your Postgres database. If not, you may need to edit underlying files. See the main readme for more information.
+
+* If you run into trouble, you might choose to download a 2019 data manually with this url: https://www.bls.gov//oes/special.requests/oesm19all.zip
+Then, edit the sql_loader_jed.py file in the data\scripts directory. The calls at the bottom can be edited to run one or both with the paths that work on your system. 
+
+* The code assumes a Windows development environment. Adjust paths accordingly for Linux/MacOS.
+
+# Data Descriptions
 
 ## Transitions Data (Burning Glass)
 
@@ -78,3 +80,8 @@ https://scholar.harvard.edu/files/stansbury/files/schubert-stansbury-taska-20191
 or go to the authors’ websites for the latest version.
 
 
+## BLS Occupational Employment Statistics Dataset
+
+This dataset provides wage and employment information for 800+ occupations in the United States, each identified by a SOC code. Statewide and national data are available.
+
+See https://www.bls.gov/oes/oes_ques.htm#overview for more information.

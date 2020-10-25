@@ -30,7 +30,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("api/v1/docs", schema_view.with_ui('swagger', cache_timeout=0), name="docs"),
-    path("jobs/", include("jobs.urls")),
+    path("api/v1/jobs/", include("jobs.urls")),
     path("", views.index, name="index"),
     path("api/v1/health", views.health, name="health"),
 ]

@@ -15,7 +15,7 @@ from data.bls.oes_data_downloader import OESDataDownloader
 from data.bls.utils.dtype_conversion import to_float, to_int
 
 
-logging.basicConfig(format='%(asctime)s %(message)s')
+logging.basicConfig(format="%(asctime)s %(message)s")
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
@@ -27,7 +27,11 @@ HOST = "localhost" if not os.getenv("DB_HOST") else os.getenv("DB_HOST")
 
 
 def create_sqlalchemyengine(
-    username: str = "", password: str = "", port: str = "5432", host: str = "localhost"
+    username: str = "",
+    password: str = "",
+    port: str = "5432",
+    host: str = "localhost",
+    db: str = "jobhopperdatabase",
 ):
     """
     Create a database connection to a SQLite database based on the specified params
@@ -41,16 +45,16 @@ def create_sqlalchemyengine(
     try:
         log.info("Connecting to Postgres DB via SQLAlchemy")
         engine = create_engine(
-            "postgresql://{}:{}@{}:{}/{}".format(
-                username, password, host, port, JOBHOPPER_DB
-            )
+            "postgresql://{}:{}@{}:{}/{}".format(username, password, host, port, db)
         )
         return engine
     except Exception as e:
         log.error(e)
 
 
-def load_bls_oes_to_sql(file_to_load="", year: str = "2019"):
+def load_bls_oes_to_sql(
+    file_to_load="", year: str = "2019", db: str = "jobhopperdatabase"
+):
     """
     Load BLS OES data from 2019 to Postgres.
 
@@ -59,7 +63,7 @@ def load_bls_oes_to_sql(file_to_load="", year: str = "2019"):
     """
     log.info("Loading BLS wage and employment data to Postgres")
     engine = create_sqlalchemyengine(
-        username=USERNAME, password=PASSWORD, port=PORT, host=HOST
+        username=USERNAME, password=PASSWORD, port=PORT, host=HOST, db=db
     )
     if file_to_load == "":
         bls_oes_data = OESDataDownloader().download_oes_data(year)
@@ -113,14 +117,15 @@ def load_bls_oes_to_sql(file_to_load="", year: str = "2019"):
 
 
 def load_occupation_transitions_to_sql(
-    file_path="../occupation_transitions_public_data_set.csv",
+    file_path: str = "../occupation_transitions_public_data_set.csv",
+    db: str = "jobhopperdatabase",
 ):
     """
     Load the occupation transitions data to SQL from the CSV file in jobhopper.data
     """
     log.info("Loading occupation transitions (Burning Glass) data to Postgres")
     engine = create_sqlalchemyengine(
-        username=USERNAME, password=PASSWORD, port=PORT, host=HOST
+        username=USERNAME, password=PASSWORD, port=PORT, host=HOST, db=db
     )
     occupation_transitions = pd.read_csv(
         file_path,
@@ -174,9 +179,5 @@ if __name__ == "__main__":
      11-1011 | 19-4031 |   1425400 |  0.00004537824000000001 |    0.14635982
     """
 
-    load_bls_oes_to_sql(
-        ""
-    )
-    load_occupation_transitions_to_sql(
-        ""
-    )
+    load_bls_oes_to_sql("")
+    load_occupation_transitions_to_sql("")

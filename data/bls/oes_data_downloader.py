@@ -10,7 +10,7 @@ from urllib.request import urlopen
 
 import logging
 
-logging.basicConfig(format='%(asctime)s %(message)s')
+logging.basicConfig(format="%(asctime)s %(message)s")
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
@@ -65,8 +65,8 @@ class OESDataDownloader(object):
         # Download the zip folder and find the file
         response = urlopen(self.oes_download_path)
         zipfile = ZipFile(BytesIO(response.read()))
-        dir = Path(__file__).parent / 'downloads'
-        log.info('Downloading to directory {}'.format(dir))
+        dir = Path(__file__).parent / "downloads"
+        log.info("Downloading to directory {}".format(dir))
         zipfile.extractall(dir)
 
         expected_filename = "all_data_M_{}.xlsx".format(self.year)
@@ -75,7 +75,9 @@ class OESDataDownloader(object):
         log.info("Files found: {}".format(zipped_files))
         for filename in zipped_files:
             if expected_filename in filename:
-                log.info("Check the data/bls/downloads directory for the xlsx file downloaded")
+                log.info(
+                    "Check the data/bls/downloads directory for the xlsx file downloaded"
+                )
                 log.info(
                     "Reading Excel file: {} --- This may take a few minutes.".format(
                         filename
@@ -86,6 +88,6 @@ class OESDataDownloader(object):
                 return df
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test = OESDataDownloader(year="2019")
     test.download_oes_data()
