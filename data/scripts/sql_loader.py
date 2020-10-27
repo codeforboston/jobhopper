@@ -74,7 +74,8 @@ def load_bls_oes_to_sql(
             table_name,
             engine,
             if_exists="replace",
-            index=False,
+            index=True,
+            index_label="id",
             dtype={
                 "soc_decimal_code": String(),
                 "hourly_mean_wage": Numeric(),

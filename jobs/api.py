@@ -1,4 +1,4 @@
-from jobs.models import Socs, BlsOesFakes, StateAbbPairs, OccupationTransitions
+from jobs.models import Socs, BlsOes, StateAbbPairs, OccupationTransitions
 from rest_framework import viewsets, permissions, generics
 from .serializers import (
     SocSerializer,
@@ -15,7 +15,7 @@ class SocViewSet(viewsets.ModelViewSet):
 
 
 class BlsOesViewSet(viewsets.ModelViewSet):
-    queryset = BlsOesFakes.objects.all()
+    queryset = BlsOes.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = BlsOesSerializer
 
