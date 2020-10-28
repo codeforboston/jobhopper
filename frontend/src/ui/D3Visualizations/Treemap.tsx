@@ -76,7 +76,7 @@ export default function Treemap({ data }: TreemapProps) {
 
     // select color within d3.schemeSet3 (contains array of 12 colors)
     const colorScale = d3
-      .scaleQuantile()
+      .scaleQuantile<string>()
       .domain(data.map(d => d.transitionRate))
       .range(colorRange);
 
