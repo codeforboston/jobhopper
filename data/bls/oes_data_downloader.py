@@ -99,7 +99,7 @@ class OESDataDownloader(object):
         dir = Path(__file__).parent / "downloads"
 
         download_filepath = str(dir) + "/{}/all_data_M_{}.xlsx".format(self.oes_zipname, self.year)
-        csv_path = download_filepath.split(".")[0] + ".csv"
+        csv_path = os.path.splitext(download_filepath)[0] + ".csv"
 
         if not os.path.exists(csv_path):
             zipfile = ZipFile(BytesIO(response.read()))
