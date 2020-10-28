@@ -16,6 +16,10 @@ Many workers have limited outside options for career and wage progression outsid
 
    ```sh
    python3.7 -m pip install virtualenv
+
+   OR on Windows 
+
+   python -m pip install virtualenv
    ```
 
 3. Clone this repo to local:
@@ -26,10 +30,19 @@ Many workers have limited outside options for career and wage progression outsid
    ```sh
    cd jobhopper
    python3.7 -m virtualenv --python=3.7 venv
+
+   OR on Windows 
+
+   cd jobhopper
+   python -m virtualenv --python=3.7 venv
    ```
 5. Activate venv:
    ```sh
    . ./venv/bin/activate
+
+   OR on Windows 
+
+   ./venv/Scripts/activate
    ```
 6. Install project dependencies from `requirements.txt`:
    ```sh
