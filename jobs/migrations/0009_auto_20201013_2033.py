@@ -59,15 +59,15 @@ class Migration(migrations.Migration):
         
         """
 
-        operations = [
-            migrations.RunPython(forwards_source_data, reverse_source_data),
-            migrations.RunPython(forwards_func, reverse_func),
-            migrations.RunSQL(
-                [
-                    (
-                        "insert into jobs_occupationtransitions (soc1, soc2, total_soc, pi, occleaveshare) select soc1, soc2, total_soc, pi, occleaveshare from occupation_transition"
-                    )
-                ],
-                [("DELETE FROM jobs_occupationtransitions")],
-            ),
-        ]
+    operations = [
+        migrations.RunPython(forwards_source_data, reverse_source_data),
+        migrations.RunPython(forwards_func, reverse_func),
+        migrations.RunSQL(
+            [
+                (
+                    "insert into jobs_occupationtransitions (soc1, soc2, total_soc, pi, occleaveshare) select soc1, soc2, total_soc, pi, occleaveshare from occupation_transition"
+                )
+            ],
+            [("DELETE FROM jobs_occupationtransitions")],
+        ),
+    ]
