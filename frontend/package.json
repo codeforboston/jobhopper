@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.0",
+    "@reduxjs/toolkit": "^1.4.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -22,6 +23,7 @@
     "react-select": "^3.1.0",
     "resize-observer-polyfill": "^1.5.1",
     "styled-components": "^5.2.0",
+    "ts-jest": "^26.4.1",
     "typescript": "^3.7.5"
   },
   "scripts": {
@@ -29,10 +31,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "eslint": "eslint .",
+    "eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "check-types": "tsc --noemit",
-    "lint": "set -x; npm run eslint .; npm run check-types",
-    "fix": "set -x; prettier --write .; eslint --fix .",
+    "lint": "node scripts/npm.js lint",
+    "ci:lint-and-test": "CI=true node scripts/npm.js lint-and-test",
+    "fix": "node scripts/npm.js fix",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
   },
@@ -65,7 +68,8 @@
     "husky": "^4.3.0",
     "lint-staged": "^10.4.0",
     "prettier": "2.1.2",
-    "react-is": "^16.13.1"
+    "react-is": "^16.13.1",
+    "shelljs": "^0.8.4"
   },
   "husky": {
     "hooks": {
