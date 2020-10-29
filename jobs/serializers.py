@@ -17,7 +17,8 @@ class BlsOesSerializer(serializers.ModelSerializer):
                   "hourly_mean_wage",
                   "annual_mean_wage",
                   "total_employment",
-                  "soc_decimal_code")
+                  "soc_decimal_code",
+                  "file_year")
 
 
 class StateNamesSerializer(serializers.ModelSerializer):

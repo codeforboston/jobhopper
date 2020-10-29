@@ -21,6 +21,7 @@ class Migration(migrations.Migration):
                 ('annual_mean_wage', models.DecimalField(decimal_places=2, max_digits=10, null=True)),
                 ('total_employment', models.BigIntegerField(null=True)),
                 ('soc_decimal_code', models.CharField(max_length=10, null=True)),
+                ('file_year', models.IntegerField(null=True))
             ],
         )
     ]

@@ -11,7 +11,7 @@ import pandas as pd
 
 from sqlalchemy.types import Integer, Numeric, String
 from sqlalchemy import create_engine
-from data.bls.oes_data_downloader import OESDataDownloader
+from data.bls.oes_data_downloader import OESDataDownloader, download_multi_year_oes
 
 logging.basicConfig(format="%(asctime)s %(message)s")
 log = logging.getLogger()
@@ -49,7 +49,8 @@ def create_sqlalchemyengine(
 
 
 def load_bls_oes_to_sql(
-    year: str = "2019",
+    start_year: int = 2017,
+    end_year: int = 2019,
     db: str = "",
     table_name: str = "bls_oes"
 ):
@@ -62,7 +63,8 @@ def load_bls_oes_to_sql(
     log.info("Loading BLS wage and employment data to Postgres if a table_name is specified")
     engine = create_sqlalchemyengine(db=db)
 
-    bls_oes_data = OESDataDownloader(year=year).download_oes_data(clean_up=True)
+    bls_oes_data = download_multi_year_oes(start_year=start_year,
+                                           end_year=end_year)
 
     if table_name:
         log.info("Successfully read OES data. Writing to the {} table".format(table_name))
@@ -79,6 +81,7 @@ def load_bls_oes_to_sql(
                 "total_employment": Integer(),
                 "soc_code": String(),
                 "soc_title": String(),
+                "file_year": Integer()
             },
         )
         engine.dispose()
@@ -89,7 +92,9 @@ def load_bls_oes_to_sql(
 
 def load_occupation_transitions_to_sql(
     file_path: str = "../occupation_transitions_public_data_set.csv",
-    db: str = ""):
+    db: str = "",
+    table_name: str = "occupation_transition"
+):
     """
     Load the occupation transitions data to SQL from the CSV file in jobhopper.data
     """
@@ -107,19 +112,21 @@ def load_occupation_transitions_to_sql(
             "occleaveshare": float,
         },
     )
-    occupation_transitions.to_sql(
-        "occupation_transition",
-        engine,
-        if_exists="replace",
-        index=False,
-        dtype={
-            "soc1": String(),
-            "soc2": String(),
-            "total_soc": Integer(),
-            "pi": Numeric(),
-            "occleaveshare": Numeric(),
-        },
-    )
+
+    if table_name:
+        occupation_transitions.to_sql(
+            table_name,
+            engine,
+            if_exists="replace",
+            index=False,
+            dtype={
+                "soc1": String(),
+                "soc2": String(),
+                "total_soc": Integer(),
+                "pi": Numeric(),
+                "occleaveshare": Numeric(),
+            },
+        )
 
     engine.dispose()
 
@@ -149,5 +156,5 @@ if __name__ == "__main__":
      11-1011 | 19-4031 |   1425400 |  0.00004537824000000001 |    0.14635982
     """
 
-    load_bls_oes_to_sql("")
-    load_occupation_transitions_to_sql("")
+    load_bls_oes_to_sql(table_name="bls_oes")
+    load_occupation_transitions_to_sql(table_name="occupation_transition")
