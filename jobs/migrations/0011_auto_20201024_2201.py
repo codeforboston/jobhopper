@@ -14,7 +14,6 @@ class Migration(migrations.Migration):
     def forwards_source_data(apps, schema_editor):
         load_bls_oes_to_sql(
             year="2019",
-            db="jobhopperdatabase",
             table_name="jobs_blsoes")
 
         print("Done with forward load")
