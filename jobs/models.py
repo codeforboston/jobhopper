@@ -23,7 +23,7 @@ class Socs(models.Model):
 class OccupationTransitions(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
     soc1 = models.CharField(max_length=7)
-    soc2 = models.CharField(max_length=7, null=True)
+    soc2 = models.CharField(max_length=7)
     total_soc = models.CharField(max_length=9)
     pi = models.CharField(max_length=200)
     occleaveshare = models.CharField(max_length=200)
