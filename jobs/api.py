@@ -1,5 +1,6 @@
 from jobs.models import Socs, BlsOes, StateAbbPairs, OccupationTransitions
 from rest_framework import viewsets, permissions, generics
+from rest_framework.throttling import AnonRateThrottle
 from .serializers import (
     SocSerializer,
     BlsOesSerializer,
@@ -12,18 +13,21 @@ class SocViewSet(viewsets.ModelViewSet):
     queryset = Socs.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = SocSerializer
+    throttle_classes = [AnonRateThrottle]
 
 
 class BlsOesViewSet(viewsets.ModelViewSet):
     queryset = BlsOes.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = BlsOesSerializer
+    throttle_classes = [AnonRateThrottle]
 
 
 class StateViewSet(viewsets.ModelViewSet):
     queryset = StateAbbPairs.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = StateNamesSerializer
+    throttle_classes = [AnonRateThrottle]
 
 
 class OccupationTransitionsViewSetFive(viewsets.ModelViewSet):
@@ -31,3 +35,4 @@ class OccupationTransitionsViewSetFive(viewsets.ModelViewSet):
     queryset = OccupationTransitions.objects.all()[:500]
     permission_classes = [permissions.AllowAny]
     serializer_class = OccupationTransitionsSerializer
+    throttle_classes = [AnonRateThrottle]
