@@ -50,7 +50,7 @@ def create_sqlalchemyengine(
 
 def load_bls_oes_to_sql(
     year: str = "2019",
-    db: str = "jobhopperdatabase",
+    db: str = "",
     table_name: str = "bls_oes"
 ):
     """
@@ -89,7 +89,7 @@ def load_bls_oes_to_sql(
 
 def load_occupation_transitions_to_sql(
     file_path: str = "../occupation_transitions_public_data_set.csv",
-    db: str = "jobhopperdatabase"):
+    db: str = ""):
     """
     Load the occupation transitions data to SQL from the CSV file in jobhopper.data
     """
