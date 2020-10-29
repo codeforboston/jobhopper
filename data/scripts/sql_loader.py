@@ -17,20 +17,13 @@ logging.basicConfig(format="%(asctime)s %(message)s")
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
-JOBHOPPER_DB = "jobhopperdatabase" if not os.getenv("DB_NAME") else os.getenv("DB_NAME")
-USERNAME = "jobuser" if not os.getenv("DB_USER") else os.getenv("DB_USER")
-PASSWORD = "jobuser" if not os.getenv("DB_PASSWORD") else os.getenv("DB_PASSWORD")
-PORT = "5432" if not os.getenv("DB_PORT") else os.getenv("DB_PORT")
-HOST = "localhost" if not os.getenv("DB_HOST") else os.getenv("DB_HOST")
-
 
 def create_sqlalchemyengine(
     username: str = "",
     password: str = "",
-    port: str = "5432",
-    host: str = "localhost",
-    db: str = "jobhopperdatabase",
-):
+    port: str = "",
+    host: str = "",
+    db: str = ""):
     """
     Create a database connection to a SQLite database based on the specified params
     Note: Postgres must be installed with the project database to run this locally
@@ -40,6 +33,11 @@ def create_sqlalchemyengine(
     :param port: Default for Postgres is 5432
     :param host: localhost by default
     """
+    if not db: db = "jobhopperdatabase" if not os.getenv("DB_NAME") else os.getenv("DB_NAME")
+    if not username: username ="jobuser" if not os.getenv("DB_USER") else os.getenv("DB_USER")
+    if not password: password = "jobuser" if not os.getenv("DB_PASSWORD") else os.getenv("DB_PASSWORD")
+    if not port: port = "5432" if not os.getenv("DB_PORT") else os.getenv("DB_PORT")
+    if not host: host = "localhost" if not os.getenv("DB_HOST") else os.getenv("DB_HOST")
     try:
         log.info("Connecting to Postgres DB via SQLAlchemy")
         engine = create_engine(
@@ -62,9 +60,7 @@ def load_bls_oes_to_sql(
     # TODO: Clean/combine SOC codes from datasets to include latest data on SOC codes from transitions data
     """
     log.info("Loading BLS wage and employment data to Postgres if a table_name is specified")
-    engine = create_sqlalchemyengine(
-        username=USERNAME, password=PASSWORD, port=PORT, host=HOST, db=db
-    )
+    engine = create_sqlalchemyengine(db=db)
 
     bls_oes_data = OESDataDownloader(year=year).download_oes_data(clean_up=True)
 
@@ -93,15 +89,12 @@ def load_bls_oes_to_sql(
 
 def load_occupation_transitions_to_sql(
     file_path: str = "../occupation_transitions_public_data_set.csv",
-    db: str = "jobhopperdatabase",
-):
+    db: str = "jobhopperdatabase"):
     """
     Load the occupation transitions data to SQL from the CSV file in jobhopper.data
     """
     log.info("Loading occupation transitions (Burning Glass) data to Postgres")
-    engine = create_sqlalchemyengine(
-        username=USERNAME, password=PASSWORD, port=PORT, host=HOST, db=db
-    )
+    engine = create_sqlalchemyengine(db=db)
     occupation_transitions = pd.read_csv(
         file_path,
         na_values=["NA"],

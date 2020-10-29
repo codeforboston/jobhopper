@@ -3,6 +3,7 @@ from data.scripts.sql_loader import (
     load_occupation_transitions_to_sql,
 )
 from pathlib import Path
+from dotenv import load_dotenv
 
 
 def run(bls_year="2019"):
@@ -36,4 +37,5 @@ def run(bls_year="2019"):
 
 
 if __name__ == "__main__":
+    load_dotenv(dotenv_path=Path('.') / ".env")
     run(bls_year="2019")
