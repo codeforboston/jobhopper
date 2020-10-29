@@ -45,7 +45,7 @@ jobs:
           DB_HOST: 127.0.0.1
           DB_PASSWORD: jobhoppertest
           DB_USER: jobhopper
-          DB_NAME: default
+          DB_NAME: test_jobhopper
           SECRET_KEY: 77a353957aca463f13b9be321df87539c7cd558474a6b2fbae
         run: |
           coverage run --source='.' manage.py test jobhopper
