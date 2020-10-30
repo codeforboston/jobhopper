@@ -6,7 +6,6 @@ from . import views
 
 
 def index(request):
-
     template = loader.get_template("jobhopper/index.html")
     context = {}
     return HttpResponse(template.render(context, request))
