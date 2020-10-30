@@ -43,31 +43,28 @@ class Migration(migrations.Migration):
             "id",
             models.AutoField(auto_created=True, primary_key=True),
         )
-        migrations.AlterField(
-            "OccupationTransitions", "soc2", models.CharField(max_length=7, null=True)
-        )
 
     def reverse_func(apps, schema_editor):
         # alter fields for backward migration.
         migrations.AlterField(
             "OccupationTransitions", "id", models.IntegerField(primary_key=True)
         )
-        migrations.AlterField(
-            "OccupationTransitions", "soc2", models.CharField(max_length=7)
-        )
-        """
-        
-        """
 
-        operations = [
-            migrations.RunPython(forwards_source_data, reverse_source_data),
-            migrations.RunPython(forwards_func, reverse_func),
-            migrations.RunSQL(
-                [
-                    (
-                        "insert into jobs_occupationtransitions (soc1, soc2, total_soc, pi, occleaveshare) select soc1, soc2, total_soc, pi, occleaveshare from occupation_transition"
-                    )
-                ],
-                [("DELETE FROM jobs_occupationtransitions")],
-            ),
-        ]
+    # note we need to use coalesce here because django is garbage.
+    # See that nullability is not handled correctly.
+    operations = [
+        migrations.RunPython(forwards_source_data, reverse_source_data),
+        migrations.RunPython(forwards_func, reverse_func),
+        migrations.RunSQL(
+            sql="alter table occupation_transition add id serial",
+            reverse_sql="select coalesce(null,'abc')",
+        ),
+        migrations.RunSQL(
+            [
+                (
+                    "insert into jobs_occupationtransitions (id, soc1, soc2, total_soc, pi, occleaveshare) select id, soc1, coalesce(soc2,'') as soc2, total_soc, pi, occleaveshare from occupation_transition"
+                )
+            ],
+            [("DELETE FROM jobs_occupationtransitions")],
+        ),
+    ]
