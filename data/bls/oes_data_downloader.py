@@ -28,7 +28,7 @@ class OESDataDownloader(object):
     Data format: Zip folder, with a single Excel file containing OES data, at least for 2018 and 2019
     """
 
-    def __init__(self, year:str = "2019"):
+    def __init__(self, year: int = 2019):
         """
         :param year: String indicating the year for the download. Zip names are in
             oesm<last 2 digits of year>all.zip format.
