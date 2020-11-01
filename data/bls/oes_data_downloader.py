@@ -75,7 +75,8 @@ class OESDataDownloader(object):
         """
         include_columns = ["area_title", "occ_code", "occ_title", "h_mean", "a_mean", "tot_emp"]
 
-        bls_oes_data = bls_oes_data.query("naics == '000000' and (area_type == 1 or area_type == 2)")
+        #  Add (area_type == 1 or area_type == 2) to filter to just the U.S. and states
+        bls_oes_data = bls_oes_data.query("naics == '000000'")
         bls_oes_data = (
             bls_oes_data[
                 include_columns
