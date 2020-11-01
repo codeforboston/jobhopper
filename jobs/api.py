@@ -5,6 +5,7 @@ from .serializers import (
     SocSerializer,
     BlsOesSerializer,
     StateNamesSerializer,
+    SocListSerializer,
     OccupationTransitionsSerializer,
 )
 
@@ -20,6 +21,13 @@ class BlsOesViewSet(viewsets.ModelViewSet):
     queryset = BlsOes.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = BlsOesSerializer
+    throttle_classes = [AnonRateThrottle]
+
+
+class SocListSimpleViewSet(viewsets.ModelViewSet):
+    queryset = BlsOes.objects.only("soc_code", "soc_title").distinct()
+    permission_classes = [permissions.AllowAny]
+    serializer_class = SocListSerializer
     throttle_classes = [AnonRateThrottle]
 
 
