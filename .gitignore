@@ -9,3 +9,5 @@ data/bls/downloads
 node_modules
 
 .postgres-data
+# IDE settings
+.idea

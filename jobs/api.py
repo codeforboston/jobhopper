@@ -1,29 +1,38 @@
-from jobs.models import Socs, BlsOesFakes, StateAbbPairs
+from jobs.models import Socs, BlsOes, StateAbbPairs, OccupationTransitions
 from rest_framework import viewsets, permissions, generics
-from .serializers import LeadSerializer, BlsOesSerializer, StateNamesSerializer
+from rest_framework.throttling import AnonRateThrottle
+from .serializers import (
+    SocSerializer,
+    BlsOesSerializer,
+    StateNamesSerializer,
+    OccupationTransitionsSerializer,
+)
 
 # Lead Viewset
-class LeadViewSet(viewsets.ModelViewSet):
+class SocViewSet(viewsets.ModelViewSet):
     queryset = Socs.objects.all()
-    permission_classes = [
-        permissions.AllowAny
+    permission_classes = [permissions.AllowAny]
+    serializer_class = SocSerializer
+    throttle_classes = [AnonRateThrottle]
 
-    ]
-    serializer_class = LeadSerializer
 
 class BlsOesViewSet(viewsets.ModelViewSet):
-    queryset = BlsOesFakes.objects.all()
-    permission_classes = [
-        permissions.AllowAny
-    ]
+    queryset = BlsOes.objects.all()
+    permission_classes = [permissions.AllowAny]
     serializer_class = BlsOesSerializer
+    throttle_classes = [AnonRateThrottle]
+
 
 class StateViewSet(viewsets.ModelViewSet):
-    
-    def get_queryset(self, *args, **kwargs):
-        # return StateAbbPairs.objects.filter(abbreviation=self.kwargs['state_abb'])
-        # return StateAbbPairs.objects.filter(pk = self.kwargs['pk'])
-        return StateAbbPairs.objects.all();
-       
-    
+    queryset = StateAbbPairs.objects.all()
+    permission_classes = [permissions.AllowAny]
     serializer_class = StateNamesSerializer
+    throttle_classes = [AnonRateThrottle]
+
+
+class OccupationTransitionsViewSetFive(viewsets.ModelViewSet):
+    # Todo fix this using filtering instead of limiting the results
+    queryset = OccupationTransitions.objects.all()[:500]
+    permission_classes = [permissions.AllowAny]
+    serializer_class = OccupationTransitionsSerializer
+    throttle_classes = [AnonRateThrottle]
