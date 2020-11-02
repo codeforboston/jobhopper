@@ -3,7 +3,6 @@ Dockerfile
 .git
 .gitignore
 .env
-.postgres-data
 node_modules
 venv
 __pycache__

@@ -8,6 +8,5 @@ data/bls/downloads
 # NPM/Yarn
 node_modules
 
-.postgres-data
 # IDE settings
 .idea
