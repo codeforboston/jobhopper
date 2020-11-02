@@ -107,6 +107,7 @@ def load_occupation_transitions_to_sql(
             "occleaveshare": float,
         },
     )
+    occupation_transitions = occupation_transitions.round(10)
     occupation_transitions.to_sql(
         "occupation_transition",
         engine,
