@@ -10,6 +10,8 @@ Many workers have limited outside options for career and wage progression outsid
 
 ## How to Install the Database and Analysis Tools
 
+### Option 1: local machine
+
 1. Install [Python 3.7](https://www.python.org/downloads/release/python-378/).
 
 2. Install [virtualenv](https://pypi.org/project/virtualenv/) from `pip`:
@@ -111,26 +113,48 @@ Many workers have limited outside options for career and wage progression outsid
    DB_HOST='127.0.0.1'  # Localhost IP
    ```
 
-9. Follow instructions in [Data Readme](./Data/README.md) to load data prior to doing migrations described below and in DjangoData documetation.
 
-10. Migrate from `manage.py` in root.
+9. Migrate from `manage.py` in root.
 
-```sh
-python manage.py migrate
-```
+   ```sh
+   python manage.py migrate
+   ```
 
-Before proceeding, review this: [DjangoData](./References/DjangoData.md)
-
-11. Now run the server via this script:
+10. Now run the server via this script:
 
     ```sh
     python manage.py runserver
     ```
 
-12. Go to the URL `http://127.0.0.1:8000/api/v1/jobs/`. From there there will be other links underneath that can be tested.
-13. Go to the url `http://127.0.0.1:8000/api/v1/health` and ensure it returns json data.
+11. Go to the URL `[baseurl]/jobs/api/leads/` and test out creating entries.
+12. Go to the url `[baseurl]/api/v1/health` and ensure it returns json data.
+13. Go to the url `[baseurl]/jobs` and ensure it returns data.
 
-## Technologies Used
+### Option 2: Docker
+
+1. Install [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/). It is recommended to install Docker Desktop, which includes Docker Compose.
+
+2. Create a `.env` file in this directory with the following contents:
+
+```
+SECRET_KEY=[your secret, see above]
+DB_USER=[your username]
+DB_PASSWORD=[your password]
+DB_EXTERNAL_PORT=5432
+```
+
+3. Build the Docker image by running `docker-compose build`. You will need to run this whenever the `requirements.txt` files changes.
+
+4. Start the database and server by running `./docker-restart.sh` if you are using Mac/Linux/Git Bash. If you are using Command Prompt or PowerShell, run `docker-compose down; docker-compose up`.
+
+You can start a shell in the Django container with `docker-compose exec api bash`, and a shell in the database container with `docker-compose exec db bash`.
+
+
+To start `psql`, an interactive PostgresQL shell, open a database shell and run `psql -U [your username] -d jobhopper_dev`.
+
+
+
+# Technologies Used
 
 | Front End          | Logic & Data Processing: | Database: |
 | ------------------ | ------------------------ | --------- |
