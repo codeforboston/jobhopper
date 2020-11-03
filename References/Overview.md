@@ -150,4 +150,5 @@ You can start a shell in the Django container with `docker-compose exec api bash
 
 To start `psql`, an interactive PostgresQL shell, open a database shell and run `psql -U [your username] -d jobhopper_dev`.
 
-)
+) 5. To Run tests, once the container is running, this command will work in a new command window to execute the tests against the running api container:
+`docker exec jobhopper_api_1 bash -c "python migrate.py test"`
