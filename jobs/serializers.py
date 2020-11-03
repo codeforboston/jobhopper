@@ -11,6 +11,7 @@ class SocSerializer(serializers.ModelSerializer):
 class BlsOesSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlsOes
+
         fields = ("area_title",
                   "soc_code",
                   "soc_title",
@@ -19,6 +20,13 @@ class BlsOesSerializer(serializers.ModelSerializer):
                   "total_employment",
                   "soc_decimal_code",
                   "file_year")
+
+
+class SocListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlsOes
+        fields = ("soc_code", "soc_title")
+
 
 
 class StateNamesSerializer(serializers.ModelSerializer):

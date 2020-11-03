@@ -128,6 +128,7 @@ def load_occupation_transitions_to_sql(
             },
         )
 
+
     engine.dispose()
 
     return occupation_transitions
