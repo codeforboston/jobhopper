@@ -11,21 +11,22 @@ class SocSerializer(serializers.ModelSerializer):
 class BlsOesSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlsOes
-        fields = (
-            "area_title",
-            "soc_code",
-            "soc_title",
-            "hourly_mean_wage",
-            "annual_mean_wage",
-            "total_employment",
-            "soc_decimal_code",
-        )
+
+        fields = ("area_title",
+                  "soc_code",
+                  "soc_title",
+                  "hourly_mean_wage",
+                  "annual_mean_wage",
+                  "total_employment",
+                  "soc_decimal_code",
+                  "file_year")
 
 
 class SocListSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlsOes
         fields = ("soc_code", "soc_title")
+
 
 
 class StateNamesSerializer(serializers.ModelSerializer):
