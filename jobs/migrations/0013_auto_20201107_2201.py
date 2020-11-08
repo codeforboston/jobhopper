@@ -8,21 +8,21 @@ class Migration(migrations.Migration):
     Load BLS OES data for the prototype into the jobs_blsoes database (BlsOes model, created in the previous migration)
     """
     dependencies = [
-        ('jobs', '0010_blsoes'),
+        ('jobs', '0012_socdescription'),
     ]
 
     def forwards_source_data(apps, schema_editor):
         load_bls_oes_to_sql(
             start_year=2018,
             end_year=2019,
-            table_name="jobs_blsoes",
-            soc_table_name=None)
+            table_name=None,
+            soc_table_name="jobs_socdescription")
 
         print("Done with forward load")
 
     def reverse_source_data(apps, schema_editor):
         print("Removing source data")
-        migrations.RunSQL([("DELETE FROM jobs_blsoes;")])
+        migrations.RunSQL([("DELETE FROM jobs_socdescription;")])
 
     operations = [
         migrations.RunPython(forwards_source_data, reverse_source_data)

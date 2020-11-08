@@ -51,6 +51,12 @@ class BlsOes(models.Model):
     file_year = models.IntegerField(null=True)
 
 
+class SocDescription(models.Model):
+    id = models.AutoField(auto_created=True, primary_key=True, serialize=False)
+    soc_code = models.CharField(max_length=10, null=True)
+    soc_title = models.CharField(max_length=255, null=True)
+
+
 class StateAbbPairs(models.Model):
     state_name = models.CharField(max_length=100)
     abbreviation = models.CharField(max_length=2, primary_key=True)

@@ -1,4 +1,4 @@
-from jobs.models import Socs, BlsOes, StateAbbPairs, OccupationTransitions
+from jobs.models import Socs, BlsOes, StateAbbPairs, OccupationTransitions, SocDescription
 from rest_framework import viewsets, permissions, generics
 from rest_framework.throttling import AnonRateThrottle
 import django_filters
@@ -40,11 +40,24 @@ class BlsOesViewSet(viewsets.ModelViewSet):
     filter_class = BlsOesFilter
 
 
+class SocListFilter(django_filters.FilterSet):
+    """
+    Create a filter to use with the BlsOes model. When multiple options are chosen in these filters, there
+    must be no space between comma-separated values
+    """
+    socs = django_filters.BaseInFilter(field_name='soc_code', lookup_expr='in')
+
+    class Meta:
+        model = SocDescription
+        fields = ['socs']
+
+
 class SocListSimpleViewSet(viewsets.ModelViewSet):
-    queryset = BlsOes.objects.only("soc_code", "soc_title").distinct()
+    queryset = SocDescription.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = SocListSerializer
     throttle_classes = [AnonRateThrottle]
+    filter_class = SocListFilter
 
 
 class StateViewSet(viewsets.ModelViewSet):
