@@ -52,7 +52,8 @@ def load_bls_oes_to_sql(
     start_year: int = 2017,
     end_year: int = 2019,
     db: str = "",
-    table_name: str = "bls_oes"
+    table_name: str = "bls_oes",
+    soc_table_name: str = "soc_list"
 ):
     """
     Load BLS OES data from 2019 to the specified table_name. If no table_name is specified, return a dict.
@@ -82,11 +83,30 @@ def load_bls_oes_to_sql(
                 "soc_code": String(),
                 "soc_title": String(),
                 "file_year": Integer()
-            },
+            }
         )
-        engine.dispose()
         log.info("Successfully loaded BLS data to Postgres!")
 
+    # Unique SOC-codes --> occupation descriptions
+    if soc_table_name:
+        log.info("Saving unique SOC codes/descriptions to {}".format(soc_table_name))
+        unique_soc_codes = (
+            bls_oes_data[["soc_code", "soc_title"]]
+            .drop_duplicates())
+        unique_soc_codes.to_sql(
+            soc_table_name,
+            engine,
+            if_exists="replace",
+            index=True,
+            index_label="id",
+            dtype={
+                "soc_code": String(),
+                "soc_title": String()
+            }
+        )
+        log.info("Unique SOC codes/descriptions saved!")
+
+    engine.dispose()
     return bls_oes_data
 
 
