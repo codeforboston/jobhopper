@@ -25,6 +25,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "testall": "react-scripts test --watch-all=false",
     "eject": "react-scripts eject",
     "eslint": "eslint .",
     "check-types": "tsc --noemit",
