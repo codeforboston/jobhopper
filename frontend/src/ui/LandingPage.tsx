@@ -1,13 +1,9 @@
 import { Link } from '@material-ui/core';
 import React from 'react';
-import { PageContainer, Row, Section, ShadowButton } from './Common';
+import { PageContainer, Row, Section } from './Common';
 import Logo from './Logo';
 import { Body, Title } from './Typography';
-
-export interface LandingPageProps {
-  title: string;
-  body: string;
-}
+import TopBar from './TopBar';
 
 const LandingPage = () => {
   return (
@@ -20,42 +16,19 @@ const LandingPage = () => {
           marginTop: '100px',
         }}
       >
-        <Title>JobHopper, A Code For Boston Project</Title>
+        <Title>Occupation Transitions</Title>
         <Body>
-          Code for Boston addresses local social and civic challenges through
-          creative uses of technology. Despite the name, we're not solely
-          focused on coding! We foster relationships between government,
-          nonprofit, academic, for-profit companies, residents, civic
-          technologists, analysts, designers, and many more.
+          JobHopper is a tool to explore data on mobility between occupations,
+          calculated from around 16 million resumes of U.S. workers, obtained
+          and parsed by Burning Glass Technologies. The tool is designed to help
+          program managers, policy analysts and job coaches explore occupational
+          transitions that job changers have made. Understanding these
+          transitions can support program and policy development as well as
+          individual job seekers aspirations.
         </Body>
-        <Link>All are welcome!</Link>
+        <Link>Begin Here</Link>
       </Section>
     </PageContainer>
-  );
-};
-
-const TopBar = () => {
-  return (
-    <Row
-      style={{
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-      }}
-    >
-      <Logo style={{ margin: '25 0 0 50' }} />
-      <Row
-        style={{
-          flexDirection: 'row',
-          flexWrap: 'nowrap',
-          width: '220px',
-          height: '60px',
-          justifyContent: 'space-between',
-        }}
-      >
-        <ShadowButton label={'About'} />
-        <ShadowButton label={'Contact'} />
-      </Row>
-    </Row>
   );
 };
 

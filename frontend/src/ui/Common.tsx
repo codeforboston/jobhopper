@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import shadow from './assets/shadow.png';
 import { PrimaryButton, SecondaryButton } from './Button';
 
 export const PageContainer = styled.div`
@@ -25,39 +24,3 @@ export const [StyledPrimary, StyledSecondary] = [
       }
     `
 );
-
-export const ShadowText = styled.div`
-  font-family: PT Sans;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 23px;
-  color: #979f9f;
-  text-align: center;
-  flex: 1;
-  margin: 10px 0 -10px 0;
-`;
-
-const Shadow = styled.img.attrs({ src: shadow, alt: '' })`
-  max-width: 100px;
-  flex: 1;
-`;
-
-export interface ShadowButtonProps {
-  label: string;
-}
-
-export const ShadowButton = ({ label }: ShadowButtonProps): JSX.Element => {
-  return (
-    <Section
-      style={{
-        flexDirection: 'column',
-        justifyContent: 'center',
-        width: '100px',
-      }}
-    >
-      <ShadowText>{label}</ShadowText>
-      <Shadow />
-    </Section>
-  );
-};

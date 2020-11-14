@@ -7,6 +7,8 @@ data/bls/downloads
 
 # NPM/Yarn
 node_modules
+package-lock.json
 
 # IDE settings
 .idea
+.vscode
