@@ -1,7 +1,6 @@
 import { Link } from '@material-ui/core';
 import React from 'react';
-import { PageContainer, Row, Section } from './Common';
-import Logo from './Logo';
+import { PageContainer, Section } from './Common';
 import { Body, Title } from './Typography';
 import TopBar from './TopBar';
 

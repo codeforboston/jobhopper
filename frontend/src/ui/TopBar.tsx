@@ -1,9 +1,7 @@
-import { Link } from '@material-ui/core';
 import React from 'react';
-import { PageContainer, Row, Section } from './Common';
+import { Row } from './Common';
 import { ShadowButton } from './Button';
 import Logo from './Logo';
-import { Body, Title } from './Typography';
 
 const TopBar = () => {
   return (
