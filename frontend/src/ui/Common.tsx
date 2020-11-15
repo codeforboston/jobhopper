@@ -1,11 +1,6 @@
 import styled from 'styled-components';
 import { PrimaryButton, SecondaryButton } from './Button';
 
-export const PageContainer = styled.div`
-  max-width: 800px;
-  margin: auto;
-`;
-
 export const Section = styled.section``;
 
 export const Row = styled.div`

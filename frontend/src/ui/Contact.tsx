@@ -1,31 +1,21 @@
 import { Link } from '@material-ui/core';
 import React from 'react';
-import { PageContainer, Section } from './Common';
 import { Body, Title } from './Typography';
-import TopBar from './TopBar';
+import Page from './Page';
 
 const ContactPage = () => {
   return (
-    <PageContainer>
-      <TopBar />
-      <Section
-        style={{
-          width: '600px',
-          margin: 'auto',
-          marginTop: '100px',
-        }}
-      >
-        <Title>For more information contact:</Title>
-        <Body>
-          <Link href="#">
-            <p>Designated contact link here </p>
-          </Link>
-          <Link href="#">
-            <p>Perhaps other links to other databases</p>
-          </Link>
-        </Body>
-      </Section>
-    </PageContainer>
+    <Page>
+      <Title>For more information contact:</Title>
+      <Body>
+        <Link href="#">
+          <p>Designated contact link here </p>
+        </Link>
+        <Link href="#">
+          <p>Perhaps other links to other databases</p>
+        </Link>
+      </Body>
+    </Page>
   );
 };
 

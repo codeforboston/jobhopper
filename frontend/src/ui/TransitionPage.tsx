@@ -3,17 +3,11 @@ import React from 'react';
 import { Occupation } from '../domain/occupation';
 import { State } from '../domain/state';
 import { Transition } from '../domain/transition';
-import Logo from './Logo';
 import { OccupationSelect, StateSelect } from './Select';
 import TransitionTable from './TransitionTable';
 import { Body, Header } from './Typography';
-import {
-  PageContainer,
-  Section,
-  StyledPrimary,
-  StyledSecondary,
-  Row,
-} from './Common';
+import { Section, StyledPrimary, StyledSecondary, Row } from './Common';
+import Page from './Page';
 
 export interface TransitionPageProps {
   occupations: Occupation[];
@@ -28,8 +22,7 @@ const TransitionPage = ({
 }: TransitionPageProps): JSX.Element => {
   const theme = useTheme();
   return (
-    <PageContainer>
-      <Logo />
+    <Page>
       <Section>
         <Header>Enter occupation</Header>
         <Body>This is your current job, or a job you are interested in.</Body>
@@ -50,7 +43,7 @@ const TransitionPage = ({
         <StyledSecondary label="Save data" />
       </Row>
       <TransitionTable transitionData={transitions} />
-    </PageContainer>
+    </Page>
   );
 };
 
