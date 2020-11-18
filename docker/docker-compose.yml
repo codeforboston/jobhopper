@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 services:
   db:
     image: postgres:12.4-alpine
@@ -13,9 +13,12 @@ services:
       POSTGRES_DB: jobhopper_dev
 
   api:
-    build: .
+    build: 
+      context: ../api
+      dockerfile: docker/Dockerfile
+    image: jobhoper-api
     volumes:
-      - .:/app/
+      - ../api:/app
     depends_on:
       - db
     ports:
@@ -27,6 +30,19 @@ services:
       DB_NAME: jobhopper_dev
       DB_HOST: db
       WAIT_HOSTS: db:5432
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: docker/Dockerfile
+    image: jobhopper-frontend
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../frontend:/home/node/app
+    stdin_open: true
 
 volumes:
   db-data:
