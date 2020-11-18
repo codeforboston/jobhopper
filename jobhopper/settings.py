@@ -73,11 +73,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "jobhopper.urls"
-
+SETTINGS_PATH = os.path.normpath(os.path.dirname(__file__))
+# The index.html file can be connected in urls.py within the jobhopper/jobhopper directory
+# path("", views.index, name="index")
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(SETTINGS_PATH, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

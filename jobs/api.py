@@ -32,7 +32,7 @@ class BlsOesFilter(django_filters.FilterSet):
         fields = ['socs', 'areas']
 
 
-class BlsOesViewSet(viewsets.ModelViewSet):
+class BlsOesViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = BlsOes.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = BlsOesSerializer
@@ -52,7 +52,7 @@ class SocListFilter(django_filters.FilterSet):
         fields = ['socs']
 
 
-class SocListSimpleViewSet(viewsets.ModelViewSet):
+class SocListSimpleViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = SocDescription.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = SocListSerializer
@@ -60,7 +60,7 @@ class SocListSimpleViewSet(viewsets.ModelViewSet):
     filter_class = SocListFilter
 
 
-class StateViewSet(viewsets.ModelViewSet):
+class StateViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = StateAbbPairs.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = StateNamesSerializer
@@ -79,7 +79,7 @@ class OccupationTransitionsFilter(django_filters.FilterSet):
         fields = ['min_transition_probability', 'soc1']
 
 
-class OccupationTransitionsViewSetFive(viewsets.ModelViewSet):
+class OccupationTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = OccupationTransitions.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = OccupationTransitionsSerializer
