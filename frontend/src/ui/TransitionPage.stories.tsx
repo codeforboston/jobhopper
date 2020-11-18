@@ -2,9 +2,9 @@ import React from 'react';
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from '@storybook/react/types-6-0';
 
-import TransitionPage, { TransitionPageProps } from './TransitionPage';
 import * as Select from './Select.stories';
 import * as TransitionTable from './TransitionTable.stories';
+import TransitionPage, { TransitionPageProps } from './TransitionPage';
 
 export default {
   title: 'JobHopper/TransitionPage',

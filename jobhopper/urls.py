@@ -13,15 +13,24 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+#from django.contrib import admin
 from django.urls import path, include
-from rest_framework_swagger.views import get_swagger_view
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 from . import views
 
-schema_view = get_swagger_view(title="Jobhopper")
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Jobhopper API",
+        default_version='v1',
+        description="Jobhopper Swagger API Docs",
+    ),
+    public=True,
+)
 
 urlpatterns = [
-    path("jobs/", include("jobs.urls")),
-    path("", views.index, name="index"),
+    path("api/v1/docs", schema_view.with_ui('swagger', cache_timeout=0), name="docs"),
+    path("api/v1/jobs/", include("jobs.urls")),
     path("api/v1/health", views.health, name="health"),
+    path("", schema_view.with_ui('swagger', cache_timeout=0)),
 ]

@@ -12,13 +12,19 @@
     "editor.wordWrap": "on",
     "editor.formatOnSave": true,
     "files.autoSave": "off",
-    "eslint.workingDirectories": ["./frontend"]
+    "eslint.workingDirectories": [
+      "./frontend"
+    ],
+    "githubPullRequests.remotes": [
+      "upstream"
+    ]
   },
   "extensions": {
     "recommendations": [
       "dbaeumer.vscode-eslint",
       "esbenp.prettier-vscode",
-      "stkb.rewrap"
+      "stkb.rewrap",
+      "jpoissonnier.vscode-styled-components"
     ]
   }
 }

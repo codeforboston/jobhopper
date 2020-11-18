@@ -11,24 +11,19 @@ import pandas as pd
 
 from sqlalchemy.types import Integer, Numeric, String
 from sqlalchemy import create_engine
-from data.bls.oes_data_downloader import OESDataDownloader
-from data.bls.utils.dtype_conversion import to_float, to_int
+from data.bls.oes_data_downloader import OESDataDownloader, download_multi_year_oes
 
-
-logging.basicConfig(format='%(asctime)s %(message)s')
+logging.basicConfig(format="%(asctime)s %(message)s")
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
-JOBHOPPER_DB = "jobhopperdatabase" if not os.getenv("DB_NAME") else os.getenv("DB_NAME")
-USERNAME = "jobuser" if not os.getenv("DB_USER") else os.getenv("DB_USER")
-PASSWORD = "jobuser" if not os.getenv("DB_PASSWORD") else os.getenv("DB_PASSWORD")
-PORT = "5432" if not os.getenv("DB_PORT") else os.getenv("DB_PORT")
-HOST = "localhost" if not os.getenv("DB_HOST") else os.getenv("DB_HOST")
-
 
 def create_sqlalchemyengine(
-    username: str = "", password: str = "", port: str = "5432", host: str = "localhost"
-):
+    username: str = "",
+    password: str = "",
+    port: str = "",
+    host: str = "",
+    db: str = ""):
     """
     Create a database connection to a SQLite database based on the specified params
     Note: Postgres must be installed with the project database to run this locally
@@ -38,90 +33,93 @@ def create_sqlalchemyengine(
     :param port: Default for Postgres is 5432
     :param host: localhost by default
     """
+    if not db: db = "jobhopperdatabase" if not os.getenv("DB_NAME") else os.getenv("DB_NAME")
+    if not username: username ="jobuser" if not os.getenv("DB_USER") else os.getenv("DB_USER")
+    if not password: password = "jobuser" if not os.getenv("DB_PASSWORD") else os.getenv("DB_PASSWORD")
+    if not port: port = "5432" if not os.getenv("DB_PORT") else os.getenv("DB_PORT")
+    if not host: host = "localhost" if not os.getenv("DB_HOST") else os.getenv("DB_HOST")
     try:
         log.info("Connecting to Postgres DB via SQLAlchemy")
         engine = create_engine(
-            "postgresql://{}:{}@{}:{}/{}".format(
-                username, password, host, port, JOBHOPPER_DB
-            )
+            "postgresql://{}:{}@{}:{}/{}".format(username, password, host, port, db)
         )
         return engine
     except Exception as e:
         log.error(e)
 
 
-def load_bls_oes_to_sql(file_to_load="", year: str = "2019"):
+def load_bls_oes_to_sql(
+    start_year: int = 2017,
+    end_year: int = 2019,
+    db: str = "",
+    table_name: str = "bls_oes",
+    soc_table_name: str = "soc_list"
+):
     """
-    Load BLS OES data from 2019 to Postgres.
+    Load BLS OES data from 2019 to the specified table_name. If no table_name is specified, return a dict.
 
     # TODO: Check OES data from prior years for formatting
     # TODO: Clean/combine SOC codes from datasets to include latest data on SOC codes from transitions data
     """
-    log.info("Loading BLS wage and employment data to Postgres")
-    engine = create_sqlalchemyengine(
-        username=USERNAME, password=PASSWORD, port=PORT, host=HOST
-    )
-    if file_to_load == "":
-        bls_oes_data = OESDataDownloader().download_oes_data(year)
-    else:
-        bls_oes_data = pd.read_excel(file_to_load)
+    log.info("Loading BLS wage and employment data to Postgres if a table_name is specified")
+    engine = create_sqlalchemyengine(db=db)
 
-    # TODO: Abstract into data cleaning step once we finalize format
-    # O*Net SOC codes generally append .00 to the original SOC codes
-    bls_oes_data = (
-        bls_oes_data[
-            ["area_title", "occ_code", "occ_title", "h_mean", "a_mean", "tot_emp"]
-        ]
-        .assign(
-            soc_decimal_code=bls_oes_data["occ_code"].apply(
-                lambda x: "{}.00".format(x)
-            ),
-            h_mean=bls_oes_data["h_mean"].apply(lambda x: to_float(x)),
-            a_mean=bls_oes_data["a_mean"].apply(lambda x: to_float(x)),
-            tot_emp=bls_oes_data["tot_emp"].apply(lambda x: to_int(x)),
+    bls_oes_data = download_multi_year_oes(start_year=start_year,
+                                           end_year=end_year)
+
+    if table_name:
+        log.info("Successfully read OES data. Writing to the {} table".format(table_name))
+        bls_oes_data.to_sql(
+            table_name,
+            engine,
+            if_exists="replace",
+            index=True,
+            index_label="id",
+            dtype={
+                "soc_decimal_code": String(),
+                "hourly_mean_wage": Numeric(),
+                "annual_mean_wage": Numeric(),
+                "total_employment": Integer(),
+                "soc_code": String(),
+                "soc_title": String(),
+                "file_year": Integer()
+            }
         )
-        .rename(
-            {
-                "occ_code": "soc_code",
-                "occ_title": "soc_title",
-                "h_mean": "hourly_mean_wage",
-                "a_mean": "annual_mean_wage",
-                "tot_emp": "total_employment",
-            },
-            axis=1,
+        log.info("Successfully loaded BLS data to Postgres!")
+
+    # Unique SOC-codes --> occupation descriptions
+    if soc_table_name:
+        log.info("Saving unique SOC codes/descriptions to {}".format(soc_table_name))
+        unique_soc_codes = (
+            bls_oes_data[["soc_code", "soc_title"]]
+            .drop_duplicates())
+        unique_soc_codes.to_sql(
+            soc_table_name,
+            engine,
+            if_exists="replace",
+            index=True,
+            index_label="id",
+            dtype={
+                "soc_code": String(),
+                "soc_title": String()
+            }
         )
-    )
+        log.info("Unique SOC codes/descriptions saved!")
 
-    bls_oes_data.to_sql(
-        "bls_oes",
-        engine,
-        if_exists="replace",
-        index=False,
-        dtype={
-            "soc_decimal_code": String(),
-            "hourly_mean_wage": Numeric(),
-            "annual_mean_wage": Numeric(),
-            "total_employment": Integer(),
-            "soc_code": String(),
-            "soc_title": String(),
-        },
-    )
-
-    log.info("Successfully loaded BLS data to Postgres!")
-
+    engine.dispose()
     return bls_oes_data
 
 
 def load_occupation_transitions_to_sql(
-    file_path="../occupation_transitions_public_data_set.csv",
+    file_path: str = "../occupation_transitions_public_data_set.csv",
+    db: str = "",
+    table_name: str = "occupation_transition"
 ):
     """
     Load the occupation transitions data to SQL from the CSV file in jobhopper.data
     """
     log.info("Loading occupation transitions (Burning Glass) data to Postgres")
-    engine = create_sqlalchemyengine(
-        username=USERNAME, password=PASSWORD, port=PORT, host=HOST
-    )
+    engine = create_sqlalchemyengine(db=db)
     occupation_transitions = pd.read_csv(
         file_path,
         na_values=["NA"],
@@ -134,19 +132,24 @@ def load_occupation_transitions_to_sql(
             "occleaveshare": float,
         },
     )
-    occupation_transitions.to_sql(
-        "occupation_transition",
-        engine,
-        if_exists="replace",
-        index=False,
-        dtype={
-            "soc1": String(),
-            "soc2": String(),
-            "total_soc": Integer(),
-            "pi": Numeric(),
-            "occleaveshare": Numeric(),
-        },
-    )
+
+    if table_name:
+        occupation_transitions.to_sql(
+            table_name,
+            engine,
+            if_exists="replace",
+            index=False,
+            dtype={
+                "soc1": String(),
+                "soc2": String(),
+                "total_soc": Integer(),
+                "pi": Numeric(),
+                "occleaveshare": Numeric(),
+            },
+        )
+
+
+    engine.dispose()
 
     return occupation_transitions
 
@@ -174,9 +177,5 @@ if __name__ == "__main__":
      11-1011 | 19-4031 |   1425400 |  0.00004537824000000001 |    0.14635982
     """
 
-    load_bls_oes_to_sql(
-        ""
-    )
-    load_occupation_transitions_to_sql(
-        ""
-    )
+    load_bls_oes_to_sql(table_name="bls_oes")
+    load_occupation_transitions_to_sql(table_name="occupation_transition")

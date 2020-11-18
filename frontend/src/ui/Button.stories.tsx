@@ -1,7 +1,12 @@
 import React from 'react';
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from '@storybook/react/types-6-0';
-import Button, { ButtonProps, PrimaryButton, SecondaryButton } from './Button';
+import Button, {
+  ButtonProps,
+  PrimaryButton,
+  SecondaryButton,
+  ShadowButton,
+} from './Button';
 
 export default {
   title: 'JobHopper/Button',
@@ -18,3 +23,8 @@ export const Secondary: Story<ButtonProps> = args => (
   <SecondaryButton {...args} />
 );
 Secondary.args = { label: 'Secondary' };
+
+export const ShadowNavButton: Story<ButtonProps> = args => (
+  <ShadowButton {...args} />
+);
+ShadowNavButton.args = { label: 'button' };

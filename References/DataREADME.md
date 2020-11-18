@@ -1,34 +1,11 @@
 # Database Setup
-Follow the project readme to install Postgres
+The database setup has been integrated the Django migrations. Set them up according to instructions in the [Setup Docs](https://github.com/codeforboston/jobhopper/blob/develop/References/Overview.md)
 
-Activate the venv environment to be sure you have python3 
+## Load Processes
 
-Install the following additional packages:
-pip install pandas
-pip install sqlalchemy
-pip install lxml
-pip install requests
-pip install xlrd
+General load processes for the BLS dataset and occupation transitions dataset are defined in `/scripts/sql_loader` in the `data` directory. These processes are used in the Django data model migrations (see `/jobhopper/jobs/migrations/`). 
 
-
-## Run the Load Processes
-
-1. If you're not sure, set PYTHONPATH=.
-2. Ensure you are in the jobhopper project root directory (there should be a data\scripts\sql_loader.py underneath)
-3. Run python data\load_jobhopper_data.py
-
-If you run into trouble, you might choose to download a year of data manually with this url: https://www.bls.gov//oes/special.requests/oesm19all.zip
-
-The code assumes you will have a user defined as jobuser with password jobuser for your database. If not you may need to edit underlying files. 
-
-Then edit the sql_loader_jed.py file in the data\scripts directory. The calls at the bottom can be edited to run one or both with the paths that work on your system. 
-
-Once done, you should be able to run both of these queries in the psql command tool and get data back: 
-
-jobhopperdatabase=# select * from bls_oes limit 5 \g
-jobhopperdatabase=# select * from occupation_transition limit 5 \g
-
-# Data Description
+# Data Descriptions
 
 ## Transitions Data (Burning Glass)
 
@@ -78,3 +55,8 @@ https://scholar.harvard.edu/files/stansbury/files/schubert-stansbury-taska-20191
 or go to the authors’ websites for the latest version.
 
 
+## BLS Occupational Employment Statistics Dataset
+
+This dataset provides wage and employment information for 800+ occupations in the United States, each identified by a SOC code. Statewide and national data are available.
+
+See https://www.bls.gov/oes/oes_ques.htm#overview for more information.
