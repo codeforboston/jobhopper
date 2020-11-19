@@ -1,12 +1,27 @@
-# JobHopper - Overview
+# Installation
 
-## Scope & Problem Statement
+## Option 1 (easiest): Docker
 
-Many workers have limited outside options for career and wage progression outside their current occupations. The quality of outside options matter for workers’ wages but limited data exists to provide guidance and training to workers on occupational mobility and outside-options (Monopsony and Outside Options. Schubert, Stansbury, and Taska. Harvard University, March 2020). The problem that we are tryingto solve is to provide better insight than standard data sets for improving occupational mobility options, improving worker wages, and improving policies related to investments and training.
+1. Install Docker
 
-## How to Install the Database and Analysis Tools
+   On Mac and Windows, the easiest way is to install [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-### Option 1: local machine
+   Or you can install [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) directly.
+
+2. Create a copy of `.env.template` in the `docker` directory. Replace the `SECRET_KEY` value with your Django key, and rename the file `.env.`
+
+3. Build the Docker image by running `docker-compose build`. You will need to run this whenever the dependencies for the frontend or api change.
+
+4. Start the services by running `bento-compose up`.
+
+   You can start a shell in the Django container with `docker-compose exec api bash`, and a shell in the database container with `docker-compose exec db bash`.
+
+   To start `psql`, an interactive PostgresQL shell, open a database shell and run `psql -U [your username] -d jobhopper_dev`.
+
+5. To Run tests, once the container is running, this command will work in a new command window to execute the tests against the running api container:
+`docker exec jobhopper_api_1 bash -c "python migrate.py test"`
+
+## Option 1: Clone and run
 
 1. Install [Python 3.7](https://www.python.org/downloads/release/python-378/).
 
@@ -128,27 +143,3 @@ Many workers have limited outside options for career and wage progression outsid
 11. Go to the URL `[baseurl]/jobs/api/leads/` and test out creating entries.
 12. Go to the url `[baseurl]/api/v1/health` and ensure it returns json data.
 13. Go to the url `[baseurl]/jobs` and ensure it returns data.
-
-### Option 2: Docker
-
-1. Install [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/). It is recommended to install Docker Desktop, which includes Docker Compose.
-
-2. Create a `.env` file in this directory with the following contents:
-
-```
-SECRET_KEY=[your secret, see above]
-DB_USER=[your username]
-DB_PASSWORD=[your password]
-DB_EXTERNAL_PORT=5432
-```
-
-3. Build the Docker image by running `docker-compose build`. You will need to run this whenever the `requirements.txt` files changes.
-
-4. Start the database and server by running `./docker-restart.sh` if you are using Mac/Linux/Git Bash. If you are using Command Prompt or PowerShell, run `docker-compose down; docker-compose up`.
-
-You can start a shell in the Django container with `docker-compose exec api bash`, and a shell in the database container with `docker-compose exec db bash`.
-
-To start `psql`, an interactive PostgresQL shell, open a database shell and run `psql -U [your username] -d jobhopper_dev`.
-
-) 5. To Run tests, once the container is running, this command will work in a new command window to execute the tests against the running api container:
-`docker exec jobhopper_api_1 bash -c "python migrate.py test"`
