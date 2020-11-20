@@ -10,9 +10,9 @@
 
 2. Create a copy of `.env.template` in the `docker` directory. Replace the `SECRET_KEY` value with your Django key, and rename the file `.env.`
 
-3. Build the Docker image by running `docker-compose build`. You will need to run this whenever the dependencies for the frontend or api change.
+3. Build the Docker image by running `docker-compose build` in the `docker` directory. You will need to run this whenever the dependencies for the frontend or api change.
 
-4. Start the services by running `bento-compose up`.
+4. Start the services by running `docker-compose up` in the `docker` directory.
 
    You can start a shell in the Django container with `docker-compose exec api bash`, and a shell in the database container with `docker-compose exec db bash`.
 
