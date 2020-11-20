@@ -13,12 +13,14 @@
     "@types/node": "^12.12.59",
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
+    "@types/react-router-dom": "^5.1.6",
     "@types/react-select": "^3.0.21",
     "@types/styled-components": "^5.1.3",
     "d3": "^6.2.0",
     "material-table": "^1.69.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "react-select": "^3.1.0",
     "resize-observer-polyfill": "^1.5.1",
@@ -69,7 +71,8 @@
     "lint-staged": "^10.4.0",
     "prettier": "2.1.2",
     "react-is": "^16.13.1",
-    "shelljs": "^0.8.4"
+    "shelljs": "^0.8.4",
+    "storybook-react-router": "^1.0.8"
   },
   "husky": {
     "hooks": {
