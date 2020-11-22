@@ -1,4 +1,4 @@
-import { Link } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import React from 'react';
 import { Body, Title } from './Typography';
 import Page from './Page';
@@ -16,7 +16,7 @@ const LandingPage = () => {
         can support program and policy development as well as individual job
         seekers aspirations.
       </Body>
-      <Link>Begin Here</Link>
+      <Link to="/transitions">Begin Here</Link>
     </Page>
   );
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import App from './ui/App';
 import * as serviceWorker from './serviceWorker';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core';
 import { base as theme } from './ui/theme';

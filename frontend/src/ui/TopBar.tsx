@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row } from './Common';
-import { ShadowButton } from './Button';
 import Logo from './Logo';
+import { Link } from 'react-router-dom';
 
 const TopBar = () => {
   return (
@@ -21,8 +21,8 @@ const TopBar = () => {
           justifyContent: 'space-between',
         }}
       >
-        <ShadowButton label={'About'} />
-        <ShadowButton label={'Contact'} />
+        <Link to="/about">About</Link>
+        <Link to="/contact">Contact</Link>
       </Row>
     </Row>
   );
