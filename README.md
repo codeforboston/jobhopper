@@ -6,7 +6,7 @@ Jobhopper is an application for analyzing and querying career mobility and outsi
 
 # Installation Overview
 
-For details on setup, see [Overview](./References/Overview.md)
+For details on setup, see [Installation](./docs/Installation.md)
 
 # Technologies Used
 
@@ -14,10 +14,10 @@ For details on setup, see [Overview](./References/Overview.md)
 | ------------------ | ------------------------ | --------- |
 | React (JavaScript) | Django (Python 3.7)      | Postgres  |
 
-For more details, see [Architecture](./References/Architecture.md)
-Also details on [Data Setup](./References/DataREADME.md) and [Django Data Migrations](./References/DjangoData.md) are available.
+For more details, see [Architecture](./docs/Architecture.md)
+Also details on [Data Setup](./docs/DataREADME.md) and [Django Data Migrations](./docs/DjangoData.md) are available.
 
 ## Additional Resources
 
 The following provides details on how the data was sourced etc.
-[Data References](./References/References.md)
+[Data References](./docs/References.md)
