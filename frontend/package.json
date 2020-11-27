@@ -37,7 +37,8 @@
     "ci:lint-and-test": "CI=true node scripts/npm.js lint-and-test",
     "fix": "node scripts/npm.js fix",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "chromatic": "npx chromatic"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -63,6 +64,7 @@
     "@storybook/preset-create-react-app": "^3.1.4",
     "@storybook/react": "^6.0.22",
     "babel-loader": "^8.1.0",
+    "chromatic": "^5.4.0",
     "eslint": "^6.6.0",
     "eslint-config-react-app": "^5.2.1",
     "husky": "^4.3.0",
