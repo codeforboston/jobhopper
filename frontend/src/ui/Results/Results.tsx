@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { Body, Header } from '../Typography';
+import { Body, Title } from '../Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Row, Section, StyledPrimary } from '../Common';
+import { Row, Section, StyledSecondary } from '../Common';
 import { Transition } from 'src/domain/transition';
 import Treemap from '../D3Visualizations/Treemap';
 import TransitionTable from '../TransitionTable';
@@ -53,11 +53,11 @@ const Results: React.FC<ResultsProps> = ({
   return (
     <>
       <Section>
-        <Header>See Transitions Data</Header>
+        <Title>See Transitions Data</Title>
         <Body>There is a choice of two ways of viewing the data.</Body>
       </Section>
       <Row>
-        <StyledPrimary
+        <StyledSecondary
           label="See a Matrix"
           onClick={() => {
             setVisualization('matrix');
@@ -68,7 +68,7 @@ const Results: React.FC<ResultsProps> = ({
           disabled={!canLoadTransitions(socCode) || loading}
           selected={showMatrix}
         />
-        <StyledPrimary
+        <StyledSecondary
           label="See a Treechart"
           onClick={() => {
             setVisualization('treemap');

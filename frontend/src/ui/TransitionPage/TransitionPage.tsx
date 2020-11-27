@@ -1,10 +1,9 @@
-import { useTheme } from '@material-ui/core';
 import React from 'react';
 import { Section } from '../Common';
 import Page from '../Page';
 import { ResultsContainer } from '../Results';
 import { OccupationSelectContainer, StateSelectContainer } from '../Select';
-import { Body, Header } from '../Typography';
+import { Body, Title } from '../Typography';
 import { createContainerContext } from '../utils';
 
 const { ContainerContext, useContainerContext } = createContainerContext({
@@ -19,22 +18,16 @@ const TransitionPage: React.FC = () => {
     StateSelectContainer,
     ResultsContainer,
   } = useContainerContext();
-  const theme = useTheme();
   return (
     <Page>
       <Section>
-        <Header>Enter occupation</Header>
-        <Body>This is your current job, or a job you are interested in.</Body>
+        <Title>Enter occupation</Title>
+        <Body>Type in an occupation by name or SOC code</Body>
         <OccupationSelectContainer />
       </Section>
       <Section>
-        <Header style={{ color: theme.palette.secondary.main }}>
-          Optional
-        </Header>
-        <Body>
-          Select a state for wage data, otherwise, national data will be
-          displayed.
-        </Body>
+        <Title>Enter State (Optional)</Title>
+        <Body>If no state is entered, national wage data will be shown.</Body>
         <StateSelectContainer />
       </Section>
       <ResultsContainer />
