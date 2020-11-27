@@ -32,6 +32,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:all": "react-scripts test --watchAll --verbose",
     "eject": "react-scripts eject",
     "eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "check-types": "tsc --noemit",
