@@ -1,3 +1,4 @@
+import { withTheme } from '@material-ui/core';
 import {
   ButtonProps as MButtonProps,
   default as MButton,
@@ -9,6 +10,7 @@ import { Section } from './Common';
 
 export interface ButtonProps extends MButtonProps {
   label: string;
+  selected?: boolean;
 }
 
 const UnstyledButton = ({ label, ...props }: ButtonProps): JSX.Element => (
@@ -17,13 +19,17 @@ const UnstyledButton = ({ label, ...props }: ButtonProps): JSX.Element => (
   </MButton>
 );
 
-const Button = styled(UnstyledButton)`
+const Button = withTheme(styled(UnstyledButton)`
   && {
     font-weight: bold;
     color: white;
     text-transform: none;
+    border: ${props =>
+      props.color && props.selected
+        ? `solid ${props.theme.palette[props.color].dark}`
+        : null};
   }
-`;
+`);
 
 export const PrimaryButton = (props: ButtonProps): JSX.Element => (
   <Button color="primary" {...props} />
