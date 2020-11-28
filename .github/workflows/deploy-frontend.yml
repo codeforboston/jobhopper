@@ -3,7 +3,7 @@ name: Deploy Frontend
 on:
   push:
     branches:
-      - feature/deploy-dev-136
+      - develop
 
 jobs:
   build:
