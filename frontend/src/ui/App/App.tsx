@@ -22,7 +22,7 @@ export const App = () => (
     </Route>
     <Route exact path="/about">
       <AboutPage />
-    </Route>{' '}
+    </Route>
     <Route path="/">
       <LandingPage />
     </Route>
