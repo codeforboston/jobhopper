@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-      - run: npm -s ci
+      - run: npm ci
       - name: Deploy to Chromatic
         uses: chromaui/action@v1
         with:
