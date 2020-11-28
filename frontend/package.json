@@ -39,7 +39,8 @@
     "fix": "node scripts/npm.js fix",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "chromatic": "npx chromatic"
+    "chromatic": "npx chromatic",
+    "chromatic:ci": "npx chromatic --exit-once-uploaded"
   },
   "eslintConfig": {
     "extends": "react-app"
