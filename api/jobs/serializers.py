@@ -38,3 +38,11 @@ class OccupationTransitionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = OccupationTransitions
         fields = "__all__"
+
+
+class BlsTransitionsSerializer(serializers.Serializer):
+    """
+    Serialize results from the BlsOes model and OccupationTransitions model into one response
+    """
+    bls = BlsOesSerializer(many=True)
+    transitions = OccupationTransitionsSerializer(many=True)
