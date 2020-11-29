@@ -28,6 +28,8 @@ describe('States', () => {
 
     await store.dispatch(fetchStates());
     expect(store.getState().states.states).toEqual(states);
+    expect(store.getState().states.error).toBeUndefined();
+    expect(store.getState().states.loading).toBeFalsy();
   });
 
   it('handles update errors', async () => {
@@ -39,6 +41,8 @@ describe('States', () => {
 
     await store.dispatch(fetchStates());
     expect(store.getState().states.error).toEqual(errorMessage);
+    expect(store.getState().states.states).toHaveLength(0);
+    expect(store.getState().states.loading).toBeFalsy();
   });
 });
 
@@ -51,6 +55,8 @@ describe('Occupations', () => {
 
     await store.dispatch(fetchOccupations());
     expect(store.getState().occupations.occupations).toEqual(occupations);
+    expect(store.getState().occupations.error).toBeUndefined();
+    expect(store.getState().occupations.loading).toBeFalsy();
   });
 
   it('handles update error', async () => {
@@ -61,7 +67,9 @@ describe('Occupations', () => {
     mockedApi.getOccupations.mockRejectedValue(new Error(errorMessage));
 
     await store.dispatch(fetchOccupations());
+    expect(store.getState().occupations.occupations).toHaveLength(0);
     expect(store.getState().occupations.error).toEqual(errorMessage);
+    expect(store.getState().occupations.loading).toBeFalsy();
   });
 });
 
@@ -72,10 +80,12 @@ describe('Transitions', () => {
 
     mockedApi.getTransitions.mockResolvedValue(transitions);
 
-    const payload: GetTransitionRequest = { occupation: { code: '1' } };
+    const payload: GetTransitionRequest = { socCode: '1' };
 
     await store.dispatch(fetchTransitions(payload));
     expect(store.getState().transitions.transitions).toEqual(transitions);
+    expect(store.getState().transitions.error).toBeUndefined();
+    expect(store.getState().transitions.loading).toBeFalsy();
   });
 
   it('handles update error', async () => {
@@ -85,9 +95,11 @@ describe('Transitions', () => {
     const errorMessage = 'test error fetching';
     mockedApi.getTransitions.mockRejectedValue(new Error(errorMessage));
 
-    const payload: GetTransitionRequest = { occupation: { code: '1' } };
+    const payload: GetTransitionRequest = { socCode: '1' };
 
     await store.dispatch(fetchTransitions(payload));
+    expect(store.getState().transitions.transitions).toHaveLength(0);
+    expect(store.getState().transitions.loading).toBeFalsy();
     expect(store.getState().transitions.error).toEqual(errorMessage);
   });
 });
