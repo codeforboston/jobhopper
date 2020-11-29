@@ -32,7 +32,17 @@ jobs:
           node-version: 14.x
       - run: npm ci
       - run: npm run build
-      - name: Deploy to Firebase
+      - name: Set Deploy Credentials
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: npm run deploy
+          FIREBASE_DEPLOY_PASSPHRASE: ${{ secrets.FIREBASE_DEPLOY_PASSPHRASE }}
+        run: |
+          echo "$FIREBASE_DEPLOY_PASSPHRASE" > firebase-deploy-passphrase
+          gpg \
+            --batch \
+            --passphrase-file firebase-deploy-passphrase \
+            --output firebase-deploy-credentials.json \
+            --decrypt firebase-deploy-credentials.json.gpg
+      - name: Deploy to Firebase
+        run: |
+          export GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/firebase-deploy-credentials.json"
+          npm run deploy
