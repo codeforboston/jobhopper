@@ -11,3 +11,5 @@ node_modules
 # IDE settings
 .idea
 .vscode
+
+build-storybook.log

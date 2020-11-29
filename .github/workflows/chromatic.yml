@@ -1,21 +1,19 @@
-name: Lint And Test
+name: "Chromatic Deployment"
 
-on: [push, pull_request]
+on: push
 
 jobs:
-  build:
+  chromatic-deployment:
     runs-on: ubuntu-latest
 
     defaults:
       run:
         working-directory: frontend
 
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x]
-
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Cache node modules
         uses: actions/cache@v2
         env:
@@ -27,9 +25,12 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 14.x
       - run: npm ci
-      - run: npm -s run ci:lint-and-test
+      - name: Deploy to Chromatic
+        env:
+          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+        run: npm run chromatic:ci

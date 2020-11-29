@@ -32,6 +32,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:ci": "CI=1 react-scripts test --verbose --color --coverage",
     "test:all": "react-scripts test --watchAll --verbose",
     "eject": "react-scripts eject",
     "eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
@@ -41,6 +42,8 @@
     "fix": "node scripts/npm.js fix",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
+    "chromatic": "npx chromatic",
+    "chromatic:ci": "npx chromatic --exit-once-uploaded",
     "deploy": "firebase deploy --only hosting"
   },
   "eslintConfig": {
@@ -67,6 +70,7 @@
     "@storybook/preset-create-react-app": "^3.1.4",
     "@storybook/react": "^6.0.22",
     "babel-loader": "^8.1.0",
+    "chromatic": "^5.4.0",
     "eslint": "^6.6.0",
     "eslint-config-react-app": "^5.2.1",
     "firebase-tools": "^8.16.2",
