@@ -5,6 +5,9 @@ from rest_framework.response import Response
 from django.forms.models import model_to_dict
 from collections import namedtuple
 import django_filters
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.pagination import LimitOffsetPagination
 from .serializers import (
     BlsOesSerializer,
     StateNamesSerializer,
@@ -34,6 +37,7 @@ class BlsOesViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.AllowAny]
     serializer_class = BlsOesSerializer
     throttle_classes = [AnonRateThrottle]
+    pagination_class = LimitOffsetPagination
     filter_class = BlsOesFilter
 
 
@@ -57,6 +61,7 @@ class SocListSimpleViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.AllowAny]
     serializer_class = SocListSerializer
     throttle_classes = [AnonRateThrottle]
+    pagination_class = LimitOffsetPagination
     filter_class = SocListFilter
 
 
@@ -67,6 +72,7 @@ class StateViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = StateAbbPairs.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = StateNamesSerializer
+    pagination_class = LimitOffsetPagination
     throttle_classes = [AnonRateThrottle]
 
 
@@ -90,45 +96,54 @@ class OccupationTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.AllowAny]
     serializer_class = OccupationTransitionsSerializer
     throttle_classes = [AnonRateThrottle]
+    pagination_class = LimitOffsetPagination
     filter_class = OccupationTransitionsFilter
 
 
 class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
     """
     A custom ViewSet for BLS OES wage/employment data and occupation transitions/burning glass data
-
-    Query parameters:
-    ------------------------
-    * area_title: Specify an area_title to return wages/employment for that location only
-        States should be fully spelled out, consistent with the area_title field in the
-        BlsOes model. The default is specified by DEFAULT_AREA
-
-    * soc: Specify a source SOC code to return transitions data for people moving from this
-        occupation to other occupations. The default is specified by DEFAULT_SOC
-
-    * min_transitions_probability: Specify the minimum transitions probability. Do not return any
-        transitions records that have a probability of moving from SOC1 to SOC2 that is lower
-        than this value.
-
-    Multiple selections are not supported for this endpoint.
+    See Swagger docs for more details on the GET endpoint /transitions-extended/.
+    /transitions-extended/{id}/ is not supported.
 
     Sample endpoint query:
     ------------------------
-    /?area_title=Massachusetts&soc=11-1011&min_transitions_probability=0.01
+    /?area_title=Massachusetts&soc=35-3031&min_transitions_probability=0.01
     """
-    # serializer_class = BlsTransitionsSerializer
+    serializer_class = BlsTransitionsSerializer
     permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle]
+    # swagger_schema = None         # Exclude from swagger schema.
 
     # Use a named tuple to pass data from multiple models to the response
     BLS_TRANSITIONS = namedtuple("BlsTransitions", ("bls", "transitions"))
+
     DEFAULT_AREA = "U.S."
     DEFAULT_SOC = "35-3031"         # 35-3031 is waiters and waitresses
     DEFAULT_TRANSITION_PROBABILITY = 0.01
+    SOC_SWAGGER_PARAM = openapi.Parameter("soc",
+                                          openapi.IN_QUERY,
+                                          description="Source SOC code",
+                                          type=openapi.TYPE_STRING)
+    AREA_SWAGGER_PARAM = openapi.Parameter("area_title",
+                                           openapi.IN_QUERY,
+                                           description="Location",
+                                           type=openapi.TYPE_STRING)
+    PI_SWAGGER_PARAM = openapi.Parameter("min_transition_probability",
+                                         openapi.IN_QUERY,
+                                         description="Minimum transition probability",
+                                         type=openapi.TYPE_NUMBER
+                                         )
+
+    def get_queryset(self):
+        """
+        Custom queryset used that is a combination of querysets from a couple models. Overwriting to prevent
+        schema generation warning.
+        """
+        pass
 
     def _set_params(self, request):
         """
-
         :param request:
         :return:
         """
@@ -149,14 +164,52 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
         else:
             self.min_transition_probability = min_transition_probability
 
+    @swagger_auto_schema(manual_parameters=[SOC_SWAGGER_PARAM, PI_SWAGGER_PARAM, AREA_SWAGGER_PARAM])
     def list(self, request):
         """
-        Alternative for simple response that just lists the results from each model:
-        serializer = BlsTransitionsSerializer(bls_transitions)
-        return Response(serializer.data)
+        Query parameters:
+        ------------------------
+        * area_title: Specify an area_title to return wages/employment for that location only
+        States should be fully spelled out, consistent with the area_title field in the
+        BlsOes model. The default is specified by DEFAULT_AREA
 
-        :param request:
-        :return:
+        * soc: Specify a source SOC code to return transitions data for people moving from this
+        occupation to other occupations. The default is specified by DEFAULT_SOC
+
+        * min_transition_probability: Specify the minimum transitions probability. Do not return any
+        transitions records that have a probability of moving from SOC1 to SOC2 that is lower
+        than this value.
+
+        Multiple selections are not supported for this endpoint. The default response is displayed.
+
+        Sample endpoint query:
+        ------------------------
+        * /?area_title=Massachusetts&soc=11-1011&min_transitions_probability=0.01
+
+        Response format:
+        ------------------------
+        ```
+            {source_soc: {
+                source_soc_area_title:
+                ...
+                source_soc_file_year: },
+            transition_rows: [
+                {"id": 36636,
+                "soc1": "15-1131",
+                "soc2": "11-9031",
+                "total_soc": 533764,
+                "pi": "0.0000773092",
+                "occleaveshare": "0.2133103000"
+                "soc2_area_title": "Abilene, TX",
+                "soc2_soc_code": "53-7064",
+                "soc2_soc_title": "Packers and Packagers, Hand",
+                "soc2_hourly_mean_wage": "9.59",
+                ...
+                "soc2_file_year": 2019 },
+                {...additional rows/results}
+                ]
+            }
+        ```
         """
         self._set_params(request)
 
@@ -201,6 +254,9 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
                                         for key, val in destination_metadata.items()}
                 transition.update(destination_metadata)
 
+        # Alternative for simple response that just lists the results from each model:
+        #   serializer = BlsTransitionsSerializer(bls_transitions)
+        #   return Response(serializer.data)
         return Response({
             "source_soc":  source_soc_info,
             "transition_rows": transitions,

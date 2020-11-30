@@ -15,7 +15,7 @@ router.register("transitions", OccupationTransitionsViewSet)
 router.register("soc-codes", BlsOesViewSet)
 router.register("soc-list", SocListSimpleViewSet)
 router.register(r"state", StateViewSet, basename="abbr")
-router.register("hi", BlsTransitionsViewSet, basename="lol")
+router.register("transitions-extended", BlsTransitionsViewSet, basename="lol")
 
 urlpatterns = [
     path("", include(router.urls)),
