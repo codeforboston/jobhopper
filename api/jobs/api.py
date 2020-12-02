@@ -229,7 +229,7 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
                  .filter(area_title=self.area_title_filter)),
             transitions=(OccupationTransitions.objects
                          .filter(soc1=self.source_soc)
-                         .filter(pi__gte=self.DEFAULT_TRANSITION_PROBABILITY)
+                         .filter(pi__gte=self.min_transition_probability)
                          ),
             )
 
