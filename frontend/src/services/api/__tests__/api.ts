@@ -34,7 +34,9 @@ describe('Fake API', () => {
 
   it('retrieves transitions', async () => {
     const api = new FakeApi();
-    const transitions: Transition[] = await api.getTransitions();
+    const transitions: Transition[] = await api.getTransitions({
+      socCode: '12345',
+    });
     transitions.forEach(
       ({ name, code, annualSalary, hourlyPay, transitionRate }) => {
         expect(typeof name).toBe('string');
