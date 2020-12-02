@@ -11,7 +11,6 @@ def index(request):
     context = {"jobs": jobs}
     return HttpResponse(template.render(context, request))
 
-
 def description(request):
     soc = JobClass.jobcode
     title = JobClass.title
