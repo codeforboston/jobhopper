@@ -6,7 +6,7 @@ const npmRun = cmd => `npm -s run ${cmd}`,
 const scripts = {
   fix: ['prettier --write .', 'eslint --fix .'],
   lint,
-  'lint-and-test': [...lint, npmRun('test')],
+  'lint-and-test': [...lint, npmRun('test:ci')],
 };
 
 const selectedScript = process.argv[2];
