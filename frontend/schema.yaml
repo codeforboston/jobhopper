@@ -8,141 +8,6 @@ servers:
     url: "127.0.0.1:8000"
 
 paths:
-  /api/v1/jobs/transitions/:
-    get:
-      operationId: listOccupationTransitions
-      parameters:
-      - name: limit
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: offset
-        required: false
-        in: query
-        description: The initial index from which to return the results.
-        schema:
-          type: integer
-      - name: min_transition_probability
-        required: false
-        in: query
-        description: min_transition_probability
-        schema:
-          type: string
-      - name: soc1
-        required: false
-        in: query
-        description: soc1
-        schema:
-          type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OccupationTransitions"
-
-  /api/v1/jobs/transitions/{id}/:
-    get:
-      operationId: retrieveOccupationTransition
-      description: ''
-      parameters:
-      - name: id
-        in: path
-        required: true
-        description: A unique integer value identifying this occupation transitions.
-        schema:
-          type: string
-      - name: min_transition_probability
-        required: false
-        in: query
-        description: min_transition_probability
-        schema:
-          type: string
-      - name: soc1
-        required: false
-        in: query
-        description: soc1
-        schema:
-          type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OccupationTransition"
-
-  /api/v1/jobs/soc-codes/:
-    get:
-      operationId: listSocCodes
-      description: ''
-      parameters:
-      - name: limit
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: offset
-        required: false
-        in: query
-        description: The initial index from which to return the results.
-        schema:
-          type: integer
-      - name: socs
-        required: false
-        in: query
-        description: socs
-        schema:
-          type: string
-      - name: areas
-        required: false
-        in: query
-        description: areas
-        schema:
-          type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SocCodes"
-
-  /api/v1/jobs/soc-codes/{id}/:
-    get:
-      operationId: retrieveSocCode
-      description: ''
-      parameters:
-      - name: id
-        in: path
-        required: true
-        description: A unique integer value identifying this bls oes.
-        schema:
-          type: string
-      - name: socs
-        required: false
-        in: query
-        description: socs
-        schema:
-          type: string
-      - name: areas
-        required: false
-        in: query
-        description: areas
-        schema:
-          type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SocCode"
-
   /api/v1/jobs/soc-list/:
     get:
       operationId: listSocLists
@@ -174,31 +39,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/SocLists"
 
-  /api/v1/jobs/soc-list/{id}/:
-    get:
-      operationId: retrieveSocList
-      description: ''
-      parameters:
-      - name: id
-        in: path
-        required: true
-        description: A unique integer value identifying this soc description.
-        schema:
-          type: string
-      - name: socs
-        required: false
-        in: query
-        description: socs
-        schema:
-          type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SocList"
-
   /api/v1/jobs/state/:
     get:
       operationId: listStateNames
@@ -223,25 +63,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/StateNames"
-
-  /api/v1/jobs/state/{abbreviation}/:
-    get:
-      operationId: retrieveStateName
-      description: ''
-      parameters:
-      - name: abbreviation
-        in: path
-        required: true
-        description: A unique value identifying this state abb pairs.
-        schema:
-          type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/StateName"
 
   /api/v1/jobs/transitions-extended/:
     get:
@@ -272,55 +93,8 @@ paths:
                 items:
                   $ref: "#/components/schemas/BlsTransition"
 
-  /api/v1/jobs/transitions-extended/{id}/:
-    get:
-      operationId: getBlsTransition
-      description: ''
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BlsTransition"
-
-
 components:
   schemas:
-    OccupationTransitions:
-      properties:
-        count:
-          type: integer
-        next:
-          type: string
-          nullable: true
-        previous:
-          type: string
-          nullable: true
-        results:
-          items:
-            $ref: "#/components/schemas/OccupationTransition"
-
-    SocCodes:
-      properties:
-        count:
-          type: integer
-        next:
-          type: string
-          nullable: true
-        previous:
-          type: string
-          nullable: true
-        results:
-          items:
-            $ref: "#/components/schemas/SocCode"
-
     SocLists:
       properties:
         count:
@@ -334,6 +108,17 @@ components:
         results:
           items:
             $ref: "#/components/schemas/SocList"
+
+    SocList:
+      properties:
+        soc_code:
+          type: string
+          nullable: true
+          maxLength: 10
+        soc_title:
+          type: string
+          nullable: true
+          maxLength: 255
 
     StateNames:
       properties:
@@ -349,40 +134,26 @@ components:
           items:
             $ref: "#/components/schemas/StateName"
 
-    OccupationTransition:
+    StateName:
       properties:
-        id:
-          type: integer
-          readOnly: true
-        soc1:
+        abbreviation:
           type: string
-          maxLength: 7
-        soc2:
+          maxLength: 2
+        state_name:
           type: string
-          maxLength: 7
-        total_soc:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
-          nullable: true
-        pi:
-          type: number
-          multipleOf: 1.0e-10
-          maximum: 10
-          minimum: -10
-          nullable: true
-        occleaveshare:
-          type: number
-          multipleOf: 1.0e-10
-          maximum: 10
-          minimum: -10
-          nullable: true
+          maxLength: 100
       required:
-      - soc1
-      - soc2
+      - abbreviation
+      - state_name
+    
+    BlsTransition:
+      properties:
+        bls:
+          $ref: "#/components/schemas/Bls"
+        transitions:
+          $ref: "#/components/schemas/OccupationTransition"
 
-    SocCode:
+    Bls:
       properties:
         area_title:
           type: string
@@ -424,106 +195,35 @@ components:
           minimum: -2147483648
           nullable: true
 
-    SocList:
+    OccupationTransition:
       properties:
-        soc_code:
+        id:
+          type: integer
+          readOnly: true
+        soc1:
           type: string
+          maxLength: 7
+        soc2:
+          type: string
+          maxLength: 7
+        total_soc:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
           nullable: true
-          maxLength: 10
-        soc_title:
-          type: string
+        pi:
+          type: number
+          multipleOf: 1.0e-10
+          maximum: 10
+          minimum: -10
           nullable: true
-          maxLength: 255
-
-    StateName:
-      properties:
-        abbreviation:
-          type: string
-          maxLength: 2
-        state_name:
-          type: string
-          maxLength: 100
+        occleaveshare:
+          type: number
+          multipleOf: 1.0e-10
+          maximum: 10
+          minimum: -10
+          nullable: true
       required:
-      - abbreviation
-      - state_name
-    
-    BlsTransition:
-      properties:
-        bls:
-          properties:
-            area_title:
-              type: string
-              nullable: true
-              maxLength: 255
-            soc_code:
-              type: string
-              nullable: true
-              maxLength: 10
-            soc_title:
-              type: string
-              nullable: true
-              maxLength: 255
-            hourly_mean_wage:
-              type: number
-              multipleOf: 0.01
-              maximum: 100000000
-              minimum: -100000000
-              nullable: true
-            annual_mean_wage:
-              type: number
-              multipleOf: 0.01
-              maximum: 100000000
-              minimum: -100000000
-              nullable: true
-            total_employment:
-              type: integer
-              maximum: 9223372036854775807
-              minimum: -9223372036854775808
-              format: int64
-              nullable: true
-            soc_decimal_code:
-              type: string
-              nullable: true
-              maxLength: 10
-            file_year:
-              type: integer
-              maximum: 2147483647
-              minimum: -2147483648
-              nullable: true
-        transitions:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-                readOnly: true
-              soc1:
-                type: string
-                maxLength: 7
-              soc2:
-                type: string
-                maxLength: 7
-              total_soc:
-                type: integer
-                maximum: 9223372036854775807
-                minimum: -9223372036854775808
-                format: int64
-                nullable: true
-              pi:
-                type: number
-                multipleOf: 1.0e-10
-                maximum: 10
-                minimum: -10
-                nullable: true
-              occleaveshare:
-                type: number
-                multipleOf: 1.0e-10
-                maximum: 10
-                minimum: -10
-                nullable: true
-            required:
-            - soc1
-            - soc2
-      required:
-      - bls
-      - transitions
+      - soc1
+      - soc2
