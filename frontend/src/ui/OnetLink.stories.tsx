@@ -8,7 +8,7 @@ export default {
   component: OnetLink,
 } as Meta;
 
-export const OnetLink_Computer_Programmer: Story<OnetLinkProps> = args => (
+export const OnetLinkComputerProgrammer: Story<OnetLinkProps> = args => (
   <OnetLink {...args} />
 );
-OnetLink_Computer_Programmer.args = { socCode: '15-1131.00' };
+OnetLinkComputerProgrammer.args = { socCode: '15-1131.00' };

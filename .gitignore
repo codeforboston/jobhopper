@@ -11,3 +11,8 @@ node_modules
 # IDE settings
 .idea
 .vscode
+
+
+firebase-deploy-credentials.json
+firebase-deploy-passphrase
+build-storybook.log
