@@ -6,14 +6,7 @@ info:
 servers:
   - description: Dev server
     url: "127.0.0.1:8000"
-getOccupationTransitions
-getOccupationTransition
-getSocCode
-getSocCodes
-getSocList
-getSocLists
-getStateNames
-getStateName
+
 paths:
   /api/v1/jobs/transitions/:
     get:
@@ -250,6 +243,50 @@ paths:
               schema:
                 $ref: "#/components/schemas/StateName"
 
+  /api/v1/jobs/transitions-extended/:
+    get:
+      operationId: listBlsTransitions
+      parameters:
+      - name: area_title
+        in: query
+        description: Location
+        schema:
+          type: string
+      - name: soc
+        in: query
+        description: Source SOC Code
+        schema:
+          type: string
+      - name: min_transition_probability
+        in: query
+        description: Minimum transition probability
+        schema:
+          type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/BlsTransition"
+
+  /api/v1/jobs/transitions-extended/{id}/:
+    get:
+      operationId: retrieveBlsTransition
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlsTransition"
+
+
 components:
   schemas:
     OccupationTransitions:
@@ -405,3 +442,83 @@ components:
       required:
       - abbreviation
       - state_name
+    
+    BlsTransition:
+      bls:
+        properties:
+          area_title:
+            type: string
+            nullable: true
+            maxLength: 255
+          soc_code:
+            type: string
+            nullable: true
+            maxLength: 10
+          soc_title:
+            type: string
+            nullable: true
+            maxLength: 255
+          hourly_mean_wage:
+            type: number
+            multipleOf: 0.01
+            maximum: 100000000
+            minimum: -100000000
+            nullable: true
+          annual_mean_wage:
+            type: number
+            multipleOf: 0.01
+            maximum: 100000000
+            minimum: -100000000
+            nullable: true
+          total_employment:
+            type: integer
+            maximum: 9223372036854775807
+            minimum: -9223372036854775808
+            format: int64
+            nullable: true
+          soc_decimal_code:
+            type: string
+            nullable: true
+            maxLength: 10
+          file_year:
+            type: integer
+            maximum: 2147483647
+            minimum: -2147483648
+            nullable: true
+    transitions:
+      type: array
+      items:
+        properties:
+          id:
+            type: integer
+            readOnly: true
+          soc1:
+            type: string
+            maxLength: 7
+          soc2:
+            type: string
+            maxLength: 7
+          total_soc:
+            type: integer
+            maximum: 9223372036854775807
+            minimum: -9223372036854775808
+            format: int64
+            nullable: true
+          pi:
+            type: number
+            multipleOf: 1.0e-10
+            maximum: 10
+            minimum: -10
+            nullable: true
+          occleaveshare:
+            type: number
+            multipleOf: 1.0e-10
+            maximum: 10
+            minimum: -10
+            nullable: true
+        required:
+        - soc1
+        - soc2
+  required:
+  - bls
+  - transitions
