@@ -20,5 +20,3 @@ docker run \
     -o local/src/api \
     -p projectName=JobsAPI \
     -p usePromises=true \
-
-# rm schema.yml
