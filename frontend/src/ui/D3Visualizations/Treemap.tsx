@@ -5,8 +5,9 @@ import { Transition } from '../../domain/transition';
 import useResizeObserver from './useResizeObserver';
 
 const Container = styled.div`
-  width: 70vw;
-  height: 50vh;
+  width: 90vw;
+  height: 70vh;
+  align-self: center;
 `;
 
 const Svg = styled.svg``;

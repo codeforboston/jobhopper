@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Body, Title } from '../Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Row, Section, StyledSecondary } from '../Common';
+import { Column, Row, Section, StyledSecondary } from '../Common';
 import { Transition } from 'src/domain/transition';
 import Treemap from '../D3Visualizations/Treemap';
 import TransitionTable from '../TransitionTable';
@@ -51,7 +51,7 @@ const Results: React.FC<ResultsProps> = ({
     showTreemap = visualization === 'treemap' && transitions.length > 0;
 
   return (
-    <>
+    <Column>
       <Section>
         <Title>See Transitions Data</Title>
         <Body>There is a choice of two ways of viewing the data.</Body>
@@ -82,7 +82,7 @@ const Results: React.FC<ResultsProps> = ({
       </Row>
       {(() => {
         if (loading) {
-          return <CircularProgress />;
+          return <CircularProgress style={{ alignSelf: 'center' }} />;
         } else if (error) {
           return <ResultError error={error} />;
         } else if (showMatrix) {
@@ -91,7 +91,7 @@ const Results: React.FC<ResultsProps> = ({
           return <Treemap data={transitions} />;
         }
       })()}
-    </>
+    </Column>
   );
 };
 
