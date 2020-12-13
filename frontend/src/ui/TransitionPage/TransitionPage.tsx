@@ -2,6 +2,7 @@ import React from 'react';
 import { Section } from '../Common';
 import Page from '../Page';
 import { ResultsContainer } from '../Results';
+import LandingBlurb from '../LandingBlurb';
 import { OccupationSelectContainer, StateSelectContainer } from '../Select';
 import { Body, Title } from '../Typography';
 import { createContainerContext } from '../utils';
@@ -20,6 +21,7 @@ const TransitionPage: React.FC = () => {
   } = useContainerContext();
   return (
     <Page>
+      <LandingBlurb />
       <Section>
         <Title>Enter occupation</Title>
         <Body>Type in an occupation by name or SOC code</Body>
