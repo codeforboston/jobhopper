@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import styled from 'styled-components';
 import { Transition } from '../../domain/transition';
@@ -44,6 +44,10 @@ export default function Treemap({ data }: TreemapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
   const svgRef = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    containerRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
 
   const renderTreemap = useCallback(() => {
     // clear previous svg children renderings

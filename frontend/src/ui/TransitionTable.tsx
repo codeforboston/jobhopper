@@ -14,6 +14,11 @@ const TransitionTable = ({
 
   return (
     <MaterialTable
+      tableRef={(ref: any) =>
+        (ref?.tableContainerDiv?.current as HTMLDivElement)?.scrollIntoView({
+          behavior: 'smooth',
+        })
+      }
       style={{ alignSelf: 'center', width: '90vw' }}
       columns={[
         { title: 'SOC', field: 'code' },
