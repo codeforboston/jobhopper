@@ -18,7 +18,11 @@ type SliceState = {
 const slice = createSlice({
   name: 'transitions',
   initialState: { transitions: [], error: '', loading: false } as SliceState,
-  reducers: {},
+  reducers: {
+    clearTransitions: state => {
+      state.transitions = [];
+    },
+  },
   extraReducers: builder => {
     builder.addCase(
       fetchTransitions.fulfilled,
@@ -35,14 +39,16 @@ const slice = createSlice({
     });
     builder.addCase(
       fetchTransitions.rejected,
-      (state, { error: { message = 'Error fetching transitions' } }) => {
-        state.error = message;
+      (state, { error: { name, message = 'Error fetching transitions' } }) => {
+        state.error = name === 'AbortError' ? undefined : message;
         state.loading = false;
         state.transitions = [];
       }
     );
   },
 });
+
+export const { clearTransitions } = slice.actions;
 
 export const useTransitionsState = () =>
   useSelector(
