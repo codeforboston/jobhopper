@@ -1,11 +1,10 @@
-import React, { useMemo, useState } from 'react';
-import { Body, Title } from '../Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Column, Row, Section, StyledSecondary } from '../Common';
+import React, { useMemo, useState } from 'react';
 import { Transition } from 'src/domain/transition';
+import ResultError from 'src/ui/Results/ResultError';
+import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
 import Treemap from '../D3Visualizations/Treemap';
 import TransitionTable from '../TransitionTable';
-import ResultError from 'src/ui/Results/ResultError';
 
 export interface ResultOption {
   disabled?: boolean;
@@ -52,34 +51,35 @@ const Results: React.FC<ResultsProps> = ({
 
   return (
     <Column>
-      <Section>
-        <Title>See Transitions Data</Title>
-        <Body>There is a choice of two ways of viewing the data.</Body>
-      </Section>
-      <Row>
-        <StyledSecondary
-          label="See a Matrix"
-          onClick={() => {
-            setVisualization('matrix');
-            if (canLoadTransitions(socCode)) {
-              loadTransitions(socCode, state);
-            }
-          }}
-          disabled={!canLoadTransitions(socCode) || loading}
-          selected={showMatrix}
-        />
-        <StyledSecondary
-          label="See a Treechart"
-          onClick={() => {
-            setVisualization('treemap');
-            if (canLoadTransitions(socCode)) {
-              loadTransitions(socCode, state);
-            }
-          }}
-          disabled={!canLoadTransitions(socCode) || loading}
-          selected={showTreemap}
-        />
-      </Row>
+      <LabeledSection
+        title="See Transitions Data"
+        subtitle="There is a choice of two ways of viewing the data."
+      >
+        <Row>
+          <StyledSecondary
+            label="See a Matrix"
+            onClick={() => {
+              setVisualization('matrix');
+              if (canLoadTransitions(socCode)) {
+                loadTransitions(socCode, state);
+              }
+            }}
+            disabled={!canLoadTransitions(socCode) || loading}
+            selected={showMatrix}
+          />
+          <StyledSecondary
+            label="See a Treechart"
+            onClick={() => {
+              setVisualization('treemap');
+              if (canLoadTransitions(socCode)) {
+                loadTransitions(socCode, state);
+              }
+            }}
+            disabled={!canLoadTransitions(socCode) || loading}
+            selected={showTreemap}
+          />
+        </Row>
+      </LabeledSection>
       {(() => {
         if (loading) {
           return <CircularProgress style={{ alignSelf: 'center' }} />;
