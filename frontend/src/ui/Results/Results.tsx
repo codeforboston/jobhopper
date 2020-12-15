@@ -7,33 +7,15 @@ import Treemap from '../D3Visualizations/Treemap';
 import TransitionTable from '../TransitionTable';
 import ResultError from 'src/ui/Results/ResultError';
 
-export interface ResultOption {
-  disabled?: boolean;
-  selected?: boolean;
-  show?: () => void;
-}
-
-export type VisualizationType = 'matrix' | 'treemap';
-
 export interface ResultsProps {
   loading?: boolean;
-  state?: string;
-  socCode?: string;
   transitions?: Transition[];
   error?: string;
-  loadTransitions: (socCode: string, state?: string) => void;
-}
-
-function canLoadTransitions(code?: string): code is string {
-  return !!code;
 }
 
 const Results: React.FC<ResultsProps> = ({
   transitions: immutableTransitions = [],
-  state,
-  socCode,
   loading = false,
-  loadTransitions,
   error,
 }) => {
   const [visualization, setVisualization] = useState<'matrix' | 'treemap'>(
@@ -47,8 +29,10 @@ const Results: React.FC<ResultsProps> = ({
     [immutableTransitions]
   );
 
-  const showMatrix = visualization === 'matrix' && transitions.length > 0,
-    showTreemap = visualization === 'treemap' && transitions.length > 0;
+  const hasTransitions = transitions.length > 0,
+    showMatrix = visualization === 'matrix' && hasTransitions,
+    showTreemap = visualization === 'treemap' && hasTransitions,
+    disabled = !hasTransitions || loading;
 
   return (
     <>
@@ -61,22 +45,16 @@ const Results: React.FC<ResultsProps> = ({
           label="See a Matrix"
           onClick={() => {
             setVisualization('matrix');
-            if (canLoadTransitions(socCode)) {
-              loadTransitions(socCode, state);
-            }
           }}
-          disabled={!canLoadTransitions(socCode) || loading}
+          disabled={disabled}
           selected={showMatrix}
         />
         <StyledSecondary
           label="See a Treechart"
           onClick={() => {
             setVisualization('treemap');
-            if (canLoadTransitions(socCode)) {
-              loadTransitions(socCode, state);
-            }
           }}
-          disabled={!canLoadTransitions(socCode) || loading}
+          disabled={disabled}
           selected={showTreemap}
         />
       </Row>
