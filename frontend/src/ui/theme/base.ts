@@ -6,11 +6,11 @@ export default createMuiTheme({
   },
   palette: {
     primary: {
-      main: '#4385C1',
+      main: '#4686bf',
       light: '#D9E6F1',
     },
     secondary: {
-      main: '#3EB56D',
+      main: '#3ca565',
     },
   },
 });
