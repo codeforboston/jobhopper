@@ -1,37 +1,61 @@
 import React from 'react';
-import MaterialTable from 'material-table';
+import MaterialTable, { Column } from 'material-table';
 import { Transition } from '../domain/transition';
 import { useTheme } from '@material-ui/core';
 import { Tooltip, TableCell } from '@material-ui/core';
+// import { data } rom ''
 
 export interface TransitionTableProps {
   transitionData: Transition[];
 }
 
-const createHeaderWithTooltip = (title: string, tooltip: string) => {
+export interface ToolTipProps {
+  title: string;
+  tooltip: string;
+}
+
+type Data = any; //TODO:  find the real source of type Data
+
+const HeaderWithTooltip = ({ title, tooltip }: ToolTipProps) => {
   return (
-    <Tooltip title={tooltip} placement='top'>
+    <Tooltip title={tooltip} placement="top">
       <TableCell>{title}</TableCell>
     </Tooltip>
   );
 };
-
-const [columns, setColumns] = React.useState<Array<Column<Data>>>([
-  { title: createHeaderWithTooltip('Name', 'Name of the data'), field: 'name' },
-]);
 
 const TransitionTable = ({
   transitionData,
 }: TransitionTableProps): JSX.Element => {
   const theme = useTheme();
 
+  const [columns, setColumns] = React.useState<Array<Column<Data>>>([
+    {
+      title: <HeaderWithTooltip title="Name" tooltip="Name of the data" />,
+      field: 'name',
+    },
+  ]);
+
   return (
     <MaterialTable
       columns={[
-        { title: 'SOC', field: 'code' },
-        { title: 'Job name', field: 'name' },
         {
-          title: 'Transition share',
+          title: <HeaderWithTooltip title="SOC" tooltip="Name of the data" />,
+          field: 'code',
+        },
+        {
+          title: (
+            <HeaderWithTooltip title="JobName" tooltip="Name of the data" />
+          ),
+          field: 'name',
+        },
+        {
+          title: (
+            <HeaderWithTooltip
+              title="Transition share"
+              tooltip="Name of the data"
+            />
+          ),
           render: ({ transitionRate }) =>
             `${(10 * transitionRate).toFixed(2)}%`,
         },
