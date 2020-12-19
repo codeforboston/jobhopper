@@ -14,7 +14,8 @@ const Svg = styled.svg``;
 
 const fontSize = 12;
 const white = '#ffffff';
-const colorRange = ['#bce4d9', '#6ab6c4', '#357ea1'];
+// const colorRange = ['#bce4d9', '#6ab6c4', '#357ea1'];
+const colorRange = ['#519a6e', '#83b496', '#b6d7c3'];
 
 export type TreeNode = { children: Transition[] } | Transition;
 

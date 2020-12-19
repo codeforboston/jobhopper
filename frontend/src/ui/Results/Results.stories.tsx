@@ -14,31 +14,21 @@ const Template: Story<ResultsProps> = args => <Results {...args} />;
 export const WaitingForSelection = Template.bind({});
 WaitingForSelection.args = {
   loading: false,
-  loadTransitions: (socCode, state) =>
-    console.log('loadTransitions', socCode, state),
 };
 
 export const Loading = Template.bind({});
 Loading.args = {
   loading: true,
-  loadTransitions: (socCode, state) =>
-    console.log('loadTransitions', socCode, state),
 };
 
 export const Error = Template.bind({});
 Error.args = {
   loading: false,
   error: 'error loading transitions',
-  loadTransitions: (socCode, state) =>
-    console.log('loadTransitions', socCode, state),
 };
 
 export const Display = Template.bind({});
 Display.args = {
   loading: false,
   transitions: transitionData,
-  socCode: '12345',
-  state: 'MA',
-  loadTransitions: (socCode, state) =>
-    console.log('loadTransitions', socCode, state),
 };
