@@ -1,9 +1,11 @@
 import React from 'react';
 import { render, wait } from '@testing-library/react';
 import Main from './Main';
+import {  } from '@testing-library/react';
 import { fireEvent, getQueriesForElement } from '@testing-library/dom';
 import { Input, Select } from '@material-ui/core';
 import userEvent from '@testing-library/user-event';
+import { act } from 'react-dom/test-utils';
 
 // renders the Main component, fills out the transition form, and renders the results table using the FakeApi. This tests interactions with the form and the container logic.
 
@@ -19,39 +21,63 @@ const {
   getByTestId,
 } = render(<Main />);
 
-// const occupationInput = getByTestId('occupation-select');
-// const stateInput = getByLabelText('Select state...');
+describe('transitions', () => {
 
-// test('renders learn react link', () => {
-//   const { getByText } = render(<Main />);
-//   const instructions = getByText(/enter occupation/i);
-//   expect(instructions).toBeInTheDocument();
-// });
+  it('allows user to select occupation and state from select menus', async () => {
 
-// test('renders correct content from transitions page', async () => {
-//   const { getByLabelText } = render(<Main />);
-
-//   // const occupationInput = getByPlaceholderText('Select occupation...');
-//   const occupationInput = getByTestId('selectComponent');
-//   const stateInput = getByPlaceholderText('Select state...');
-
-//   expect(occupationInput).not.toBeNull();
-//   expect(stateInput).not.toBeNull();
-// });
-
-test('allows user to select occupation and state from select menus', async () => {
-  const { getByTestId, getByLabelText } = render(<Main />);
-  const selectOct = getByTestId('occupation-select');
+    const { getAllByTestId, getByLabelText, findByText, getAllByText, getByTestId, findByTestId} = render(<Main/>);
+  
+    const selectOct = getAllByTestId('occupation-select')[0];
+    
+    const stateOct = getAllByTestId('state-select')[0];
+    
   userEvent.selectOptions(selectOct, '01-2345 | Doctor');
-  // userEvent.selectOptions(stateInput, 'California');
+  
+  userEvent.selectOptions(stateOct, 'California');
+  
+  
+  // getByLabelText('See a Matrix').click(); //render table
+  
+  const matrixButton = getAllByText('See a Matrix')[0];
+  userEvent.click(matrixButton); //render table
 
-  // fireEvent.change(occupationInput, {target: {value: 1}});
-  // fireEvent.change(stateInput, { target: {value: 1} });
+  wait(() => expect(findByText(/Job Transitions/i)).not.toBeEmpty()); //check table renders content correctly
 
-  getByLabelText('See a Matrix').click(); //render table
-
-  await wait(() => expect(findByText('Job Transitions')).not.toBeEmpty()); //check table renders content correctly
-
-  getByLabelText('See a Treechart').click();
-  await wait(() => expect(findByText('Job Transitions')).not.toBeEmpty());
+  
 });
+
+it('tests user button interaction on display treemap', async () => {
+
+  const mockOnSubmit = jest.fn();
+  
+  const {getAllByTestId, getByRole, getAllByText, findByTestId} = render(<Main onSubmit={mockOnSubmit}/>);
+
+  const selectOct = getAllByTestId('occupation-select')[0];
+    
+  const stateOct = getAllByTestId('state-select')[0];
+  
+
+  await act(async()=>{
+    //test valid selections in dropdowns.
+    userEvent.selectOptions(selectOct, '01-2345 | Doctor');
+  
+    userEvent.selectOptions(stateOct, 'California');
+
+  })
+
+  await act(async()=>{
+    const treechartButton = getAllByText('See a Treechart')[0];
+    userEvent.click(treechartButton); //render treechart
+  })
+
+  wait(() => expect(findByTestId("tree-map")).not.toBeEmpty()); //check table renders content correctly
+  expect(mockOnSubmit).toHaveBeenCalled();
+    
+
+
+
+
+});
+
+});
+
