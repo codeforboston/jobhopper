@@ -14,6 +14,7 @@ describe('Testing Data Helper Functions', () => {
     expect(DataHelper.transformNumber(10.01, -2)).toBe(NaN);
     expect(DataHelper.transformNumber(0.00001, 100)).toBe(NaN);
     expect(DataHelper.transformNumber(-0.1, 9)).toBe(NaN);
+    expect(DataHelper.transformNumber(12.345, 2)).toBe(12.35);
 
     transitions.forEach(
       ({ name, code, annualSalary, hourlyPay, transitionRate }) => {

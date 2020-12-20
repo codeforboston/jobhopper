@@ -2,6 +2,8 @@ import React from 'react';
 import MaterialTable from 'material-table';
 import { Transition } from '../domain/transition';
 import { useTheme } from '@material-ui/core';
+import OnetLink from './OnetLink';
+import DataHelper from 'src/services/api/DataHelper';
 
 export interface TransitionTableProps {
   transitionData: Transition[];
@@ -31,13 +33,7 @@ const TransitionTable = ({
           title: 'Job name',
           field: 'name',
           render: ({ code, name }) => (
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href={`https://www.mynextmove.org/profile/summary/${code}.00`}
-            >
-              {name}
-            </a>
+            <OnetLink socCode={code}>{name}</OnetLink>
           ),
           width: 1000,
         },
@@ -45,7 +41,7 @@ const TransitionTable = ({
           title: 'Transition share',
           field: 'transitionRate',
           render: ({ transitionRate }) =>
-            `${(10 * transitionRate).toFixed(2)}%`,
+            `${DataHelper.transformNumber(10 * transitionRate, 2)}%`,
           tooltip:
             'The proportion of individuals in the selected occupation that switch to this job in a given year',
           defaultSort: 'desc',
