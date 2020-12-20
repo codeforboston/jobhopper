@@ -2,6 +2,9 @@ import React from 'react';
 import MaterialTable from 'material-table';
 import { Transition } from '../domain/transition';
 import { useTheme } from '@material-ui/core';
+import OnetLink from './OnetLink';
+import DataHelper from 'src/services/api/DataHelper';
+// leaving these two lines from develop branch. used in TransitionTableProps
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
 
@@ -31,13 +34,28 @@ const TransitionTable = ({
       }
       style={{ alignSelf: 'center', width: '90vw' }}
       columns={[
-        { title: 'SOC', field: 'code' },
-        { title: 'Job name', field: 'name' },
+        {
+          title: 'SOC code',
+          field: 'code',
+          tooltip:
+            'The Standard Occupational Classification (SOC) system is a federal statistical standard used by federal agencies to classify workers into occupational categories for the purpose of collecting, calculating, or disseminating data.',
+        },
+        {
+          title: 'Job name',
+          field: 'name',
+          render: ({ code, name }) => (
+            <OnetLink socCode={code}>{name}</OnetLink>
+          ),
+          width: 1000,
+        },
         {
           title: 'Transition share',
           field: 'transitionRate',
           render: ({ transitionRate }) =>
-            `${(10 * transitionRate).toFixed(2)}%`,
+            `${DataHelper.transformNumber(10 * transitionRate, 2)}%`,
+          tooltip:
+            'The proportion of individuals in the selected occupation that switch to this job in a given year',
+          defaultSort: 'desc',
         },
         {
           title: 'Hourly pay',
@@ -53,6 +71,7 @@ const TransitionTable = ({
       data={transitionData}
       title={title}
       options={{
+        thirdSortClick: false,
         exportButton: true,
         exportFileName: title,
         exportAllData: true,
