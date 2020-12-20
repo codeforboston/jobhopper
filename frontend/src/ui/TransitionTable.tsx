@@ -4,15 +4,26 @@ import { Transition } from '../domain/transition';
 import { useTheme } from '@material-ui/core';
 import OnetLink from './OnetLink';
 import DataHelper from 'src/services/api/DataHelper';
+// leaving these two lines from develop branch. used in TransitionTableProps
+import { Occupation } from 'src/domain/occupation';
+import { State } from 'src/domain/state';
 
 export interface TransitionTableProps {
+  selectedOccupation: Occupation;
+  selectedState?: State;
   transitionData: Transition[];
 }
 
 const TransitionTable = ({
+  selectedState,
+  selectedOccupation,
   transitionData,
 }: TransitionTableProps): JSX.Element => {
   const theme = useTheme();
+
+  const title = `Job Transitions from ${selectedOccupation.name} (${
+    selectedOccupation.code
+  }) ${selectedState ? `in ${selectedState.name}` : `Nationally`}`;
 
   return (
     <MaterialTable
@@ -58,9 +69,12 @@ const TransitionTable = ({
         },
       ]}
       data={transitionData}
-      title="Job Transitions"
+      title={title}
       options={{
         thirdSortClick: false,
+        exportButton: true,
+        exportFileName: title,
+        exportAllData: true,
         rowStyle: (_, index) => ({
           backgroundColor:
             index % 2 === 0 ? 'white' : theme.colors.primaryHighlight,

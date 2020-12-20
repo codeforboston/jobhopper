@@ -11,7 +11,7 @@ type SliceState = {
   states: State[];
   error?: string;
   loading: boolean;
-  selectedState?: string;
+  selectedState?: State;
 };
 
 const slice = createSlice({
