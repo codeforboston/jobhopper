@@ -5,6 +5,9 @@ import TopBar from './TopBar';
 const PageContainer = styled.div`
   max-width: 800px;
   margin: auto;
+  padding-bottom: 1em;
+  padding-right: 1em;
+  padding-left: 1em;
 `;
 
 const Page: React.FC = ({ children }) => (
@@ -12,9 +15,8 @@ const Page: React.FC = ({ children }) => (
     <TopBar />
     <div
       style={{
-        width: '600px',
+        maxWidth: '600px',
         margin: 'auto',
-        marginTop: '100px',
       }}
     >
       {children}

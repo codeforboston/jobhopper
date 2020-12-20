@@ -18,7 +18,8 @@ const TopBar = () => {
   return (
     <Row
       style={{
-        alignItems: 'flex-start',
+        flexWrap: 'wrap',
+        alignItems: 'center',
         justifyContent: 'space-between',
       }}
     >
