@@ -1,19 +1,21 @@
-import React, { useCallback, useLayoutEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import styled from 'styled-components';
 import { Transition } from '../../domain/transition';
 import useResizeObserver from './useResizeObserver';
 
 const Container = styled.div`
-  width: 70vw;
-  height: 50vh;
+  width: 90vw;
+  height: 70vh;
+  align-self: center;
 `;
 
 const Svg = styled.svg``;
 
 const fontSize = 12;
 const white = '#ffffff';
-const colorRange = ['#bce4d9', '#6ab6c4', '#357ea1'];
+// const colorRange = ['#bce4d9', '#6ab6c4', '#357ea1'];
+const colorRange = ['#519a6e', '#83b496', '#b6d7c3'];
 
 export type TreeNode = { children: Transition[] } | Transition;
 
@@ -43,6 +45,10 @@ export default function Treemap({ data }: TreemapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
   const svgRef = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    containerRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
 
   const renderTreemap = useCallback(() => {
     // clear previous svg children renderings

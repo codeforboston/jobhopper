@@ -1,9 +1,9 @@
 import React from 'react';
-import { Section } from '../Common';
+import { LabeledSection } from '../Common';
 import Page from '../Page';
 import { ResultsContainer } from '../Results';
+import LandingBlurb from '../LandingBlurb';
 import { OccupationSelectContainer, StateSelectContainer } from '../Select';
-import { Body, Title } from '../Typography';
 import { createContainerContext } from '../utils';
 
 const { ContainerContext, useContainerContext } = createContainerContext({
@@ -20,16 +20,19 @@ const TransitionPage: React.FC = () => {
   } = useContainerContext();
   return (
     <Page>
-      <Section>
-        <Title>Enter occupation</Title>
-        <Body>Type in an occupation by name or SOC code</Body>
+      <LandingBlurb />
+      <LabeledSection
+        title="Enter occupation"
+        subtitle="Type in an occupation by name or SOC code."
+      >
         <OccupationSelectContainer />
-      </Section>
-      <Section>
-        <Title>Enter State (Optional)</Title>
-        <Body>If no state is entered, national wage data will be shown.</Body>
+      </LabeledSection>
+      <LabeledSection
+        title="Enter State (Optional)"
+        subtitle="If no state is entered, national wage data will be shown."
+      >
         <StateSelectContainer />
-      </Section>
+      </LabeledSection>
       <ResultsContainer />
     </Page>
   );
