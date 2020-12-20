@@ -5,14 +5,21 @@ import ResultError from 'src/ui/Results/ResultError';
 import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
 import Treemap from '../D3Visualizations/Treemap';
 import TransitionTable from '../TransitionTable';
+import { Occupation } from 'src/domain/occupation';
+import { State } from 'src/domain/state';
+
 
 export interface ResultsProps {
+  selectedState?: State;
+  selectedOccupation?: Occupation;
   loading?: boolean;
   transitions?: Transition[];
   error?: string;
 }
 
 const Results: React.FC<ResultsProps> = ({
+  selectedOccupation,
+  selectedState,
   transitions: immutableTransitions = [],
   loading = false,
   error,
@@ -63,8 +70,14 @@ const Results: React.FC<ResultsProps> = ({
           return <CircularProgress style={{ alignSelf: 'center' }} />;
         } else if (error) {
           return <ResultError error={error} />;
-        } else if (showMatrix) {
-          return <TransitionTable transitionData={transitions} />;
+        } else if (showMatrix && selectedOccupation) {
+          return (
+            <TransitionTable
+              selectedOccupation={selectedOccupation}
+              selectedState={selectedState}
+              transitionData={transitions}
+            />
+          );
         } else if (showTreemap) {
           return <Treemap data={transitions} />;
         }

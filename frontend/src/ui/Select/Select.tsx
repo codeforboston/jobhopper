@@ -52,7 +52,7 @@ export const Select = <T,>({
 export interface OccupationSelectProps
   extends Omit<SelectProps<Occupation>, 'options'> {
   occupations: Occupation[];
-  onSelectOccupation?: (occupationCode: string) => void;
+  onSelectOccupation?: (occupation: Occupation) => void;
 }
 
 export const OccupationSelect = ({
@@ -66,9 +66,8 @@ export const OccupationSelect = ({
     getOptionLabel={({ name, code }) => `${code} | ${name}`}
     getOptionValue={({ code }) => code}
     onChange={occupation => {
-      const code: string | undefined = (occupation as Occupation)?.code;
-      if (code) {
-        onSelectOccupation(code);
+      if (occupation) {
+        onSelectOccupation(occupation as Occupation);
       }
     }}
     {...rest}
@@ -77,7 +76,7 @@ export const OccupationSelect = ({
 
 export interface StateSelectProps extends Omit<SelectProps<State>, 'options'> {
   states: State[];
-  onSelectState?: (state?: string) => void;
+  onSelectState?: (state?: State) => void;
 }
 
 export const StateSelect = ({
@@ -87,8 +86,7 @@ export const StateSelect = ({
 }: StateSelectProps): JSX.Element => (
   <Select
     onChange={state => {
-      const abbreviation: string | undefined = (state as State)?.abbreviation;
-      onSelectState(abbreviation);
+      onSelectState(state as State);
     }}
     options={states}
     isClearable

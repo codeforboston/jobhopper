@@ -19,7 +19,7 @@ export const OccupationSelectContainer: React.FC = () => {
 
   return (
     <OccupationSelect
-      onSelectOccupation={code => dispatch(selectOccupation(code))}
+      onSelectOccupation={occupation => dispatch(selectOccupation(occupation))}
       loading={loading}
       error={error}
       occupations={occupations}
