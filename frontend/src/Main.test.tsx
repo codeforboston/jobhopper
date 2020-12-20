@@ -2,25 +2,29 @@ import React from 'react';
 // import { render, wait } from '@testing-library/react';
 import Main from './Main';
 import { fireEvent, getQueriesForElement } from '@testing-library/dom';
-import { Input, /*Select*/ } from '@material-ui/core';
+import { Input /*Select*/ } from '@material-ui/core';
 import userEvent from '@testing-library/user-event';
 
-
-import Select from 'react-select'
-import { render, wait } from '@testing-library/react'
-import selectEvent from 'react-select-event'
-
+import Select from 'react-select';
+import { render, wait } from '@testing-library/react';
+import selectEvent from 'react-select-event';
 
 // renders the Main component, fills out the transition form, and renders the results table using the FakeApi. This tests interactions with the form and the container logic.
 
 const mockSelectTransition = '../../api';
 
-const { getByText, getByLabelText, getAllByTestId, findByText } = render(
-  <Main />
-);
+const {
+  getByText,
+  getByLabelText,
+  getAllByTestId,
+  findByText,
+  getByPlaceholderText,
+  getByDisplayValue,
+  getByTestId,
+} = render(<Main />);
 
-// const occupationInput = getByText('Select occupation...');
-// const stateInput = getByText('Select state...');
+// const occupationInput = getByTestId('occupation-select');
+// const stateInput = getByLabelText('Select state...');
 
 // test('renders learn react link', () => {
 //   const { getByText } = render(<Main />);
@@ -29,23 +33,21 @@ const { getByText, getByLabelText, getAllByTestId, findByText } = render(
 // });
 
 // test('renders correct content from transitions page', async () => {
-//   const { getByText, getByDisplayValue, getByLabelText } = render(<Main />);
+//   const { getByLabelText } = render(<Main />);
 
-
-//   const occupationInput = getByDisplayValue('Select occupation');
-//   // const occupationInput = getByLabelText('Select occupation...');
-//   const stateInput = getByDisplayValue('Select state...');
+//   // const occupationInput = getByPlaceholderText('Select occupation...');
+//   const occupationInput = getByTestId('selectComponent');
+//   const stateInput = getByPlaceholderText('Select state...');
 
 //   expect(occupationInput).not.toBeNull();
 //   expect(stateInput).not.toBeNull();
 // });
 
 test('allows user to select occupation and state from select menus', async () => {
-  const { getByText, getByLabelText: getByTestId } = render(<Main />);
-
-  await selectEvent.select(getByTestId('occupation-select'))
-  userEvent.selectOptions(occupationInput, '01-2345 | Doctor');
-  userEvent.selectOptions(stateInput, 'California');
+  const { getByTestId, getByLabelText } = render(<Main />);
+  const selectOct = getByTestId('occupation-select');
+  userEvent.selectOptions(selectOct, '01-2345 | Doctor');
+  // userEvent.selectOptions(stateInput, 'California');
 
   // fireEvent.change(occupationInput, {target: {value: 1}});
   // fireEvent.change(stateInput, { target: {value: 1} });

@@ -8,6 +8,7 @@ import { State } from '../../domain/state';
 export interface SelectProps<T> extends Props<T> {
   loading?: boolean;
   error?: string;
+  testId?: string;
 }
 
 export const Select = <T,>({
@@ -17,11 +18,12 @@ export const Select = <T,>({
   placeholder,
   loading,
   error,
+  testId,
   ...rest
 }: SelectProps<T>): JSX.Element => {
   const theme = useTheme();
   return (
-    <div>
+    <div data-testid={testId}>
       <ReactSelect
         placeholder={error || placeholder}
         isSearchable
@@ -61,6 +63,7 @@ export const OccupationSelect = ({
   ...rest
 }: OccupationSelectProps): JSX.Element => (
   <Select
+    testId="occupation-select"
     options={occupations}
     placeholder={'Select occupation...'}
     getOptionLabel={({ name, code }) => `${code} | ${name}`}
