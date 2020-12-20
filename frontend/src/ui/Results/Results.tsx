@@ -1,11 +1,10 @@
-import React, { useMemo, useState } from 'react';
-import { Body, Title } from '../Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Row, Section, StyledSecondary } from '../Common';
+import React, { useMemo, useState } from 'react';
 import { Transition } from 'src/domain/transition';
+import ResultError from 'src/ui/Results/ResultError';
+import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
 import Treemap from '../D3Visualizations/Treemap';
 import TransitionTable from '../TransitionTable';
-import ResultError from 'src/ui/Results/ResultError';
 
 export interface ResultsProps {
   loading?: boolean;
@@ -35,32 +34,33 @@ const Results: React.FC<ResultsProps> = ({
     disabled = !hasTransitions || loading;
 
   return (
-    <>
-      <Section>
-        <Title>See Transitions Data</Title>
-        <Body>There is a choice of two ways of viewing the data.</Body>
-      </Section>
-      <Row>
-        <StyledSecondary
-          label="See a Matrix"
-          onClick={() => {
-            setVisualization('matrix');
-          }}
-          disabled={disabled}
-          selected={showMatrix}
-        />
-        <StyledSecondary
-          label="See a Treechart"
-          onClick={() => {
-            setVisualization('treemap');
-          }}
-          disabled={disabled}
-          selected={showTreemap}
-        />
-      </Row>
+    <Column>
+      <LabeledSection
+        title="See Transitions Data"
+        subtitle="There is a choice of two ways of viewing the data."
+      >
+        <Row>
+          <StyledSecondary
+            label="See a Matrix"
+            onClick={() => {
+              setVisualization('matrix');
+            }}
+            disabled={disabled}
+            selected={showMatrix}
+          />
+          <StyledSecondary
+            label="See a Treechart"
+            onClick={() => {
+              setVisualization('treemap');
+            }}
+            disabled={disabled}
+            selected={showTreemap}
+          />
+        </Row>
+      </LabeledSection>
       {(() => {
         if (loading) {
-          return <CircularProgress />;
+          return <CircularProgress style={{ alignSelf: 'center' }} />;
         } else if (error) {
           return <ResultError error={error} />;
         } else if (showMatrix) {
@@ -69,7 +69,7 @@ const Results: React.FC<ResultsProps> = ({
           return <Treemap data={transitions} />;
         }
       })()}
-    </>
+    </Column>
   );
 };
 

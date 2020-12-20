@@ -1,4 +1,3 @@
-import { inputCSS } from 'react-select/src/components/Input';
 import { Transition } from '../../../domain/transition';
 import DataHelper from '../DataHelper';
 import FakeApi from '../FakeApi';
