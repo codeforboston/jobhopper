@@ -12,7 +12,7 @@ type SliceState = {
   occupations: Occupation[];
   error?: string;
   loading: boolean;
-  selectedOccupation?: string;
+  selectedOccupation?: Occupation;
 };
 
 const slice = createSlice({

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { Occupation } from 'src/domain/occupation';
 import { selectOccupation, useOccupationsState } from 'src/ducks/occupations';
 import { selectState, useStateState } from 'src/ducks/states';
 import {
@@ -10,9 +11,23 @@ import {
 import Results from './Results';
 
 export const ResultsContainer = () => {
-  const { loading, transitions, error } = useResultLoader();
+  const {
+    selectedState,
+    selectedOccupation,
+    loading,
+    transitions,
+    error,
+  } = useResultLoader();
 
-  return <Results loading={loading} transitions={transitions} error={error} />;
+  return (
+    <Results
+      selectedState={selectedState}
+      selectedOccupation={selectedOccupation}
+      loading={loading}
+      transitions={transitions}
+      error={error}
+    />
+  );
 };
 
 function useResultLoader() {
@@ -40,7 +55,10 @@ function useResultLoader() {
 
   useEffect(() => {
     if (canLoadTransitions(selectedOccupation)) {
-      const promise = loadTransitions(selectedOccupation, selectedState);
+      const promise = loadTransitions(
+        selectedOccupation.code,
+        selectedState?.abbreviation
+      );
       return () => {
         (promise as any).abort();
       };
@@ -50,12 +68,14 @@ function useResultLoader() {
   useEffect(() => clearResults, [clearResults]);
 
   return {
+    selectedState,
+    selectedOccupation,
     transitions,
     loading,
     error,
   };
 }
 
-function canLoadTransitions(code?: string): code is string {
-  return code !== undefined;
+function canLoadTransitions(occupation?: Occupation): occupation is Occupation {
+  return occupation !== undefined;
 }
