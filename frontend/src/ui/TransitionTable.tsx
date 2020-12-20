@@ -42,6 +42,7 @@ const TransitionTable = ({
             `${(10 * transitionRate).toFixed(2)}%`,
           tooltip:
             'The proportion of individuals in the selected occupation that switch to this job in a given year',
+          defaultSort: 'desc',
         },
         {
           title: 'Hourly pay',
@@ -57,6 +58,7 @@ const TransitionTable = ({
       data={transitionData}
       title="Job Transitions"
       options={{
+        thirdSortClick: false,
         rowStyle: (_, index) => ({
           backgroundColor:
             index % 2 === 0 ? 'white' : theme.colors.primaryHighlight,
