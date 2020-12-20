@@ -37,6 +37,7 @@ const TransitionTable = ({
         },
         {
           title: 'Transition share',
+          field: 'transitionRate',
           render: ({ transitionRate }) =>
             `${(10 * transitionRate).toFixed(2)}%`,
           tooltip:
