@@ -15,12 +15,19 @@ const TransitionTable = ({
   return (
     <MaterialTable
       columns={[
-        { title: 'SOC', field: 'code' },
+        {
+          title: 'SOC code',
+          field: 'code',
+          tooltip:
+            'The Standard Occupational Classification (SOC) system is a federal statistical standard used by federal agencies to classify workers into occupational categories for the purpose of collecting, calculating, or disseminating data.',
+        },
         { title: 'Job name', field: 'name' },
         {
           title: 'Transition share',
           render: ({ transitionRate }) =>
             `${(10 * transitionRate).toFixed(2)}%`,
+          tooltip:
+            'The proportion of individuals in the selected occupation that switch to this job in a given year',
         },
         {
           title: 'Hourly pay',
