@@ -33,6 +33,7 @@ const TransitionTable = ({
               {name}
             </a>
           ),
+          width: 1000,
         },
         {
           title: 'Transition share',
