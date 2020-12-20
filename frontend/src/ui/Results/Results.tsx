@@ -5,7 +5,6 @@ import ResultError from 'src/ui/Results/ResultError';
 import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
 import Treemap from '../D3Visualizations/Treemap';
 import TransitionTable from '../TransitionTable';
-import ResultError from 'src/ui/Results/ResultError';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
 
