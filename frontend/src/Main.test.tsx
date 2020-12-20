@@ -6,6 +6,15 @@ import { fireEvent, getQueriesForElement } from '@testing-library/dom';
 import { Input, Select } from '@material-ui/core';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react-dom/test-utils';
+import Results, {ResultsProps} from './ui/Results/Results';
+import { ResultsContainer } from './ui/Results/ResultsContainer';
+import { StyledSecondary } from './ui/Common';
+import {ButtonProps} from './ui/Button'
+import {TransitionPageContainer} from './ui/TransitionPage/TransitionPageContainer';
+
+import { createStore } from './ducks';
+import { Provider } from 'react-redux';
+
 
 // renders the Main component, fills out the transition form, and renders the results table using the FakeApi. This tests interactions with the form and the container logic.
 
@@ -41,43 +50,95 @@ describe('transitions', () => {
   const matrixButton = getAllByText('See a Matrix')[0];
   userEvent.click(matrixButton); //render table
 
-  wait(() => expect(findByText(/Job Transitions/i)).not.toBeEmpty()); //check table renders content correctly
+  const transByFindText = await findByText(/Job Transitions/i)
+  
+  expect(transByFindText).not.toBeEmpty(); //check table renders content correctly
 
   
 });
 
-it('tests user button interaction on display treemap', async () => {
+it('calls on onclick method', async () => {
+  const mockOnSubmit = jest.fn(() => {
+    return console.log("mockOnSubmit has been called!");
+  });
 
-  const mockOnSubmit = jest.fn();
-  
-  const {getAllByTestId, getByRole, getAllByText, findByTestId} = render(<Main onSubmit={mockOnSubmit}/>);
+  interface IMockedProps {
+    label: string
+    testid: string
+    onClick: any
+    disabled: any
+    selected: any
+  }
 
-  const selectOct = getAllByTestId('occupation-select')[0];
-    
-  const stateOct = getAllByTestId('state-select')[0];
+  const mockedProps: IMockedProps = {
+    label: "See a Matrix",
+    testid: "See a Matrix",
+    onClick: mockOnSubmit, 
+    disabled: false,
+    selected: true
+  } 
   
+  const props = mockedProps
+
+  const {getAllByTestId, getByRole, getAllByText, findByTestId} = render(<StyledSecondary {...props} />);
+
+  const matrixButton = getAllByTestId('See a Matrix')[0];
 
   await act(async()=>{
-    //test valid selections in dropdowns.
-    userEvent.selectOptions(selectOct, '01-2345 | Doctor');
-  
-    userEvent.selectOptions(stateOct, 'California');
-
+    userEvent.click(matrixButton)
   })
 
-  await act(async()=>{
-    const treechartButton = getAllByText('See a Treechart')[0];
-    userEvent.click(treechartButton); //render treechart
-  })
-
-  wait(() => expect(findByTestId("tree-map")).not.toBeEmpty()); //check table renders content correctly
   expect(mockOnSubmit).toHaveBeenCalled();
-    
+
+})
+
+
+it('displays a tree-chart of data', async () => {
+  const mockOnSubmit = jest.fn(() => {
+    return console.log("tree-chart button clicked")
+  
+  });
+
+  interface IMockedProps {
+    label: string
+    testid: string
+    onClick: any
+    disabled: any
+    selected: any
+  }
+
+  const mockedProps: IMockedProps = {
+    label: "See a Treechart",
+    testid: "See a Treechart",
+    onClick: mockOnSubmit, 
+    disabled: false,
+    selected: true
+  } 
+
+  const {getByText, getAllByText, findAllByTestId, findByTestId} = render(
+    <Provider store={createStore()}>
+      {/* <TransitionPageContainer /> */}
+      <ResultsContainer />
+    </Provider>
+  )
+
+  const treeButton = getAllByTestId('tree-map-button')[0]
+  
+  treeButton.onclick = mockOnSubmit
+  
+
+  userEvent.click(treeButton)
+
+
+  const treeMap = await findByTestId('tree-map')
+  
+
+  expect(treeMap).toBeInTheDocument()
 
 
 
+})
 
-});
 
 });
 

@@ -45,6 +45,8 @@ export default function Treemap({ data, testid }: TreemapProps) {
   const dimensions = useResizeObserver(containerRef);
   const svgRef = useRef<SVGSVGElement>(null);
 
+  containerRef.current?.setAttribute('data-testid', 'tree-map')
+
   const renderTreemap = useCallback(() => {
     // clear previous svg children renderings
     d3.select(svgRef.current).selectAll('g').remove();
