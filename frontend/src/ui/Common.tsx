@@ -37,7 +37,7 @@ export const LabeledSection: React.FC<LabeledSectionProps> = ({
   subtitle,
   children,
 }) => (
-  <Section style={{ marginBottom: '3em' }}>
+  <Section style={{ marginBottom: '48px' }}>
     <Title style={{ marginBlock: '0' }}>{title}</Title>
     <Body style={{ marginBlockStart: '0' }}>{subtitle}</Body>
     {children}

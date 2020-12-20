@@ -8,6 +8,7 @@ import { Body, Title } from './Typography';
 const CollapsingSection = styled(Section)`
   & p {
     margin-block: 0;
+    margin-bottom: 48px;
   }
 `;
 
