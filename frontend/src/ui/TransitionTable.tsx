@@ -21,7 +21,19 @@ const TransitionTable = ({
           tooltip:
             'The Standard Occupational Classification (SOC) system is a federal statistical standard used by federal agencies to classify workers into occupational categories for the purpose of collecting, calculating, or disseminating data.',
         },
-        { title: 'Job name', field: 'name' },
+        {
+          title: 'Job name',
+          field: 'name',
+          render: ({ code, name }) => (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`https://www.mynextmove.org/profile/summary/${code}.00`}
+            >
+              {name}
+            </a>
+          ),
+        },
         {
           title: 'Transition share',
           render: ({ transitionRate }) =>
