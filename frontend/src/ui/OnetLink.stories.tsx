@@ -8,7 +8,16 @@ export default {
   component: OnetLink,
 } as Meta;
 
-export const OnetLinkComputerProgrammer: Story<OnetLinkProps> = args => (
-  <OnetLink {...args} />
-);
-OnetLinkComputerProgrammer.args = { socCode: '15-1131.00' };
+const Template: Story<OnetLinkProps> = args => <OnetLink {...args} />;
+
+export const OnetLinkDecimalCode = Template.bind({});
+OnetLinkDecimalCode.args = {
+  socCode: '15-1131.00',
+  children: 'Computer Programmer',
+};
+
+export const OnetLinkIntegerCode = Template.bind({});
+OnetLinkIntegerCode.args = {
+  socCode: '15-1131',
+  children: 'Computer Programmer',
+};
