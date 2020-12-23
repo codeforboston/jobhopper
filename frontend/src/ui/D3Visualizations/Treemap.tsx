@@ -149,7 +149,7 @@ export default function Treemap({ data }: TreemapProps) {
   }, [renderTreemap]);
 
   return (
-    <Container ref={containerRef}>
+    <Container data-testid="tree-map" ref={containerRef}>
       <Svg ref={svgRef} />
     </Container>
   );
