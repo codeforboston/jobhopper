@@ -80,7 +80,7 @@ describe('Transitions', () => {
 
     mockedApi.getTransitions.mockResolvedValue(transitions);
 
-    const payload: GetTransitionRequest = { socCode: '1' };
+    const payload: GetTransitionRequest = { sourceOccupation: occupations[0] };
 
     await store.dispatch(fetchTransitions(payload));
     expect(store.getState().transitions.transitions).toEqual(transitions);
@@ -95,7 +95,7 @@ describe('Transitions', () => {
     const errorMessage = 'test error fetching';
     mockedApi.getTransitions.mockRejectedValue(new Error(errorMessage));
 
-    const payload: GetTransitionRequest = { socCode: '1' };
+    const payload: GetTransitionRequest = { sourceOccupation: occupations[0] };
 
     await store.dispatch(fetchTransitions(payload));
     expect(store.getState().transitions.transitions).toHaveLength(0);
@@ -112,7 +112,7 @@ describe('Transitions', () => {
       message: errorMessage,
     });
 
-    const payload: GetTransitionRequest = { socCode: '1' };
+    const payload: GetTransitionRequest = { sourceOccupation: occupations[0] };
 
     await store.dispatch(fetchTransitions(payload));
     expect(store.getState().transitions.transitions).toHaveLength(0);

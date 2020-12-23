@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Occupation } from 'src/domain/occupation';
+import { State } from 'src/domain/state';
 import { selectOccupation, useOccupationsState } from 'src/ducks/occupations';
 import { selectState, useStateState } from 'src/ducks/states';
 import {
@@ -37,10 +38,10 @@ function useResultLoader() {
     { selectedOccupation } = useOccupationsState();
 
   const loadTransitions = useCallback(
-    (socCode: string, state?: string) =>
+    (sourceOccupation: Occupation, state?: State) =>
       dispatch(
         fetchTransitions({
-          socCode,
+          sourceOccupation,
           state,
         })
       ),
@@ -55,10 +56,7 @@ function useResultLoader() {
 
   useEffect(() => {
     if (canLoadTransitions(selectedOccupation)) {
-      const promise = loadTransitions(
-        selectedOccupation.code,
-        selectedState?.abbreviation
-      );
+      const promise = loadTransitions(selectedOccupation, selectedState);
       return () => {
         (promise as any).abort();
       };

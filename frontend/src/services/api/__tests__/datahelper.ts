@@ -1,3 +1,4 @@
+import occupations from 'src/testing/data/occupations';
 import { Transition } from '../../../domain/transition';
 import DataHelper from '../DataHelper';
 import FakeApi from '../FakeApi';
@@ -6,7 +7,7 @@ describe('Testing Data Helper Functions', () => {
   it('transforms transitions', async () => {
     const api = new FakeApi();
     const transitions: Transition[] = await api.getTransitions({
-      socCode: '12345',
+      sourceOccupation: occupations[0],
     });
     expect(DataHelper.transformNumber(NaN, 1)).toBe(NaN);
     expect(DataHelper.transformNumber(-10, 2)).toBe(NaN);
