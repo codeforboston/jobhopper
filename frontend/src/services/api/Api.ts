@@ -3,8 +3,8 @@ import { State } from '../../domain/state';
 import { Transition } from '../../domain/transition';
 
 export type GetTransitionRequest = {
-  state?: string;
-  socCode: string;
+  state?: State;
+  sourceOccupation: Occupation;
 };
 
 export default interface Api {
