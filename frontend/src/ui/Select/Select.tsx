@@ -93,7 +93,9 @@ export const StateSelect = ({
       const abbreviation: string | undefined = (state as State)?.abbreviation;
       onSelectState(abbreviation);
     }}
+
     testId="state-select"
+    testId='state-select'
     options={states}
     isClearable
     placeholder={'Select state...'}

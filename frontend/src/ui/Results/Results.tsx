@@ -59,6 +59,7 @@ const Results: React.FC<ResultsProps> = ({
       <Row>
         <StyledSecondary
           label="See a Matrix"
+          testid="See a Matrix"
           onClick={() => {
             setVisualization('matrix');
             if (canLoadTransitions(socCode)) {
@@ -70,6 +71,7 @@ const Results: React.FC<ResultsProps> = ({
         />
         <StyledSecondary
           label="See a Treechart"
+          testid="tree-map-button"
           onClick={() => {
             setVisualization('treemap');
             if (canLoadTransitions(socCode)) {
@@ -88,7 +90,7 @@ const Results: React.FC<ResultsProps> = ({
         } else if (showMatrix) {
           return <TransitionTable transitionData={transitions} />;
         } else if (showTreemap) {
-          return <Treemap data={transitions} />;
+          return <Treemap data={transitions} testid={'tree-map'}/>;
         }
       })()}
     </>
