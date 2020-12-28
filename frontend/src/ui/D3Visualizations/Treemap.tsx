@@ -5,9 +5,11 @@ import { Transition } from '../../domain/transition';
 import useResizeObserver from './useResizeObserver';
 
 const Container = styled.div`
-  width: 70vw;
-  height: 50vh;
+  width: 90vw;
+  height: 70vh;
+  align-self: center;
 `;
+
 
 const Svg = styled.svg``;
 
@@ -152,8 +154,6 @@ export default function Treemap({ data, testid }: TreemapProps) {
   }, [renderTreemap]);
 
   return (
-    <Container data-testid="tree-map" ref={containerRef}>
-      <Svg ref={svgRef} />
     <Container ref={containerRef} >
       <Svg ref={svgRef} data-testid={testid}/>
     </Container>

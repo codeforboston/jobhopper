@@ -95,7 +95,6 @@ export const StateSelect = ({
     }}
 
     testId="state-select"
-    testId='state-select'
     options={states}
     isClearable
     placeholder={'Select state...'}
