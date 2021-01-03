@@ -5,7 +5,7 @@ import { Transition } from 'src/domain/transition';
 import Api, { GetTransitionRequest } from './Api';
 import { array, occupation, transition, state } from './converters';
 
-export class DjangoApiClient implements Api {
+export default class DjangoApiClient implements Api {
   private axios: AxiosInstance;
 
   constructor() {
@@ -19,21 +19,21 @@ export class DjangoApiClient implements Api {
 
   getOccupations(): Promise<Occupation[]> {
     return this.axios
-      .get('/soc-list')
+      .get('/soc-list/')
       .then(response => response.data)
       .then((data: unknown) => array(data, occupation));
   }
 
   getStates(): Promise<State[]> {
     return this.axios
-      .get('/state')
+      .get('/state/')
       .then(response => response.data)
       .then((data: unknown) => array(data, state));
   }
 
   getTransitions(request: GetTransitionRequest): Promise<Transition[]> {
     return this.axios
-      .get('/transitions-extended', {
+      .get('/transitions-extended/', {
         params: {
           soc: request.sourceOccupation.code,
           min_transition_probability: 0.02,

@@ -1,6 +1,6 @@
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
-import { DjangoApiClient } from '../DjangoApiClient';
+import DjangoApiClient from '../DjangoApiClient';
 
 const sourceOccupation: Occupation = {
   code: '15-1131',

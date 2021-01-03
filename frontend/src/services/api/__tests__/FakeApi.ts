@@ -10,7 +10,7 @@ describe('Fake API', () => {
     expect(new FakeApi()).toBeDefined();
   });
 
-  it('is provided by default', () => {
+  it('is used in tests', () => {
     expect(defaultApi).toBeInstanceOf(FakeApi);
   });
 
