@@ -124,7 +124,7 @@ export default function Treemap({ data, testid }: TreemapProps) {
           word = words.pop()!;
           line.push(word);
           tspan.text(line.join(' '));
-          const tspanLength = tspan.node()?.getComputedTextLength()!;
+          const tspanLength = tspan.node()?.getComputedTextLength?.() ?? 0;
           if (tspanLength > width) {
             line.pop();
             tspan.text(line.join(' '));
@@ -154,8 +154,8 @@ export default function Treemap({ data, testid }: TreemapProps) {
   }, [renderTreemap]);
 
   return (
-    <Container ref={containerRef} >
-      <Svg ref={svgRef} data-testid={testid}/>
+    <Container ref={containerRef} data-testid={testid}>
+      <Svg ref={svgRef}/>
     </Container>
   );
 }

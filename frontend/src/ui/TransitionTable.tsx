@@ -35,6 +35,7 @@ const TransitionTable = ({
       ]}
       data={transitionData}
       title="Job Transitions"
+      data-testid="transitions-table"
       options={{
         rowStyle: (_, index) => ({
           backgroundColor:

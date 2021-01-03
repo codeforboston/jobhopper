@@ -23,8 +23,10 @@ export const Select = <T,>({
 }: SelectProps<T>): JSX.Element => {
   const theme = useTheme();
   return (
-    <div data-testid={testId}>
+    <div >
+      <label htmlFor={testId}>{testId}</label>
       <ReactSelect
+        data-testid={testId}
         placeholder={error || placeholder}
         isSearchable
         options={options}
@@ -46,6 +48,7 @@ export const Select = <T,>({
         isLoading={loading}
         isDisabled={loading || !!error}
         {...rest}
+        inputId={testId}
       />
     </div>
   );
@@ -64,6 +67,7 @@ export const OccupationSelect = ({
 }: OccupationSelectProps): JSX.Element => (
   <Select
     testId="occupation-select"
+    data-testid="occupation-select"
     options={occupations}
     placeholder={'Select occupation...'}
     getOptionLabel={({ name, code }) => `${code} | ${name}`}
