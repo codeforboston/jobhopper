@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { shallowEqual, useSelector } from 'react-redux';
 import { State } from '../domain/state';
 import api from '../services/api';
+import { sortBy } from 'lodash';
 
 export const fetchStates = createAsyncThunk('states/fetchStates', () =>
   api.getStates()
@@ -29,7 +30,7 @@ const slice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(fetchStates.fulfilled, (state, { payload: apiStates }) => {
-      state.states = apiStates;
+      state.states = sortBy(apiStates, state => state.name);
       state.loading = false;
       state.error = undefined;
     });
