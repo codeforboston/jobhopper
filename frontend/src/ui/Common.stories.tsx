@@ -6,6 +6,7 @@ import { StyledPrimary, StyledSecondary } from './Common';
 
 interface ButtonProps {
   label: string;
+  testid: string;
 }
 
 export default {
