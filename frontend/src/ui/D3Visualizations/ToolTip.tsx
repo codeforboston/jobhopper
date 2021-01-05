@@ -1,4 +1,5 @@
 import React from 'react';
+import OnetLink from '../OnetLink';
 
 export default function ToolTipDisplay(props: any) {
   const { info } = props;
@@ -36,39 +37,37 @@ const ToolTipData = (props: any) => {
   const annualFormatted = (annual: number) =>
     annual.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   return (
-    <>
-      <div style={TextContainerStyle}>
-        <div style={{ display: 'flex', flex: 1, flexDirection: 'row' }}>
-          <div style={{ marginRight: '2em' }}>{info.data.code}</div>
-          <div style={{ flex: 3, color: '#165085' }}>
-            <a href="target">{info.data.name}</a>
-          </div>
+    <div style={TextContainerStyle}>
+      <div style={{ display: 'flex', flex: 1, flexDirection: 'row' }}>
+        <div style={{ marginRight: '2em' }}>{info.data.code}</div>
+        <div style={{ flex: 3 }}>
+          <OnetLink socCode={info.data.code}>{info.data.name}</OnetLink>
+        </div>
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          flex: 2,
+          flexDirection: 'row',
+          marginRight: '.5em',
+        }}
+      >
+        <div style={{ flex: 1, fontVariantNumeric: 'lining-nums' }}>
+          Transition Share:
+          {Math.round(info.data.transitionRate * 10000) / 100}%
         </div>
         <div
           style={{
             display: 'flex',
             flex: 2,
             flexDirection: 'row',
-            marginRight: '.5em',
+            fontVariantNumeric: 'tabular-nums lining-nums',
           }}
         >
-          <div style={{ flex: 1, fontVariantNumeric: 'lining-nums' }}>
-            Transition Share:
-            {Math.round(info.data.transitionRate * 10000) / 100}%
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              flex: 2,
-              flexDirection: 'row',
-              fontVariantNumeric: 'tabular-nums lining-nums',
-            }}
-          >
-            Salary:&nbsp; Hourly ${`${hourlyTwoDecimal(info.data.hourlyPay)}`}
-            &nbsp; Annual ${`${annualFormatted(info.data.annualSalary)}`}&nbsp;
-          </div>
+          Salary:&nbsp; Hourly ${`${hourlyTwoDecimal(info.data.hourlyPay)}`}
+          &nbsp; Annual ${`${annualFormatted(info.data.annualSalary)}`}&nbsp;
         </div>
       </div>
-    </>
+    </div>
   );
 };
