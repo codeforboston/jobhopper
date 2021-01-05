@@ -8,7 +8,7 @@ import React, {
 import * as d3 from 'd3';
 import styled from 'styled-components';
 import { Transition } from '../../domain/transition';
-import { /* ToolTip ,*/ ToolTipDisplay } from './ToolTip';
+import ToolTip from './ToolTip';
 import useResizeObserver from './useResizeObserver';
 
 const Container = styled.div`
@@ -225,7 +225,7 @@ export default function Treemap({ data }: TreemapProps) {
   return (
     <Container ref={containerRef}>
       <Svg ref={svgRef} />
-      <ToolTipDisplay info={hoveredInfo || selectedInfo} />
+      <ToolTip info={hoveredInfo || selectedInfo} />
     </Container>
   );
 }

@@ -1,8 +1,6 @@
-import { Link } from '@material-ui/core';
 import React from 'react';
-import styled from 'styled-components';
 
-export function ToolTipDisplay(props: any) {
+export default function ToolTipDisplay(props: any) {
   const { info } = props;
   return (
     <div
@@ -55,7 +53,7 @@ const ToolTipData = (props: any) => {
           }}
         >
           <div style={{ flex: 1, fontVariantNumeric: 'lining-nums' }}>
-            Transition Share:{' '}
+            Transition Share:
             {Math.round(info.data.transitionRate * 10000) / 100}%
           </div>
           <div
