@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 import Main from './Main';
 import { OccupationSelect, Select } from './ui/Select/Select';
-import {} from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 import {
   findByTestId,
   findByText,
