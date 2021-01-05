@@ -1,17 +1,31 @@
 import React from 'react';
 import { Row } from './Common';
-import { ShadowButton } from './Button';
 import Logo from './Logo';
+import { Link } from 'react-router-dom';
+import { ShadowButton } from './Button';
+import styled from 'styled-components';
+
+const NakedLink = styled(Link)`
+    text-decoration: none;
+  `,
+  NavLink = ({ to, label }: { to: string; label: string }) => (
+    <NakedLink to={to}>
+      <ShadowButton label={label} />
+    </NakedLink>
+  );
 
 const TopBar = () => {
   return (
     <Row
       style={{
-        alignItems: 'flex-start',
+        flexWrap: 'wrap',
+        alignItems: 'center',
         justifyContent: 'space-between',
       }}
     >
-      <Logo style={{ margin: '25 0 0 50' }} />
+      <Link to="/">
+        <Logo style={{ margin: '25 0 0 50' }} />
+      </Link>
       <Row
         style={{
           flexDirection: 'row',
@@ -21,10 +35,11 @@ const TopBar = () => {
           justifyContent: 'space-between',
         }}
       >
-        <ShadowButton label={'About'} />
-        <ShadowButton label={'Contact'} />
+        <NavLink label="About" to="/about" />
+        <NavLink label="Contact" to="/contact" />
       </Row>
     </Row>
   );
 };
+
 export default TopBar;

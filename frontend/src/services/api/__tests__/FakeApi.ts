@@ -3,13 +3,14 @@ import FakeApi from '../FakeApi';
 import { Occupation } from '../../../domain/occupation';
 import { Transition } from '../../../domain/transition';
 import { State } from '../../../domain/state';
+import occupations from 'src/testing/data/occupations';
 
 describe('Fake API', () => {
   it('Fake can be constructed', () => {
     expect(new FakeApi()).toBeDefined();
   });
 
-  it('is provided by default', () => {
+  it('is used in tests', () => {
     expect(defaultApi).toBeInstanceOf(FakeApi);
   });
 
@@ -35,7 +36,7 @@ describe('Fake API', () => {
   it('retrieves transitions', async () => {
     const api = new FakeApi();
     const transitions: Transition[] = await api.getTransitions({
-      socCode: '12345',
+      sourceOccupation: occupations[0],
     });
     transitions.forEach(
       ({ name, code, annualSalary, hourlyPay, transitionRate }) => {

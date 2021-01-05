@@ -8,11 +8,8 @@ const ContactPage = () => {
     <Page>
       <Title>For more information contact:</Title>
       <Body>
-        <Link href="#">
-          <p>Designated contact link here </p>
-        </Link>
-        <Link href="#">
-          <p>Perhaps other links to other databases</p>
+        <Link href="https://github.com/codeforboston/jobhopper">
+          <p>The JobHopper Project</p>
         </Link>
       </Body>
     </Page>

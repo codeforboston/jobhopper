@@ -80,7 +80,7 @@ describe('Transitions', () => {
 
     mockedApi.getTransitions.mockResolvedValue(transitions);
 
-    const payload: GetTransitionRequest = { socCode: '1' };
+    const payload: GetTransitionRequest = { sourceOccupation: occupations[0] };
 
     await store.dispatch(fetchTransitions(payload));
     expect(store.getState().transitions.transitions).toEqual(transitions);
@@ -95,11 +95,28 @@ describe('Transitions', () => {
     const errorMessage = 'test error fetching';
     mockedApi.getTransitions.mockRejectedValue(new Error(errorMessage));
 
-    const payload: GetTransitionRequest = { socCode: '1' };
+    const payload: GetTransitionRequest = { sourceOccupation: occupations[0] };
 
     await store.dispatch(fetchTransitions(payload));
     expect(store.getState().transitions.transitions).toHaveLength(0);
     expect(store.getState().transitions.loading).toBeFalsy();
     expect(store.getState().transitions.error).toEqual(errorMessage);
+  });
+
+  it('handles abortions', async () => {
+    const store = createStore();
+
+    const errorMessage = 'test error fetching';
+    mockedApi.getTransitions.mockRejectedValue({
+      name: 'AbortError',
+      message: errorMessage,
+    });
+
+    const payload: GetTransitionRequest = { sourceOccupation: occupations[0] };
+
+    await store.dispatch(fetchTransitions(payload));
+    expect(store.getState().transitions.transitions).toHaveLength(0);
+    expect(store.getState().transitions.loading).toBeFalsy();
+    expect(store.getState().transitions.error).toBeUndefined();
   });
 });

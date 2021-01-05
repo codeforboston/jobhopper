@@ -1,8 +1,12 @@
 import React from 'react';
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from '@storybook/react/types-6-0';
-import { StyledPrimary, StyledSecondary } from './Common';
-//List.stories.tsx
+import {
+  LabeledSection,
+  LabeledSectionProps,
+  StyledPrimary,
+  StyledSecondary,
+} from './Common';
 
 interface ButtonProps {
   label: string;
@@ -23,3 +27,16 @@ export const StyledSecondaryButton: Story<ButtonProps> = args => (
   <StyledSecondary {...args} />
 );
 StyledSecondaryButton.args = { label: 'secondary button' };
+
+export const DefaultLabeledSection: Story<LabeledSectionProps> = args => (
+  <LabeledSection {...args} />
+);
+DefaultLabeledSection.args = {
+  title: 'title',
+  subtitle: 'subtitle',
+  children: (
+    <div style={{ width: '100px', height: '100px', border: 'solid' }}>
+      Children
+    </div>
+  ),
+};

@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import styled from 'styled-components';
 import { Transition } from '../../domain/transition';
@@ -10,12 +10,12 @@ const Container = styled.div`
   align-self: center;
 `;
 
-
 const Svg = styled.svg``;
 
 const fontSize = 12;
 const white = '#ffffff';
-const colorRange = ['#bce4d9', '#6ab6c4', '#357ea1'];
+// const colorRange = ['#bce4d9', '#6ab6c4', '#357ea1'];
+const colorRange = ['#519a6e', '#83b496', '#b6d7c3'];
 
 export type TreeNode = { children: Transition[] } | Transition;
 
@@ -47,7 +47,10 @@ export default function Treemap({ data, testid }: TreemapProps) {
   const dimensions = useResizeObserver(containerRef);
   const svgRef = useRef<SVGSVGElement>(null);
 
-  containerRef.current?.setAttribute('data-testid', 'tree-map')
+  containerRef.current?.setAttribute('data-testid', 'tree-map');
+  useEffect(() => {
+    containerRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
 
   const renderTreemap = useCallback(() => {
     // clear previous svg children renderings
@@ -155,7 +158,7 @@ export default function Treemap({ data, testid }: TreemapProps) {
 
   return (
     <Container ref={containerRef} data-testid={testid}>
-      <Svg ref={svgRef}/>
+      <Svg ref={svgRef} />
     </Container>
   );
 }

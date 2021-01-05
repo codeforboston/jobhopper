@@ -1,39 +1,26 @@
-import React, { useMemo, useState } from 'react';
-import { Body, Title } from '../Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Row, Section, StyledSecondary } from '../Common';
+import React, { useMemo, useState } from 'react';
 import { Transition } from 'src/domain/transition';
+import ResultError from 'src/ui/Results/ResultError';
+import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
 import Treemap from '../D3Visualizations/Treemap';
 import TransitionTable from '../TransitionTable';
-import ResultError from 'src/ui/Results/ResultError';
-
-export interface ResultOption {
-  disabled?: boolean;
-  selected?: boolean;
-  show?: () => void;
-}
-
-export type VisualizationType = 'matrix' | 'treemap';
+import { Occupation } from 'src/domain/occupation';
+import { State } from 'src/domain/state';
 
 export interface ResultsProps {
+  selectedState?: State;
+  selectedOccupation?: Occupation;
   loading?: boolean;
-  state?: string;
-  socCode?: string;
   transitions?: Transition[];
   error?: string;
-  loadTransitions: (socCode: string, state?: string) => void;
-}
-
-function canLoadTransitions(code?: string): code is string {
-  return !!code;
 }
 
 const Results: React.FC<ResultsProps> = ({
+  selectedOccupation,
+  selectedState,
   transitions: immutableTransitions = [],
-  state,
-  socCode,
   loading = false,
-  loadTransitions,
   error,
 }) => {
   const [visualization, setVisualization] = useState<'matrix' | 'treemap'>(
@@ -47,53 +34,56 @@ const Results: React.FC<ResultsProps> = ({
     [immutableTransitions]
   );
 
-  const showMatrix = visualization === 'matrix' && transitions.length > 0,
-    showTreemap = visualization === 'treemap' && transitions.length > 0;
+  const hasTransitions = transitions.length > 0,
+    showMatrix = visualization === 'matrix' && hasTransitions,
+    showTreemap = visualization === 'treemap' && hasTransitions,
+    disabled = !hasTransitions || loading;
 
   return (
-    <>
-      <Section>
-        <Title>See Transitions Data</Title>
-        <Body>There is a choice of two ways of viewing the data.</Body>
-      </Section>
-      <Row>
-        <StyledSecondary
-          label="See a Matrix"
-          testid="See a Matrix"
-          onClick={() => {
-            setVisualization('matrix');
-            if (canLoadTransitions(socCode)) {
-              loadTransitions(socCode, state);
-            }
-          }}
-          disabled={!canLoadTransitions(socCode) || loading}
-          selected={showMatrix}
-        />
-        <StyledSecondary
-          label="See a Treechart"
-          testid="tree-map-button"
-          onClick={() => {
-            setVisualization('treemap');
-            if (canLoadTransitions(socCode)) {
-              loadTransitions(socCode, state);
-            }
-          }}
-          disabled={!canLoadTransitions(socCode) || loading}
-          selected={showTreemap}
-        />
-      </Row>
+    <Column>
+      <LabeledSection
+        title="See Transitions Data"
+        subtitle="There is a choice of two ways of viewing the data."
+      >
+        <Row>
+          <StyledSecondary
+            label="See a Matrix"
+            testid="See a Matrix"
+            onClick={() => {
+              setVisualization('matrix');
+            }}
+            disabled={disabled}
+            selected={showMatrix}
+          />
+          <StyledSecondary
+            label="See a Treechart"
+            testid="tree-map-button"
+            onClick={() => {
+              setVisualization('treemap');
+            }}
+            disabled={disabled}
+            selected={showTreemap}
+          />
+        </Row>
+      </LabeledSection>
       {(() => {
         if (loading) {
-          return <CircularProgress />;
+          return <CircularProgress style={{ alignSelf: 'center' }} />;
         } else if (error) {
           return <ResultError error={error} />;
-        } else if (showMatrix) {
-          return <TransitionTable transitionData={transitions} />;
+        } else if (showMatrix && selectedOccupation) {
+          return (
+            <TransitionTable
+              selectedOccupation={selectedOccupation}
+              selectedState={selectedState}
+              transitionData={transitions}
+            />
+          );
         } else if (showTreemap) {
-          return <Treemap data={transitions} testid={'tree-map'}/>;
+          return <Treemap data={transitions} testid={'tree-map'} />;
         }
       })()}
-    </>
+    </Column>
   );
 };
 
