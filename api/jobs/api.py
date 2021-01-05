@@ -72,6 +72,7 @@ class SocListSimpleViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.AllowAny]
     serializer_class = SocListSerializer
     throttle_classes = [AnonRateThrottle]
+    pagination_class = LimitOffsetPagination
     filter_class = SocListFilter
 
 
@@ -82,6 +83,7 @@ class StateViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = StateAbbPairs.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = StateNamesSerializer
+    pagination_class = LimitOffsetPagination
     throttle_classes = [AnonRateThrottle]
 
 
