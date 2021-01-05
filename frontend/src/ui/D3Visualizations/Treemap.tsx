@@ -1,12 +1,11 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
-import * as d3 from 'd3';
 import React, {
   useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
-  useState
+  useState,
 } from 'react';
+import * as d3 from 'd3';
 import styled from 'styled-components';
 import { Transition } from '../../domain/transition';
 import { /* ToolTip ,*/ ToolTipDisplay } from './ToolTip';
@@ -19,7 +18,6 @@ const Container = styled.div`
 `;
 
 const Svg = styled.svg``;
-
 
 const fontSize = 12;
 const white = '#ffffff';
@@ -67,50 +65,47 @@ export default function Treemap({ data }: TreemapProps) {
   }, []);
 
   const renderTreemap = useCallback(() => {
-
-    let hoveredCode: string | undefined
-    let selectedCode: string | undefined
+    let hoveredCode: string | undefined;
+    let selectedCode: string | undefined;
     let selectedNode: any;
 
     const mouseover = (d: any, i: any) => {
-      const targetNode = d3.select(d.currentTarget)
-      const targetCode = code(i.data)
+      const targetNode = d3.select(d.currentTarget);
+      const targetCode = code(i.data);
       if (selectedCode !== targetCode) {
-        targetNode.style('stroke-width', '2px')
+        targetNode.style('stroke-width', '2px');
       }
       if (hoveredCode !== targetCode) {
         setHoveredInfo(i);
-        hoveredCode = targetCode
+        hoveredCode = targetCode;
       }
-    }
+    };
 
     const mouseout = (d: any, i: any) => {
-      const targetNode = d3.select(d.currentTarget)
-      const targetCode = code(i.data)
+      const targetNode = d3.select(d.currentTarget);
+      const targetCode = code(i.data);
       if (selectedCode !== targetCode) {
-        targetNode.style('stroke-width', '0')
+        targetNode.style('stroke-width', '0');
       }
-      setHoveredInfo(undefined)
+      setHoveredInfo(undefined);
       hoveredCode = undefined;
-    }
+    };
 
     const click = (d: any, i: any) => {
-      const targetNode = d3.select(d.currentTarget)
-      const targetCode = code(i.data)
+      const targetNode = d3.select(d.currentTarget);
+      const targetCode = code(i.data);
       if (selectedCode === targetCode) {
-        targetNode.style('stroke-width', '2px')
+        targetNode.style('stroke-width', '2px');
         setSelectedInfo(undefined);
         selectedCode = undefined;
-
       } else {
-        selectedNode?.style('stroke-width', 0)
-        targetNode.style('stroke-width', '3px')
+        selectedNode?.style('stroke-width', 0);
+        targetNode.style('stroke-width', '3px');
         setSelectedInfo(i);
-        selectedCode = targetCode
-        selectedNode = targetNode
+        selectedCode = targetCode;
+        selectedNode = targetNode;
       }
-    }
-
+    };
 
     // clear previous svg children renderings
     d3.select(svgRef.current).selectAll('g').remove();
@@ -158,14 +153,16 @@ export default function Treemap({ data }: TreemapProps) {
       .on('click', click)
       .on('mouseover', mouseover)
       .on('mouseout', mouseout)
-      .style('stroke-width', d => 0)
-
+      .style('stroke-width', d => 0);
 
     // add node labels
 
     nodes
       .append('text')
-      .text(d => `${name(d.data)} ${Math.round(transitionRate(d.data) * 10000) / 100}%`)
+      .text(
+        d =>
+          `${name(d.data)} ${Math.round(transitionRate(d.data) * 10000) / 100}%`
+      )
       .attr('data-width', d => d.x1 - d.x0)
       .attr('font-size', `${fontSize}px`)
       .style('fill', '#165085')
@@ -173,7 +170,6 @@ export default function Treemap({ data }: TreemapProps) {
       .attr('x', 3)
       .attr('y', fontSize)
       .call(wrap);
-
 
     // wrap node labels if necessary
     function wrap(selection: d3.Selection<SVGTextElement, any, any, any>) {
@@ -207,7 +203,7 @@ export default function Treemap({ data }: TreemapProps) {
         }
         // add transition rate as last tspan
         const rateSpan = addTspan(words.pop()!);
-        rateSpan.style('fill', 'black')
+        rateSpan.style('fill', 'black');
         function addTspan(
           text: string
         ): d3.Selection<SVGTSpanElement, any, any, any> {
