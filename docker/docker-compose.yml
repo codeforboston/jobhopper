@@ -13,7 +13,7 @@ services:
       POSTGRES_DB: jobhopper_dev
 
   api:
-    build: 
+    build:
       context: ../api
       dockerfile: docker/Dockerfile
     image: jobhoper-api
@@ -41,7 +41,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ../frontend:/home/node/app
+      - ../frontend:/app
     stdin_open: true
 
 volumes:

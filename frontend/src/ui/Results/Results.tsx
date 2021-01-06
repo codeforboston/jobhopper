@@ -8,7 +8,6 @@ import TransitionTable from '../TransitionTable';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
 
-
 export interface ResultsProps {
   selectedState?: State;
   selectedOccupation?: Occupation;
