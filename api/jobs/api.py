@@ -16,6 +16,7 @@ from .serializers import (
     BlsTransitionsSerializer,
 )
 
+
 class BlsOesFilter(django_filters.FilterSet):
     """
     Create a filter to use with the BlsOes model. When multiple options are chosen in these filters, there
@@ -206,9 +207,9 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
                 {"id": 36636,
                 "soc1": "15-1131",
                 "soc2": "11-9031",
-                "total_soc": 533764,
+                "total_soc": None,
                 "pi": "0.0000773092",
-                "occleaveshare": "0.2133103000"
+                "occleaveshare": None,
                 "soc2_area_title": "Abilene, TX",
                 "soc2_soc_code": "53-7064",
                 "soc2_soc_title": "Packers and Packagers, Hand",
@@ -235,13 +236,13 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
         # List of dicts, each containing metadata on SOCs and transitions
         bls = [model_to_dict(item)
                for item in bls_transitions[0]]
-        transitions = [model_to_dict(item)
+        transitions = [model_to_dict(item, exclude=["occleaveshare", "total_soc"])
                        for item in bls_transitions[1]]
 
         source_soc_info = [item
                            for item in bls
                            if item.get("soc_code") == self.source_soc]
-        source_soc_info = [{f'source_soc_{key}': val
+        source_soc_info = [{f"source_soc_{key}": val
                             for key, val in record.items()}
                            for record in source_soc_info]
         assert len(source_soc_info) <= 1, "Duplicate SOC wage/employment data found in BlsOes model for this location!"
@@ -259,7 +260,7 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
             destination_soc = transition.get("soc2")
             destination_metadata = destination_soc_map.get(destination_soc)
             if destination_metadata:
-                destination_metadata = {f'soc2_{key}': val
+                destination_metadata = {f"soc2_{key}": val
                                         for key, val in destination_metadata.items()}
                 transition.update(destination_metadata)
 
