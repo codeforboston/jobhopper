@@ -104,6 +104,7 @@ describe('transitions results page', () => {
     });
 
     const occupationSelect = getByLabelText('occupation-select');
+    // await userEvent.selectOptions(occupationSelect, '01-2345 | Doctor');
     await selectEvent.select(occupationSelect, '01-2345 | Doctor');
 
     userEvent.click(getByTestId('See a Matrix'));
