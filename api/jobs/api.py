@@ -199,26 +199,33 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
         Response format:
         ------------------------
         ```
-            {source_soc: {
-                source_soc_area_title:
-                ...
-                source_soc_file_year: },
-            transition_rows: [
-                {"id": 36636,
-                "soc1": "15-1131",
-                "soc2": "11-9031",
-                "total_soc": None,
-                "pi": "0.0000773092",
-                "occleaveshare": None,
-                "soc2_area_title": "Abilene, TX",
-                "soc2_soc_code": "53-7064",
-                "soc2_soc_title": "Packers and Packagers, Hand",
-                "soc2_hourly_mean_wage": "9.59",
-                ...
-                "soc2_file_year": 2019 },
-                {...additional rows/results}
-                ]
-            }
+        {"source_soc": {
+            "source_soc_id": 242047,
+            "source_soc_area_title": "U.S.",
+            "source_soc_soc_code": "13-2011",
+            "source_soc_soc_title": "Accountants and Auditors",
+            "source_soc_hourly_mean_wage": 38.23,
+            "source_soc_annual_mean_wage": 79520,
+            "source_soc_total_employment": 1280700,
+            "source_soc_soc_decimal_code": "13-2011.00",
+            "source_soc_file_year": 2019
+          },
+        "transition_rows": [
+            {
+              "id": 1,
+              "soc1": "13-2011",
+              "soc2": "11-3031",
+              "pi": 0.1782961,
+              "soc2_id": 241905,
+              "soc2_area_title": "U.S.",
+              "soc2_soc_code": "11-3031",
+              "soc2_soc_title": "Financial Managers",
+              "soc2_hourly_mean_wage": 70.93,
+              "soc2_annual_mean_wage": 147530,
+              "soc2_total_employment": 654790,
+              "soc2_soc_decimal_code": "11-3031.00",
+              "soc2_file_year": 2019
+            },
         ```
         """
         self._set_params(request)
