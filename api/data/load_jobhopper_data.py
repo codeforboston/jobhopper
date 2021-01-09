@@ -1,4 +1,4 @@
-from api.data.scripts.sql_loader import (
+from data.scripts.sql_loader import (
     load_bls_oes_to_sql,
     load_occupation_transitions_to_sql,
 )

@@ -8,7 +8,7 @@ import pandas as pd
 
 from sqlalchemy.types import Integer, Numeric, String
 from sqlalchemy import create_engine
-from api.data.bls.oes_data_downloader import download_multi_year_oes
+from data.bls.oes_data_downloader import download_multi_year_oes
 
 logging.basicConfig(format="%(asctime)s %(message)s")
 log = logging.getLogger()

@@ -8,7 +8,7 @@ import os
 from io import BytesIO
 from zipfile import ZipFile
 from urllib.request import urlopen
-from api.data.bls.utils.dtype_conversion import to_float, to_int
+from data.bls.utils.dtype_conversion import to_float, to_int
 
 from concurrent.futures import ThreadPoolExecutor
 
