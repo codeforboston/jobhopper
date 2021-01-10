@@ -52,7 +52,7 @@ const TransitionTable = ({
           title: 'Transition share',
           field: 'transitionRate',
           render: ({ transitionRate }) =>
-            `${DataHelper.transformNumber(10 * transitionRate, 2)}%`,
+            `${DataHelper.transformNumber(100 * transitionRate, 2)}%`,
           tooltip:
             'The proportion of individuals in the selected occupation that switch to this job in a given year',
           defaultSort: 'desc',
