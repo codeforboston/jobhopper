@@ -49,7 +49,7 @@ export default function Treemap({ data, testid }: TreemapProps) {
 
   containerRef.current?.setAttribute('data-testid', 'tree-map');
   useEffect(() => {
-    containerRef.current?.scrollIntoView({ behavior: 'smooth' });
+    containerRef.current?.scrollIntoView?.({ behavior: 'smooth' });
   }, []);
 
   const renderTreemap = useCallback(() => {

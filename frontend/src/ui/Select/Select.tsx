@@ -27,7 +27,7 @@ export const Select = <T,>({
       <label htmlFor={testId}>{testId}</label>
       <ReactSelect
         data-testid={testId}
-        placeholder={error || placeholder}
+        placeholder={loading ? 'Loading...' : error || placeholder}
         isSearchable
         options={options}
         getOptionLabel={getOptionLabel}
@@ -67,7 +67,6 @@ export const OccupationSelect = ({
 }: OccupationSelectProps): JSX.Element => (
   <Select
     testId="occupation-select"
-    data-testid="occupation-select"
     options={occupations}
     placeholder={'Select occupation...'}
     getOptionLabel={({ name, code }) => `${code} | ${name}`}
