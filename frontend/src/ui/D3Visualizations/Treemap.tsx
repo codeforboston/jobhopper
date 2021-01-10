@@ -21,7 +21,6 @@ export type TreeNode = { children: Transition[] } | Transition;
 
 export type TreemapProps = {
   data: Transition[];
-  testid: string;
 };
 
 function createHierarchy(data: Transition[]): TreeNode {
@@ -42,12 +41,11 @@ function transitionRate(node: TreeNode): number {
   return isTransition(node) ? node.transitionRate : 0;
 }
 
-export default function Treemap({ data, testid }: TreemapProps) {
+export default function Treemap({ data }: TreemapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
   const svgRef = useRef<SVGSVGElement>(null);
 
-  containerRef.current?.setAttribute('data-testid', 'tree-map');
   useEffect(() => {
     containerRef.current?.scrollIntoView?.({ behavior: 'smooth' });
   }, []);
@@ -157,7 +155,7 @@ export default function Treemap({ data, testid }: TreemapProps) {
   }, [renderTreemap]);
 
   return (
-    <Container ref={containerRef} data-testid={testid}>
+    <Container ref={containerRef} data-testid="treemap">
       <Svg ref={svgRef} />
     </Container>
   );

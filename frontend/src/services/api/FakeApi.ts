@@ -4,7 +4,7 @@ import transitions from '../../testing/data/transitionData';
 import Api, { GetTransitionRequest } from './Api';
 
 const resolveWithDelay = <T>(value: T): Promise<T> =>
-  new Promise(resolve => setTimeout(() => resolve(value), 0));
+  new Promise(resolve => setTimeout(() => resolve(value), 500));
 
 export default class FakeApi implements Api {
   getTransitions = (request: GetTransitionRequest) => {

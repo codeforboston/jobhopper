@@ -69,7 +69,6 @@ const TransitionTable = ({
         },
       ]}
       data={transitionData}
-      data-testid="transitions-table"
       title={title}
       options={{
         thirdSortClick: false,

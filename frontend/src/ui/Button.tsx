@@ -11,7 +11,7 @@ import { Section } from './Common';
 export interface ButtonProps extends MButtonProps {
   label: string;
   selected?: boolean;
-  testid: string
+  testid: string;
 }
 
 const UnstyledButton = ({ label, ...props }: ButtonProps): JSX.Element => (
@@ -37,7 +37,7 @@ export const PrimaryButton = (props: ButtonProps): JSX.Element => (
 );
 
 export const SecondaryButton = (props: ButtonProps): JSX.Element => (
-  <Button color="secondary" {...props} data-testid={props.testid}/>
+  <Button color="secondary" {...props} data-testid={props.testid} />
 );
 
 export const ShadowText = styled.div`

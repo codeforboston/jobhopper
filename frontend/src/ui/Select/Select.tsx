@@ -8,7 +8,6 @@ import { State } from '../../domain/state';
 export interface SelectProps<T> extends Props<T> {
   loading?: boolean;
   error?: string;
-  testId?: string;
 }
 
 export const Select = <T,>({
@@ -18,15 +17,12 @@ export const Select = <T,>({
   placeholder,
   loading,
   error,
-  testId,
   ...rest
 }: SelectProps<T>): JSX.Element => {
   const theme = useTheme();
   return (
     <div>
-      <label htmlFor={testId}>{testId}</label>
       <ReactSelect
-        data-testid={testId}
         placeholder={loading ? 'Loading...' : error || placeholder}
         isSearchable
         options={options}
@@ -48,7 +44,6 @@ export const Select = <T,>({
         isLoading={loading}
         isDisabled={loading || !!error}
         {...rest}
-        inputId={testId}
       />
     </div>
   );
@@ -66,7 +61,7 @@ export const OccupationSelect = ({
   ...rest
 }: OccupationSelectProps): JSX.Element => (
   <Select
-    testId="occupation-select"
+    aria-label="occupation-select"
     options={occupations}
     placeholder={'Select occupation...'}
     getOptionLabel={({ name, code }) => `${code} | ${name}`}
@@ -94,7 +89,7 @@ export const StateSelect = ({
     onChange={state => {
       onSelectState(state as State);
     }}
-    testId="state-select"
+    aria-label="state-select"
     options={states}
     isClearable
     placeholder={'Select state...'}

@@ -48,7 +48,7 @@ const Results: React.FC<ResultsProps> = ({
         <Row>
           <StyledSecondary
             label="See a Matrix"
-            testid="See a Matrix"
+            testid="matrix-button"
             onClick={() => {
               setVisualization('matrix');
             }}
@@ -57,7 +57,7 @@ const Results: React.FC<ResultsProps> = ({
           />
           <StyledSecondary
             label="See a Treechart"
-            testid="tree-map-button"
+            testid="treemap-button"
             onClick={() => {
               setVisualization('treemap');
             }}
@@ -80,7 +80,7 @@ const Results: React.FC<ResultsProps> = ({
             />
           );
         } else if (showTreemap) {
-          return <Treemap data={transitions} testid={'tree-map'} />;
+          return <Treemap data={transitions} />;
         }
       })()}
     </Column>

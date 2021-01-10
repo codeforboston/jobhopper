@@ -2,7 +2,6 @@ import {
   cleanup,
   render,
   waitFor,
-  act,
   waitForElementToBeRemoved,
   RenderResult,
 } from '@testing-library/react';
@@ -86,10 +85,10 @@ describe('Main', () => {
       expect(getByText(/Job Transitions.*Nationally/i)).toBeInTheDocument()
     );
 
-    userEvent.click(getByTestId('tree-map-button'));
+    userEvent.click(getByTestId('treemap-button'));
 
     await waitFor(() => {
-      expect(getByTestId('tree-map')).toBeInTheDocument();
+      expect(getByTestId('treemap')).toBeInTheDocument();
       expect(queryByText(/Job Transitions/i)).not.toBeInTheDocument();
     });
   });
@@ -116,10 +115,10 @@ describe('Main', () => {
       expect(getByText(/Job Transitions.*California/i)).toBeInTheDocument()
     );
 
-    userEvent.click(getByTestId('tree-map-button'));
+    userEvent.click(getByTestId('treemap-button'));
 
     await waitFor(() => {
-      expect(getByTestId('tree-map')).toBeInTheDocument();
+      expect(getByTestId('treemap')).toBeInTheDocument();
       expect(queryByText(/Job Transitions/i)).not.toBeInTheDocument();
     });
   });

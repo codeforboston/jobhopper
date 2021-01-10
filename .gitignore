@@ -16,3 +16,5 @@ node_modules
 firebase-deploy-credentials.json
 firebase-deploy-passphrase
 build-storybook.log
+
+.vscode
