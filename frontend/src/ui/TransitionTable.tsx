@@ -1,7 +1,7 @@
 import React from 'react';
 import MaterialTable from 'material-table';
 import { Transition } from '../domain/transition';
-import { useTheme } from '@material-ui/core';
+import { Typography, useTheme } from '@material-ui/core';
 import OnetLink from './OnetLink';
 import DataHelper from 'src/services/api/DataHelper';
 // leaving these two lines from develop branch. used in TransitionTableProps
@@ -69,7 +69,7 @@ const TransitionTable = ({
         },
       ]}
       data={transitionData}
-      title={title}
+      title={<Title>{title}</Title>}
       options={{
         thirdSortClick: false,
         exportButton: true,
@@ -88,5 +88,11 @@ const TransitionTable = ({
     />
   );
 };
+
+const Title: React.FC = ({ children }) => (
+  <Typography variant="h6" style={{ marginTop: '12px', marginBottom: '12px' }}>
+    {children}
+  </Typography>
+);
 
 export default TransitionTable;
