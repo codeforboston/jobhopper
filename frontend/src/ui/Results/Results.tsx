@@ -48,6 +48,7 @@ const Results: React.FC<ResultsProps> = ({
         <Row>
           <StyledSecondary
             label="See a Matrix"
+            testid="matrix-button"
             onClick={() => {
               setVisualization('matrix');
             }}
@@ -56,6 +57,7 @@ const Results: React.FC<ResultsProps> = ({
           />
           <StyledSecondary
             label="See a Treechart"
+            testid="treemap-button"
             onClick={() => {
               setVisualization('treemap');
             }}

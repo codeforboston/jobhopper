@@ -23,7 +23,7 @@ export const Select = <T,>({
   return (
     <div>
       <ReactSelect
-        placeholder={error || placeholder}
+        placeholder={loading ? 'Loading...' : error || placeholder}
         isSearchable
         options={options}
         getOptionLabel={getOptionLabel}
@@ -61,6 +61,7 @@ export const OccupationSelect = ({
   ...rest
 }: OccupationSelectProps): JSX.Element => (
   <Select
+    aria-label="occupation-select"
     options={occupations}
     placeholder={'Select occupation...'}
     getOptionLabel={({ name, code }) => `${code} | ${name}`}
@@ -88,6 +89,7 @@ export const StateSelect = ({
     onChange={state => {
       onSelectState(state as State);
     }}
+    aria-label="state-select"
     options={states}
     isClearable
     placeholder={'Select state...'}

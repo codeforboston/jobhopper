@@ -61,7 +61,7 @@ export default function Treemap({ data }: TreemapProps) {
   const [selectedInfo, setSelectedInfo] = useState();
 
   useEffect(() => {
-    containerRef.current?.scrollIntoView({ behavior: 'smooth' });
+    containerRef.current?.scrollIntoView?.({ behavior: 'smooth' });
   }, []);
 
   const renderTreemap = useCallback(() => {
@@ -193,7 +193,7 @@ export default function Treemap({ data }: TreemapProps) {
           word = words.pop()!;
           line.push(word);
           tspan.text(line.join(' '));
-          const tspanLength = tspan.node()?.getComputedTextLength()!;
+          const tspanLength = tspan.node()?.getComputedTextLength?.() ?? 0;
           if (tspanLength > width) {
             line.pop();
             tspan.text(line.join(' '));
@@ -223,7 +223,7 @@ export default function Treemap({ data }: TreemapProps) {
   }, [renderTreemap]);
 
   return (
-    <Container ref={containerRef}>
+    <Container ref={containerRef} data-testid="treemap">
       <Svg ref={svgRef} />
       <ToolTip info={hoveredInfo || selectedInfo} />
     </Container>

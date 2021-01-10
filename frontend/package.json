@@ -7,7 +7,7 @@
     "@material-ui/icons": "^4.11.2",
     "@reduxjs/toolkit": "^1.4.0",
     "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
+    "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^7.2.1",
     "@types/d3": "^5.16.3",
     "@types/jest": "^24.9.1",
@@ -30,15 +30,14 @@
     "react-select": "^3.1.0",
     "resize-observer-polyfill": "^1.5.1",
     "styled-components": "^5.2.0",
-    "ts-jest": "^26.4.1",
     "typescript": "^3.7.5"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:ci": "CI=1 react-scripts test --verbose --color --coverage --testPathIgnorePatterns DjangoApiClient",
-    "test:all": "react-scripts test --watchAll --verbose",
+    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
+    "test:ci": "CI=1 react-scripts test --env=jest-environment-jsdom-sixteen --verbose --color --coverage --testPathIgnorePatterns DjangoApiClient",
+    "test:all": "react-scripts test --env=jest-environment-jsdom-sixteen --watchAll --verbose",
     "eject": "react-scripts eject",
     "eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "check-types": "tsc --noemit",
@@ -66,6 +65,12 @@
       "last 1 safari version"
     ]
   },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      ".*stories.tsx?"
+    ]
+  },
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@storybook/addon-actions": "^6.0.22",
@@ -79,12 +84,15 @@
     "chromatic": "^5.4.0",
     "eslint": "^6.6.0",
     "eslint-config-react-app": "^5.2.1",
+    "jest-environment-jsdom-sixteen": "^1.0.3",
     "firebase-tools": "^8.16.2",
     "husky": "^4.3.0",
     "lint-staged": "^10.4.0",
     "prettier": "2.1.2",
     "react-is": "^16.13.1",
+    "react-select-event": "^5.1.0",
     "shelljs": "^0.8.4",
+    "ts-jest": "^26.4.4",
     "storybook-react-router": "^1.0.8"
   },
   "husky": {
