@@ -16,7 +16,8 @@ class Migration(migrations.Migration):
             start_year=2018,
             end_year=2019,
             table_name=None,
-            soc_table_name="jobs_socdescription")
+            soc_table_name="jobs_socdescription",
+            transitions_file_path="data/occupation_transitions_public_data_set.csv")
 
         print("Done with forward load")
 
