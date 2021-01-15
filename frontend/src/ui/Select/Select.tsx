@@ -1,9 +1,10 @@
 import { useTheme } from '@material-ui/core';
 import React from 'react';
 
-import ReactSelect, { Props } from 'react-select';
+import { Props } from 'react-select';
 import { Occupation } from '../../domain/occupation';
 import { State } from '../../domain/state';
+import { Select as VirtualSelect } from 'react-select-virtualized';
 
 export interface SelectProps<T> extends Props<T> {
   loading?: boolean;
@@ -22,19 +23,19 @@ export const Select = <T,>({
   const theme = useTheme();
   return (
     <div>
-      <ReactSelect
+      <VirtualSelect
         placeholder={loading ? 'Loading...' : error || placeholder}
         isSearchable
         options={options}
-        getOptionLabel={getOptionLabel}
+        formatOptionLabel={getOptionLabel}
         getOptionValue={getOptionValue}
         styles={{
-          menu: base => ({ ...base, zIndex: 100 }),
-          control: base => ({
+          menu: (base: any) => ({ ...base, zIndex: 100 }),
+          control: (base: any) => ({
             ...base,
             backgroundColor: theme.palette.primary.light,
           }),
-          placeholder: base => ({
+          placeholder: (base: any) => ({
             ...base,
             color: error
               ? theme.palette.error.main
