@@ -12,7 +12,12 @@
     "editor.wordWrap": "on",
     "editor.formatOnSave": true,
     "files.autoSave": "off",
-    "eslint.workingDirectories": ["./frontend"]
+    "eslint.workingDirectories": [
+      "./frontend"
+    ],
+    "githubPullRequests.remotes": [
+      "upstream"
+    ]
   },
   "extensions": {
     "recommendations": [

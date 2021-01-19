@@ -4,34 +4,51 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.11.2",
+    "@reduxjs/toolkit": "^1.4.0",
     "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
+    "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^7.2.1",
+    "@types/d3": "^5.16.3",
     "@types/jest": "^24.9.1",
     "@types/node": "^12.12.59",
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
+    "@types/react-redux": "^7.1.9",
+    "@types/react-router-dom": "^5.1.6",
     "@types/react-select": "^3.0.21",
     "@types/styled-components": "^5.1.3",
+    "axios": "^0.21.1",
+    "d3": "^6.2.0",
+    "lodash": "^4.17.20",
     "material-table": "^1.69.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-redux": "^7.2.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "react-select": "^3.1.0",
+    "resize-observer-polyfill": "^1.5.1",
     "styled-components": "^5.2.0",
     "typescript": "^3.7.5"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
+    "test:ci": "CI=1 react-scripts test --env=jest-environment-jsdom-sixteen --verbose --color --coverage --testPathIgnorePatterns DjangoApiClient",
+    "test:all": "react-scripts test --env=jest-environment-jsdom-sixteen --watchAll --verbose",
     "eject": "react-scripts eject",
-    "eslint": "eslint .",
+    "eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "check-types": "tsc --noemit",
-    "lint": "set -x; npm run eslint .; npm run check-types",
-    "fix": "set -x; prettier --write .; eslint --fix .",
+    "lint": "node scripts/npm.js lint",
+    "ci:lint-and-test": "CI=true node scripts/npm.js lint-and-test",
+    "fix": "node scripts/npm.js fix",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "chromatic": "npx chromatic",
+    "chromatic:ci": "npx chromatic --exit-once-uploaded",
+    "deploy": "firebase deploy --only hosting"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -48,6 +65,12 @@
       "last 1 safari version"
     ]
   },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      ".*stories.tsx?"
+    ]
+  },
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@storybook/addon-actions": "^6.0.22",
@@ -56,13 +79,21 @@
     "@storybook/node-logger": "^6.0.22",
     "@storybook/preset-create-react-app": "^3.1.4",
     "@storybook/react": "^6.0.22",
+    "@types/lodash": "^4.14.167",
     "babel-loader": "^8.1.0",
+    "chromatic": "^5.4.0",
     "eslint": "^6.6.0",
     "eslint-config-react-app": "^5.2.1",
+    "jest-environment-jsdom-sixteen": "^1.0.3",
+    "firebase-tools": "^8.16.2",
     "husky": "^4.3.0",
     "lint-staged": "^10.4.0",
     "prettier": "2.1.2",
-    "react-is": "^16.13.1"
+    "react-is": "^16.13.1",
+    "react-select-event": "^5.1.0",
+    "shelljs": "^0.8.4",
+    "ts-jest": "^26.4.4",
+    "storybook-react-router": "^1.0.8"
   },
   "husky": {
     "hooks": {
