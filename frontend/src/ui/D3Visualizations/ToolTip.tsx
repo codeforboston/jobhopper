@@ -44,6 +44,11 @@ const ToolTipData = (props: any) => {
           <OnetLink socCode={info.data.code}>{info.data.name}</OnetLink>
         </div>
       </div>
+      <div style={{ display: 'flex', flex: 1, flexDirection: 'row' }}>
+        <div style={{ flex: 3 }}>
+          {info.data.majorGroup}
+        </div>
+      </div>
       <div
         style={{
           display: 'flex',

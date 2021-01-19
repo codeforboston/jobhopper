@@ -22,13 +22,19 @@ const Svg = styled.svg``;
 const fontSize = 12;
 const white = '#ffffff';
 // const colorRange = ['#bce4d9', '#6ab6c4', '#357ea1'];
-const colorRange = ['#519a6e', '#83b496', '#b6d7c3'];
+// const colorRange = ['#519a6e', '#83b496', '#b6d7c3'];
+
+// these two arrays must match item for item - this is how the colors are assigned in the D3 color scale
+const colorRange = ['#2E96FC', '#31B39F', '#5DC2B3', '#73B9FE', '#766CFB', '#8DD5CA', '#958DFA', '#A2D0FD', '#C1BFFE', '#D0E7FF', '#D0EEE9', '#DA8FC7', '#DFDDFE', '#F79FE0', '#FEA333', '#FEB95D', '#FECE8B', '#FED1DE', '#FEE1BA', '#FF4782', '#FF74A1', '#FFA3C0', '#FFD0F3']
+
+const colorDomainMajorOccCodes = [11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55]
 
 export type TreeNode = { children: Transition[] } | Transition;
 
 export type TreemapProps = {
   data: Transition[];
 };
+
 
 function createHierarchy(data: Transition[]): TreeNode {
   return {
@@ -137,17 +143,23 @@ export default function Treemap({ data }: TreemapProps) {
       .attr('transform', d => `translate(${d.x0},${d.y0})`);
 
     // select color within d3.schemeSet3 (contains array of 12 colors)
-    const colorScale = d3
+    const colorScaleTransitionRate = d3
       .scaleQuantile<string>()
       .domain(data.map(d => d.transitionRate))
       .range(colorRange);
+
+    const colorScaleMajorOccupation = d3
+      .scaleQuantile<string>()
+      .domain(colorDomainMajorOccCodes)
+      .range(colorRange)
+
 
     // create and fill svg 'rects' based on the node data selected
     nodes
       .append('rect')
       .attr('width', d => d.x1 - d.x0)
       .attr('height', d => d.y1 - d.y0)
-      .attr('fill', d => colorScale(transitionRate(d.data)) || white)
+      .attr('fill', d => colorScaleMajorOccupation(parseInt(code(d.data))) || white)
       .style('stroke-linejoin', 'round')
       .style('stroke', '#2878C8')
       .on('click', click)
@@ -228,4 +240,21 @@ export default function Treemap({ data }: TreemapProps) {
       <ToolTip info={hoveredInfo || selectedInfo} />
     </Container>
   );
+}
+
+
+export function TreemapToggles({ data }: TreemapProps) {
+  // const title: string = ""
+  // const currentOccupation = ""
+  // const SEARCH = null
+  // const downloadButton, printButton = null
+  // const toggle OCC Group <--> WAGE
+  // const sort (mark with arrows)
+
+
+
+
+  return (
+    <div>{children}</div>
+  )
 }
