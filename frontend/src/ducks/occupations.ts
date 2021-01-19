@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { sortBy } from 'lodash';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Occupation } from '../domain/occupation';
 import api from '../services/api';
@@ -32,7 +33,7 @@ const slice = createSlice({
     builder.addCase(
       fetchOccupations.fulfilled,
       (state, { payload: occupations }) => {
-        state.occupations = occupations;
+        state.occupations = sortBy(occupations, ({ code }) => code);
         state.loading = false;
         state.error = undefined;
       }

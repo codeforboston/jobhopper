@@ -10,6 +10,7 @@ import {
 
 interface ButtonProps {
   label: string;
+  testid: string;
 }
 
 export default {
