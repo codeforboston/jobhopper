@@ -8,6 +8,7 @@ import { State } from '../../domain/state';
 export interface SelectProps<T> extends Props<T> {
   loading?: boolean;
   error?: string;
+  disabled?: boolean;
 }
 
 export const Select = <T,>({
@@ -17,6 +18,7 @@ export const Select = <T,>({
   placeholder,
   loading,
   error,
+  disabled,
   ...rest
 }: SelectProps<T>): JSX.Element => {
   const theme = useTheme();
@@ -42,7 +44,7 @@ export const Select = <T,>({
           }),
         }}
         isLoading={loading}
-        isDisabled={loading || !!error}
+        isDisabled={disabled || loading || !!error}
         {...rest}
       />
     </div>
