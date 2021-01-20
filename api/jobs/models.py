@@ -19,7 +19,7 @@ class Socs(models.Model):
     broadName = models.CharField(max_length=200)
 
 
-# This is the burning glass data.
+# This is the burning glass data. total_transition_obs is reweighted by age, and is sometimes not an integer.
 class OccupationTransitions(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
     soc1 = models.CharField(max_length=7, null=True)

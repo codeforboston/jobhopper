@@ -56,7 +56,9 @@ class BlsOesViewSet(viewsets.ReadOnlyModelViewSet):
 class SocListFilter(django_filters.FilterSet):
     """
     Create a filter to use with the BlsOes model. When multiple options are chosen in these filters, there
-    must be no space between comma-separated values
+    must be no space between comma-separated values. min_transition_observations refers to the minimum number of
+    observations used to derive transition probabilities for a given source SOC. According to Schubert, Stansbury,
+    and Taska (2020), this need not be an integer since it can be reweighted by age.
     """
     socs = django_filters.BaseInFilter(field_name="soc_code", lookup_expr="in")
     min_transition_observations = django_filters.NumberFilter(field_name="total_transition_obs", lookup_expr="gte")
