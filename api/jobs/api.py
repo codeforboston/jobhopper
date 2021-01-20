@@ -58,11 +58,12 @@ class SocListFilter(django_filters.FilterSet):
     Create a filter to use with the BlsOes model. When multiple options are chosen in these filters, there
     must be no space between comma-separated values
     """
-    socs = django_filters.BaseInFilter(field_name='soc_code', lookup_expr='in')
+    socs = django_filters.BaseInFilter(field_name="soc_code", lookup_expr="in")
+    min_transition_observations = django_filters.NumberFilter(field_name="total_transition_obs", lookup_expr="gte")
 
     class Meta:
         model = SocDescription
-        fields = ['socs']
+        fields = ["socs", "min_transition_observations"]
 
 
 class SocListSimpleViewSet(viewsets.ReadOnlyModelViewSet):
@@ -91,11 +92,11 @@ class OccupationTransitionsFilter(django_filters.FilterSet):
     Create a filter to use with the OccupationTransitions model in the Occupation Transitions viewset
     """
     # field_name instead of name, and lookup_expr instead of lookup_type is used for the NumberFilter for Django 2.0+
-    min_transition_probability = django_filters.NumberFilter(field_name="pi", lookup_expr='gte')
+    min_transition_probability = django_filters.NumberFilter(field_name="pi", lookup_expr="gte")
 
     class Meta:
         model = OccupationTransitions
-        fields = ['min_transition_probability', 'soc1']
+        fields = ["min_transition_probability", "soc1"]
 
 
 class OccupationTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
@@ -198,7 +199,6 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
 
         Response format:
         ------------------------
-        ```
         {"source_soc": {
             "source_soc_id": 242047,
             "source_soc_area_title": "U.S.",
@@ -216,6 +216,7 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
               "soc1": "13-2011",
               "soc2": "11-3031",
               "pi": 0.1782961,
+              "total_transition_obs": 390865.6,
               "soc2_id": 241905,
               "soc2_area_title": "U.S.",
               "soc2_soc_code": "11-3031",
@@ -226,7 +227,6 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
               "soc2_soc_decimal_code": "11-3031.00",
               "soc2_file_year": 2019
             },
-        ```
         """
         self._set_params(request)
 
