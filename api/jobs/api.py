@@ -278,4 +278,3 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
             "source_soc":  source_soc_info,
             "transition_rows": transitions,
         })
-

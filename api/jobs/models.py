@@ -22,11 +22,12 @@ class Socs(models.Model):
 # This is the burning glass data.
 class OccupationTransitions(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
-    soc1 = models.CharField(max_length=7)
-    soc2 = models.CharField(max_length=7)
+    soc1 = models.CharField(max_length=7, null=True)
+    soc2 = models.CharField(max_length=7, null=True)
     total_soc = models.BigIntegerField(null=True)
     pi = models.DecimalField(decimal_places=10, max_digits=11, null=True)
     occleaveshare = models.DecimalField(decimal_places=10, max_digits=11, null=True)
+    total_transition_obs = models.DecimalField(decimal_places=5, max_digits=20, null=True)
 
 
 class BlsOesFakes(models.Model):
@@ -55,6 +56,7 @@ class SocDescription(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True, serialize=False)
     soc_code = models.CharField(max_length=10, null=True)
     soc_title = models.CharField(max_length=255, null=True)
+    total_transition_obs = models.DecimalField(decimal_places=5, max_digits=20, null=True)
 
 
 class StateAbbPairs(models.Model):

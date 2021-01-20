@@ -24,7 +24,7 @@ class BlsOesSerializer(serializers.ModelSerializer):
 class SocListSerializer(serializers.ModelSerializer):
     class Meta:
         model = SocDescription
-        fields = ("soc_code", "soc_title")
+        fields = ("soc_code", "soc_title", "total_transition_obs")
 
 
 
