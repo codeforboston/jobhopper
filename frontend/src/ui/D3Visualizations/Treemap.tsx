@@ -6,8 +6,11 @@ import React, {
   useState,
 } from 'react';
 import * as d3 from 'd3';
+import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Transition } from '../../domain/transition';
+import { Occupation } from '../../domain/occupation';
+import { State } from '../../domain/state';
 import ToolTip from './ToolTip';
 import useResizeObserver from './useResizeObserver';
 
@@ -27,6 +30,8 @@ const colorRange = ['#519a6e', '#83b496', '#b6d7c3'];
 export type TreeNode = { children: Transition[] } | Transition;
 
 export type TreemapProps = {
+  selectedOccupation: Occupation;
+  selectedState?: State;
   data: Transition[];
 };
 
@@ -52,7 +57,20 @@ function code(node: TreeNode): string {
   return isTransition(node) ? node.code : '0';
 }
 
-export default function Treemap({ data }: TreemapProps) {
+export default function Treemap({
+  data,
+  selectedOccupation,
+  selectedState,
+}: TreemapProps) {
+  const occName = selectedOccupation ? selectedOccupation.name : '';
+  const occCode = selectedOccupation ? selectedOccupation.code : '';
+
+  const title = `Which occupations do ${occName} (${occCode}) ${
+    selectedState ? `move to in ${selectedState.name}?` : `move to Nationally?`
+  }`;
+
+  const footnote_blurb = `This visualization shows the occupations which ${occName} move to when they change occupation. The transition share is the proportion of ${occName} who move into a job in each other occupation when they switch occupation. We only break out individual occupations with transition shares greater than 0.2%.`;
+
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -224,8 +242,20 @@ export default function Treemap({ data }: TreemapProps) {
 
   return (
     <Container ref={containerRef} data-testid="treemap">
+      <Typography
+        variant="h6"
+        style={{ marginTop: '12px', marginBottom: '12px' }}
+      >
+        {title}
+      </Typography>
       <Svg ref={svgRef} />
       <ToolTip info={hoveredInfo || selectedInfo} />
+      <Typography
+        variant="h6"
+        style={{ marginTop: '4px', marginBottom: '4px', fontSize: '10' }}
+      >
+        {footnote_blurb}
+      </Typography>
     </Container>
   );
 }
