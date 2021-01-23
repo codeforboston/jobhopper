@@ -25,9 +25,4 @@ class Migration(migrations.Migration):
             name='soc2',
             field=models.CharField(max_length=7, null=True),
         ),
-        migrations.AddField(
-            model_name='socdescription',
-            name='total_transition_obs',
-            field=models.DecimalField(decimal_places=5, max_digits=20, null=True),
-        ),
     ]

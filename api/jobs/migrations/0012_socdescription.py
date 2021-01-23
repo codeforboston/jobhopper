@@ -16,6 +16,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('soc_code', models.CharField(max_length=10, null=True)),
                 ('soc_title', models.CharField(max_length=255, null=True)),
+                ('total_transition_obs', models.DecimalField(decimal_places=5, max_digits=20, null=True))
             ],
         ),
     ]

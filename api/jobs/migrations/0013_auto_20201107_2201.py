@@ -12,6 +12,8 @@ class Migration(migrations.Migration):
     ]
 
     def forwards_source_data(apps, schema_editor):
+        # Automatically loads in an empty total_transition_obs field. Was unable to get the field to work cleanly
+        # with Django tests + 0014/0015 (tests would delete field & prevent back-migrations). This is a workaround.
         load_bls_oes_to_sql(
             start_year=2018,
             end_year=2019,

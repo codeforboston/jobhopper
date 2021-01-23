@@ -6,8 +6,8 @@ log = logging.getLogger()
 
 class Migration(migrations.Migration):
     """
-    Populate the total_transition_obs field in jobs_occupationtransitions and jobs_socdescription tables
-    occupation_transition is populated by an earlier migration as part of the Python ingestion code
+    Populate the total_transition_obs field in jobs_occupationtransitions table. jobs_socdescription and
+    occupation_transition are populated by an earlier migration as part of the Python ingestion code
 
     According to Schubert, Stansbury, and Taska (2020), the total_obs field need not be an integer since it can be
     reweighted by age.
@@ -18,6 +18,7 @@ class Migration(migrations.Migration):
         WHERE original.soc1 = jobs.soc1
             AND original.soc2 = jobs.soc2;
 
+        Note: Was unable to get this to work with manage.py test, so shifted the data loading to an earlier migration
         UPDATE jobs_socdescription AS jobs
         SET total_transition_obs = original.total_obs
         FROM (SELECT DISTINCT soc1, total_obs
@@ -29,14 +30,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL([
-            ("UPDATE jobs_socdescription AS jobs "
-             "SET total_transition_obs = original.total_obs "
-             "FROM (SELECT DISTINCT soc1, total_obs FROM occupation_transition) AS original "
-             "WHERE original.soc1 = jobs.soc_code;")
-        ],
-        ["UPDATE jobs_socdescription SET total_transition_obs = NULL;"]
-        ),
         migrations.RunSQL([
             ("UPDATE jobs_occupationtransitions AS jobs "
              "SET total_transition_obs = original.total_obs "

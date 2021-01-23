@@ -96,16 +96,23 @@ def load_bls_oes_to_sql(
     if soc_table_name:
         log.info("Saving unique SOC codes/descriptions to {}".format(soc_table_name))
         socs_in_transitions = pd.read_csv(transitions_file_path)
-        valid_source_socs = set(socs_in_transitions["soc1"])
+        valid_transitions_socs = socs_in_transitions[["soc1", "total_obs"]].drop_duplicates()
 
         unique_soc_codes = (
             bls_oes_data[["soc_code", "soc_title"]]
             .drop_duplicates(subset=["soc_code"]))
 
         log.info("Filtering SOC codes to only include those in the source SOC for transitions data")
-        unique_soc_codes = unique_soc_codes[unique_soc_codes["soc_code"].apply(
-            lambda soc: soc in valid_source_socs)]
-        unique_soc_codes = unique_soc_codes.reset_index(drop = True)
+        unique_soc_codes = unique_soc_codes.merge(valid_transitions_socs,
+                                                  left_on="soc_code",
+                                                  right_on="soc1",
+                                                  how="inner")
+
+        unique_soc_codes = (unique_soc_codes
+                            .reset_index(drop=True)
+                            .assign(total_transition_obs=unique_soc_codes["total_obs"].apply(lambda x: round(x, 5)))
+                            [["soc_code", "soc_title", "total_transition_obs"]]
+                            )
 
         unique_soc_codes.to_sql(
             soc_table_name,
@@ -115,7 +122,8 @@ def load_bls_oes_to_sql(
             index_label="id",
             dtype={
                 "soc_code": String(),
-                "soc_title": String()
+                "soc_title": String(),
+                "total_transition_obs": Numeric()
             }
         )
         log.info("Unique SOC codes/descriptions saved!")
