@@ -9,6 +9,7 @@ import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
 import Canvg, { presets } from 'canvg';
 import { jsPDF } from 'jspdf';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export interface ResultsProps {
   selectedState?: State;
@@ -41,7 +42,7 @@ const Results: React.FC<ResultsProps> = ({
     showTreemap = visualization === 'treemap' && hasTransitions,
     disabled = !hasTransitions || loading;
 
-  const exportPDF = () => {
+  const exportPDF = async () => {
     const svgElement = document.getElementById('treemap-svg');
     const svgOuter = svgElement?.outerHTML;
     console.log(svgOuter);
@@ -56,8 +57,20 @@ const Results: React.FC<ResultsProps> = ({
       document.body.appendChild(canvas);
       let ctx = canvas.getContext('2d')!;
       let v = Canvg.from(ctx, svgString);
+      (await v).render();
+      ctx.rect(10, 10, 200, 200);
+      ctx.fillStyle = '#FF0000';
+      ctx.fill();
+
+      let image = new Image();
+      let svg64 = btoa(svgString);
+      let b64start = 'data:image/svg+xml;base64,';
+      var image64 = b64start + svg64;
+      image.src = image64;
+      ctx.drawImage(image, 0, 0);
+
       pdf.text('Tree Map', 10, 10);
-      pdf.addSvgAsImage(svgString, 0, 15, 1020, 768);
+      pdf.addImage(canvas, 'PNG', 20, 20, 400, 400);
       pdf.save('treemap');
     }
   };
