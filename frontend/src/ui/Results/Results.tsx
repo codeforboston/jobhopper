@@ -58,7 +58,6 @@ const Results: React.FC<ResultsProps> = ({
       let v = await Canvg.from(ctx, svgString);
       // v.resize(1131, 663, 'xMidYMid meet');
       (await v).render();
-      document.body.appendChild(canvas);
 
       let image = new Image();
       let svg64 = btoa(svgString);
@@ -67,8 +66,18 @@ const Results: React.FC<ResultsProps> = ({
       image.src = image64;
       ctx.drawImage(image, 0, 0);
 
-      pdf.text('Tree Map', 10, 10);
-      pdf.addImage(canvas, 'PNG', 0, 0, 300, 150);
+      pdf.text('JobHopper:', 10, 10);
+      pdf.text(
+        'This visualization shows where {} move to when they switch occupations.',
+        10,
+        20
+      );
+      pdf.addImage(canvas, 'PNG', 0, 30, 300, 150);
+      pdf.text(
+        'The visualization was created by Code for Boston’s JobHopper team, using data from 16 million U.S. workers’ resumes compiled by Burning Glass Technologies.',
+        5,
+        200
+      );
       pdf.save('treemap');
     }
   };
