@@ -50,17 +50,15 @@ const Results: React.FC<ResultsProps> = ({
     if (svgOuter && svgElement) {
       const svgString = new XMLSerializer().serializeToString(svgElement);
 
-      let pdf = new jsPDF();
+      let pdf = new jsPDF('l');
       let canvas = document.createElement('canvas');
-      canvas.width = 1020;
+      canvas.width = 1200;
       canvas.height = 768;
-      document.body.appendChild(canvas);
       let ctx = canvas.getContext('2d')!;
-      let v = Canvg.from(ctx, svgString);
+      let v = await Canvg.from(ctx, svgString);
+      // v.resize(1131, 663, 'xMidYMid meet');
       (await v).render();
-      ctx.rect(10, 10, 200, 200);
-      ctx.fillStyle = '#FF0000';
-      ctx.fill();
+      document.body.appendChild(canvas);
 
       let image = new Image();
       let svg64 = btoa(svgString);
@@ -70,7 +68,7 @@ const Results: React.FC<ResultsProps> = ({
       ctx.drawImage(image, 0, 0);
 
       pdf.text('Tree Map', 10, 10);
-      pdf.addImage(canvas, 'PNG', 20, 20, 400, 400);
+      pdf.addImage(canvas, 'PNG', 0, 0, 300, 150);
       pdf.save('treemap');
     }
   };
