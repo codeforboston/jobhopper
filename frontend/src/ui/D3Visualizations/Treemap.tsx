@@ -223,8 +223,8 @@ export default function Treemap({ data }: TreemapProps) {
   }, [renderTreemap]);
 
   return (
-    <Container ref={containerRef} data-testid="treemap">
-      <Svg ref={svgRef} />
+    <Container ref={containerRef} data-testid="treemap" id="treemap-container">
+      <Svg ref={svgRef} id="treemap-svg" />
       <ToolTip info={hoveredInfo || selectedInfo} />
     </Container>
   );

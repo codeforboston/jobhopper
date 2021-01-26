@@ -1,5 +1,5 @@
 import CircularProgress from '@material-ui/core/CircularProgress';
-import React, { useMemo, useState } from 'react';
+import React, { createElement, useMemo, useState } from 'react';
 import { Transition } from 'src/domain/transition';
 import ResultError from 'src/ui/Results/ResultError';
 import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
@@ -7,6 +7,8 @@ import Treemap from '../D3Visualizations/Treemap';
 import TransitionTable from '../TransitionTable';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
+import Canvg, { presets } from 'canvg';
+import { jsPDF } from 'jspdf';
 
 export interface ResultsProps {
   selectedState?: State;
@@ -39,6 +41,27 @@ const Results: React.FC<ResultsProps> = ({
     showTreemap = visualization === 'treemap' && hasTransitions,
     disabled = !hasTransitions || loading;
 
+  const exportPDF = () => {
+    const svgElement = document.getElementById('treemap-svg');
+    const svgOuter = svgElement?.outerHTML;
+    console.log(svgOuter);
+
+    if (svgOuter && svgElement) {
+      const svgString = new XMLSerializer().serializeToString(svgElement);
+
+      let pdf = new jsPDF();
+      let canvas = document.createElement('canvas');
+      canvas.width = 1020;
+      canvas.height = 768;
+      document.body.appendChild(canvas);
+      let ctx = canvas.getContext('2d')!;
+      let v = Canvg.from(ctx, svgString);
+      pdf.text('Tree Map', 10, 10);
+      pdf.addSvgAsImage(svgString, 0, 15, 1020, 768);
+      pdf.save('treemap');
+    }
+  };
+
   return (
     <Column>
       <LabeledSection
@@ -61,6 +84,13 @@ const Results: React.FC<ResultsProps> = ({
             onClick={() => {
               setVisualization('treemap');
             }}
+            disabled={disabled}
+            selected={showTreemap}
+          />
+          <StyledSecondary
+            label="Export Chart"
+            testid="treechartPdf"
+            onClick={exportPDF}
             disabled={disabled}
             selected={showTreemap}
           />
