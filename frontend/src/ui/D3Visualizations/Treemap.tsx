@@ -15,7 +15,6 @@ import { colorDomainMajorOccCodes, colorRange } from './colorSchemes';
 import ToolTip from './ToolTip';
 import TreemapKey from './TreemapKey';
 import useResizeObserver from './useResizeObserver';
-import { CaptionText } from './TreemapSubComponents';
 
 const Container = styled.div`
   width: 90vw;

@@ -60,10 +60,6 @@ majorLookup.set(55, 'Military Specific Occupations');
 /*
 
 
-
-
-
-
 majorgroup	majorname
 11 - 0000	Management Occupations
 13 - 0000	Business and Financial Operations Occupations

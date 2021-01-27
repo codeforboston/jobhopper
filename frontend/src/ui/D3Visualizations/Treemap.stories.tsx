@@ -8,7 +8,7 @@ import TreemapKey, { TreemapKeyProps } from './TreemapKey'
 
 
 export default {
-  title: 'JobHopper/Treemap',
+  title: 'JobHopper/D3Visualizations/Treemap',
   component: Treemap,
 } as Meta;
 
