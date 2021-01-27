@@ -22,8 +22,6 @@ const Svg = styled.svg``;
 
 const fontSize = 12;
 const white = '#ffffff';
-// const colorRange = ['#bce4d9', '#6ab6c4', '#357ea1'];
-// const colorRange = ['#519a6e', '#83b496', '#b6d7c3'];
 
 // these two arrays must match item for item - index for index - this is how the colors are assigned in the D3 color scale
 const colorRange = ['#2E96FC', '#31B39F', '#5DC2B3', '#73B9FE', '#766CFB', '#8DD5CA', '#958DFA', '#A2D0FD', '#C1BFFE', '#D0E7FF', '#D0EEE9', '#DA8FC7', '#DFDDFE', '#F79FE0', '#FEA333', '#FEB95D', '#FECE8B', '#FED1DE', '#FEE1BA', '#FF4782', '#FF74A1', '#FFA3C0', '#FFD0F3']
