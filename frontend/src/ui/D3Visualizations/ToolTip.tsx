@@ -30,7 +30,7 @@ const TextContainerStyle: any = {
 };
 
 const ToolTipData = (props: any) => {
-  console.log(props);
+  
   const { info } = props;
 
   const hourlyTwoDecimal = (hourly: number) =>
