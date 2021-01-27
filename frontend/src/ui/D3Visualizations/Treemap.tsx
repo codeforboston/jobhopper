@@ -44,7 +44,7 @@ const groupData = (data: Transition[]): TreeRootNode => {
 
   let categories: any[] = []
 
-  console.log(data);
+  
   majorLookup.forEach((name, categoryKey) => {
     const transitions = data.filter(node => categoryKey === category(node))
 
@@ -58,7 +58,7 @@ const groupData = (data: Transition[]): TreeRootNode => {
     }
   })
 
-  console.log('grouping data', categories)
+  
 
   return {
     children: categories
@@ -109,7 +109,7 @@ export default function Treemap({ data }: TreemapProps) {
       if (selectedCode !== targetCode) {
         targetNode.style('stroke-width', '2px');
       }
-      console.log('hovered', i);
+      
       if (hoveredCode !== targetCode) {
         i.data.category = majorLookup.get(parseInt(code(i.data).slice(0, 2)))
         setHoveredInfo(i);
@@ -155,7 +155,7 @@ export default function Treemap({ data }: TreemapProps) {
       .attr('height', dimensions.height);
 
     const dataset = groupData(data);
-    console.log('dataset', dataset);
+    
     // create hierarchical layout with data
     const root = d3
       .hierarchy(dataset)
@@ -169,7 +169,7 @@ export default function Treemap({ data }: TreemapProps) {
       .size([dimensions.width, dimensions.height])
       .padding(1)(root);
 
-    console.log(treemapRoot.leaves());
+    
     // select the nodes and set x, y position
     const nodes = svg
       .selectAll('g')
