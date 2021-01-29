@@ -1,4 +1,5 @@
 import React, {
+  MouseEvent,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -22,7 +23,8 @@ const Container = styled.div`
 
 const Svg = styled.svg``;
 
-const fontSize = 12;
+const textFontSize = 18;
+const percentFontSize = 20;
 const white = '#ffffff';
 
 // these two arrays must match item for item - index for index - this is how the colors are assigned in the D3 color scale
@@ -140,9 +142,8 @@ export default function Treemap({
   const occName = selectedOccupation ? selectedOccupation.name : '';
   const occCode = selectedOccupation ? selectedOccupation.code : '';
 
-  const title = `Which occupations do ${occName} (${occCode}) ${
-    selectedState ? `move to in ${selectedState.name}?` : `move to Nationally?`
-  }`;
+  const title = `Which occupations do ${occName} (${occCode}) ${selectedState ? `move to in ${selectedState.name}?` : `move to Nationally?`
+    }`;
 
   const footnote_blurb = `This visualization shows the occupations which ${occName} move to when they change occupation. The transition share is the proportion of ${occName} who move into a job in each other occupation when they switch occupation. We only break out individual occupations with transition shares greater than 0.2%.`;
 
@@ -162,9 +163,14 @@ export default function Treemap({
     let selectedCode: string | undefined;
     let selectedNode: any;
 
+
     const mouseover = (d: any, i: any) => {
+      d.stopPropagation()
+
       const targetNode = d3.select(d.currentTarget);
       const targetCode = code(i.data);
+
+
       if (selectedCode !== targetCode) {
         targetNode.style('stroke-width', '2px');
       }
@@ -174,6 +180,33 @@ export default function Treemap({
         setHoveredInfo(i);
         hoveredCode = targetCode;
       }
+
+
+      toolTipContainerDiv
+        .style('left', i.x0 + (i.x1 - i.x0) / 2 - 150 + 'px')
+        .style('top', i.y0 + 'px')
+      // .style('width', i.x1 - i.x0 + 'px')
+
+
+      toolTipDiv
+        .style('height', 'auto')
+        .style('width', '100%')
+        .style('left', 'auto')
+        .style('margin', 'auto')
+        .html(name(i.data))
+
+
+
+
+
+
+      tooltip
+        .transition().style('visibility', 'visible')
+        .transition()
+        .attr('transform', `translate(0 -10)`)
+        .style('opacity', '1')
+        .duration(500)
+        .ease(d3.easeCubicInOut)
     };
 
     const mouseout = (d: any, i: any) => {
@@ -184,6 +217,12 @@ export default function Treemap({
       }
       setHoveredInfo(undefined);
       hoveredCode = undefined;
+      tooltip
+        .transition().duration(250).attr('transform', 'translate(0 10)').style('opacity', '0')
+        .ease(d3.easeCubicInOut)
+        .transition()
+        .style('visibility', 'hidden')
+
     };
 
     const click = (d: any, i: any) => {
@@ -253,21 +292,90 @@ export default function Treemap({
       .style('stroke-width', d => 0);
 
     // add node labels
-    nodes
-      .append('text')
-      .text(
-        d =>
-          `${name(d.data)} ${Math.round(transitionRate(d.data) * 10000) / 100}%`
-      )
-      .attr('data-width', d => d.x1 - d.x0)
-      .attr('font-size', `${fontSize}px`)
-      .style('fill', '#165085')
-      .style('text-align', 'top')
-      .attr('x', 3)
-      .attr('y', fontSize)
-      .call(wrap);
+    const textHolder = nodes
+      .append('g')
 
-    // wrap node labels if necessary
+    textHolder
+      .append('text')
+      .attr('pointer-events', 'none')
+      .text(d => `${name(d.data)}`)
+      .attr('data-width', d => d.x1 - d.x0)
+      .attr('font-size', `${textFontSize}px`)
+      .attr('font-weight', 400)
+      .style('fill', 'black')
+      .style('text-align', 'top')
+      .attr('x', 18)
+      .attr('y', textFontSize + 8)
+    // .call(wrap);
+
+    const percentHolder = nodes
+      .append('g')
+
+    percentHolder
+      .append('text')
+      .attr('pointer-events', 'none')
+      .text(d => `${Math.round(transitionRate(d.data) * 10000) / 100}%`)
+      .attr('y', textFontSize + 8)
+      .attr('height', textFontSize + 8)
+      .attr('data-width', d => d.x1 - d.x0)
+      .style('text-align', 'top')
+      .attr('font-size', `${percentFontSize}px`)
+      .attr('font-weight', 700)
+      .style('fill', 'black')
+      .attr("transform", `translate(${18}, ${percentFontSize * 1.2})`)
+
+    // .call(wrap);
+
+
+
+
+
+    // tooltip group/container
+    const tooltip = svg
+      .append('g')
+      .style('visibility', 'hidden')
+      .style('z-index', 10)
+      .attr("pointer-events", 'none')
+
+
+    // tooltip
+    //   .append('rect')
+    //   .attr('height', '20px')
+    //   .attr('width', '20px')
+    //   .style('fill', 'pink')
+    //   .attr('x', 0)
+    //   .attr('y', 0)
+    //   .style('transform-origin', '0 0')
+    //   .attr('transform', `translate(-50% -50%) rotate(45)`)
+
+
+    const toolTipObj = tooltip
+      .append('foreignObject')
+      .attr('width', dimensions.width)
+      .attr('height', dimensions.height)
+      .style('position', 'relative')
+      .style('border', '2px solid yellow')
+
+    const toolTipContainerDiv = toolTipObj
+      .append('xhtml:div')
+      .style('border', '3px solid pink')
+      .style('background-color', 'pink')
+      .style('position', 'absolute')
+      .style('height', '70px')
+      .style('width', '300px')
+      .style('padding', '6px 12px')
+
+
+    const toolTipDiv = toolTipContainerDiv
+      .append('xhtml:div')
+      .style('background-color', 'white')
+      .style('border-radius', '5px')
+      .style('text-align', 'center')
+      .style('margin', '50px')
+      .html('tooltext')
+
+
+    // wrap node labels if necessary 
     function wrap(selection: d3.Selection<SVGTextElement, any, any, any>) {
       selection.each(function () {
         const node = d3.select(this);
@@ -307,7 +415,7 @@ export default function Treemap({
             .append('tspan')
             .attr('x', x)
             .attr('y', y)
-            .attr('dy', ++lineNumber * fontSize + dy + 'px')
+            .attr('dy', ++lineNumber * textFontSize + dy + 'px')
             .text(text);
         }
       });
