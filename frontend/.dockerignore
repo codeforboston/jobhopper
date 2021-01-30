@@ -2,5 +2,9 @@
 Dockerfile
 node_modules
 npm-debug.log
-
-
+/build
+/coverage
+/.firebase
+firebase-deploy-credentials.json
+firebase-deploy-passphrase
+build-storybook.log
