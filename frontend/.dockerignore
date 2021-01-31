@@ -1,10 +1,10 @@
 .dockerignore
-Dockerfile
+docker/Dockerfile
 node_modules
 npm-debug.log
-/build
-/coverage
-/.firebase
+build
+coverage
+.firebase
 firebase-deploy-credentials.json
 firebase-deploy-passphrase
 build-storybook.log
