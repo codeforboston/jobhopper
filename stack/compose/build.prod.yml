@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ../../frontend
+      dockerfile: docker/Dockerfile
+      target: release
+      args:
+        REACT_APP_BASE_API_URL: /api/v1/jobs
+    image: frontend-release
+
+  gateway:
+    build:
+      context: ../gateway
+    image: jobhopper/gateway
+
+  api:
+    build:
+      target: release
+    image: jobhopper/api-release
