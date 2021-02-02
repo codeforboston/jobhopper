@@ -44,19 +44,17 @@ const Results: React.FC<ResultsProps> = ({
 
   const exportPDF = async () => {
     const svgElement = document.getElementById('treemap-svg');
-    const svgOuter = svgElement?.outerHTML;
-    console.log(svgOuter);
+    // const svgOuter = svgElement?.outerHTML;
 
-    if (svgOuter && svgElement) {
+    if (svgElement) {
       const svgString = new XMLSerializer().serializeToString(svgElement);
 
-      let pdf = new jsPDF('l');
+      let pdf = new jsPDF('l', 'mm', [216, 279]);
       let canvas = document.createElement('canvas');
-      canvas.width = 1200;
-      canvas.height = 768;
+      canvas.width = 717;
+      canvas.height = 338;
       let ctx = canvas.getContext('2d')!;
       let v = await Canvg.from(ctx, svgString);
-      // v.resize(1131, 663, 'xMidYMid meet');
       (await v).render();
 
       let image = new Image();
@@ -65,20 +63,35 @@ const Results: React.FC<ResultsProps> = ({
       var image64 = b64start + svg64;
       image.src = image64;
       ctx.drawImage(image, 0, 0);
+      // pdf.addImage(canvas, 'PNG', 42, 80, 550, 250);
+      pdf.addImage(canvas, 'PNG', 14.81, 28.2, 253, 119);
 
-      pdf.text('JobHopper:', 10, 10);
-      pdf.text(
-        'This visualization shows where {} move to when they switch occupations.',
-        10,
-        20
-      );
-      pdf.addImage(canvas, 'PNG', 0, 30, 300, 150);
-      pdf.text(
-        'The visualization was created by Code for Boston’s JobHopper team, using data from 16 million U.S. workers’ resumes compiled by Burning Glass Technologies.',
-        5,
-        200
-      );
-      pdf.save('treemap');
+      const renderImage = async () => {
+        return document.images[0];
+      };
+
+      renderImage()
+        .then(response => {
+          pdf.addImage(response, 'JPEG', 10, 2.47, 43.74, 20.81);
+          pdf.setFontSize(9);
+          const blurbString = pdf.splitTextToSize(
+            'JobHopper is a Code for Boston project, and is an open source application built by volunteers.',
+            73.73
+          );
+          pdf.text(blurbString, 275, 9.52, { align: 'right' });
+          pdf.addFont('../assets/Roboto-Regular.ttf', 'Roboto', 'normal');
+          pdf.setFont('Roboto', 'normal');
+          pdf.setFontSize(12);
+          pdf.text(`Job Transitions from  (11-2021) to:`, 14.82, 23);
+          pdf.setFontSize(10);
+          pdf.text(
+            `This treemap shows where Marketing Managers move to when they switch occupations. This data was calculated by academic researchers from around 16 million resumes of U.S. workers which were generously provided and parsed by Burning Glass Technologies`,
+            11.3,
+            197.85,
+            { maxWidth: 254.35 }
+          );
+        })
+        .then(() => pdf.save('logo'));
     }
   };
 
