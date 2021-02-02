@@ -12,9 +12,6 @@ services:
       POSTGRES_DB: jobhopper
 
   api:
-    build:
-      context: ../../api
-      dockerfile: docker/Dockerfile
     environment:
       DB_USER: postgres
       DB_PASSWORD: password

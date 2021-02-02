@@ -17,5 +17,7 @@ services:
 
   api:
     build:
+      context: ../../api
+      dockerfile: docker/Dockerfile
       target: release
     image: jobhopper/api-release
