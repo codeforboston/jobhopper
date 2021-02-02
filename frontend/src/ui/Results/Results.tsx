@@ -10,6 +10,7 @@ import { State } from 'src/domain/state';
 import Canvg, { presets } from 'canvg';
 import { jsPDF } from 'jspdf';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { useOccupationsState } from 'src/ducks/occupations';
 
 export interface ResultsProps {
   selectedState?: State;
@@ -30,6 +31,8 @@ const Results: React.FC<ResultsProps> = ({
     'matrix'
   );
 
+  const occupation = useOccupationsState().selectedOccupation;
+
   // Material table mutates its data, but immer freezes objects, so we clone
   // the transition data for compatibility.
   const transitions = useMemo<Transition[]>(
@@ -44,15 +47,14 @@ const Results: React.FC<ResultsProps> = ({
 
   const exportPDF = async () => {
     const svgElement = document.getElementById('treemap-svg');
-    // const svgOuter = svgElement?.outerHTML;
 
     if (svgElement) {
       const svgString = new XMLSerializer().serializeToString(svgElement);
 
       let pdf = new jsPDF('l', 'mm', [216, 279]);
       let canvas = document.createElement('canvas');
-      canvas.width = 717;
-      canvas.height = 338;
+      canvas.width = 2151;
+      canvas.height = 1014;
       let ctx = canvas.getContext('2d')!;
       let v = await Canvg.from(ctx, svgString);
       (await v).render();
@@ -63,8 +65,7 @@ const Results: React.FC<ResultsProps> = ({
       var image64 = b64start + svg64;
       image.src = image64;
       ctx.drawImage(image, 0, 0);
-      // pdf.addImage(canvas, 'PNG', 42, 80, 550, 250);
-      pdf.addImage(canvas, 'PNG', 14.81, 28.2, 253, 119);
+      pdf.addImage(canvas, 'PNG', 14.81, 28.2, 252, 119);
 
       const renderImage = async () => {
         return document.images[0];
@@ -78,18 +79,30 @@ const Results: React.FC<ResultsProps> = ({
             'JobHopper is a Code for Boston project, and is an open source application built by volunteers.',
             73.73
           );
-          pdf.text(blurbString, 275, 9.52, { align: 'right' });
-          pdf.addFont('../assets/Roboto-Regular.ttf', 'Roboto', 'normal');
-          pdf.setFont('Roboto', 'normal');
+          pdf.text(blurbString, 265, 9.52, { align: 'right' });
+          // pdf.addFont('../assets/Roboto-Regular.ttf', 'Roboto', 'normal');
+          // pdf.setFont('Roboto', 'normal');
           pdf.setFontSize(12);
-          pdf.text(`Job Transitions from  (11-2021) to:`, 14.82, 23);
+          pdf.text(
+            `Job Transitions from ${occupation?.name} (${occupation?.code}) to:`,
+            14.82,
+            23
+          );
           pdf.setFontSize(10);
           pdf.text(
-            `This treemap shows where Marketing Managers move to when they switch occupations. This data was calculated by academic researchers from around 16 million resumes of U.S. workers which were generously provided and parsed by Burning Glass Technologies`,
+            `This treemap shows where ${occupation?.name} move to when they switch occupations. This data was calculated by academic researchers from around 16 million resumes of U.S. workers which were generously provided and parsed by Burning Glass Technologies`,
             11.3,
             197.85,
             { maxWidth: 254.35 }
           );
+
+          const doc = new jsPDF('l', 'mm', [261, 279]);
+
+          const treeChartHTML = document.getElementById('treemap-svg');
+          if (treeChartHTML) {
+            doc.html(treeChartHTML);
+            doc.save('treechart from html');
+          }
         })
         .then(() => pdf.save('logo'));
     }
@@ -124,8 +137,8 @@ const Results: React.FC<ResultsProps> = ({
             label="Export Chart"
             testid="treechartPdf"
             onClick={exportPDF}
-            disabled={disabled}
-            selected={showTreemap}
+            // disabled={disabled}
+            // selected={showTreemap}
           />
         </Row>
       </LabeledSection>
