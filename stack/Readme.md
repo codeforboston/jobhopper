@@ -72,7 +72,7 @@ cd stack
 ```
 # Run on the deployment host machine
 cd stack
-SECRET_KEY=<your-secret> DOMAIN=<your-domain> ./start-prod
+SECRET_KEY=<your-secret> DOMAIN=<your-domain> ./deploy-prod
 ```
 
 This will use the latest images on Docker Hub. The host machine must be reachable on ports 80 and 443 at the domain you specify.
