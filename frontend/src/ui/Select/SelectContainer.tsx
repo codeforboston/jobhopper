@@ -29,7 +29,7 @@ export const OccupationSelectContainer: React.FC = () => {
 
 export const StateSelectContainer: React.FC = () => {
   const dispatch = useDispatch();
-
+  const { selectedOccupation } = useOccupationsState();
   const { states, loading, error } = useStateState();
 
   useEffect(() => {
@@ -42,6 +42,7 @@ export const StateSelectContainer: React.FC = () => {
       loading={loading}
       error={error}
       states={states}
+      disabled={!selectedOccupation}
     />
   );
 };
