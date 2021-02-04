@@ -123,43 +123,41 @@ export default function Treemap({
         hoveredCode = targetCode;
       }
 
-      toolTipContainerDiv
-        .style('left', i.x0 + (i.x1 - i.x0) / 2 - 150 + 'px')
-        .style('top', i.y0 + 'px');
-      // .style('width', i.x1 - i.x0 + 'px')
+      const tooltiptop =
+        i.y1 + 20 > dimensions.height ? i.y0 - 100 : i.y0 < 100 ? 40 : i.y0;
+      let tooltipleft = i.x0 + (i.x1 - i.x0) / 2 - 150;
+      tooltipleft =
+        tooltipleft + 70 > dimensions.width ? tooltipleft - 100 : tooltipleft;
 
-      toolTipDiv
-        .style('height', 'auto')
-        .style('width', '100%')
-        .style('left', 'auto')
-        .style('margin', 'auto')
-        .html(name(i.data));
+      toolTipContainerDiv
+        .style('left', tooltipleft + 'px')
+        .style('top', tooltiptop + 'px');
+
+      toolTipDiv.html(name(i.data));
 
       tooltip
-        .transition()
         .style('visibility', 'visible')
+        .style('opacity', '0')
         .transition()
-        .attr('transform', `translate(0 -10)`)
-        .style('opacity', '1')
+        .delay(250)
         .duration(500)
+        .style('opacity', '1')
+        .attr('transform', `translate(0 -10)`)
         .ease(d3.easeCubicInOut);
     };
 
     const mouseout = (d: any, i: any) => {
       const targetNode = d3.select(d.currentTarget);
       const targetCode = code(i.data);
+
       if (selectedCode !== targetCode) {
         targetNode.style('stroke-width', '0');
       }
       setHoveredInfo(undefined);
       hoveredCode = undefined;
+
       tooltip
-        .transition()
-        .duration(250)
         .attr('transform', 'translate(0 10)')
-        .style('opacity', '0')
-        .ease(d3.easeCubicInOut)
-        .transition()
         .style('visibility', 'hidden');
     };
 
@@ -276,15 +274,20 @@ export default function Treemap({
       .append('xhtml:div')
       .style('position', 'absolute')
       .style('height', '70px')
-      .style('width', '300px')
-      .style('padding', '6px 12px');
+      .style('min-width', '50px')
+      .style('max-width', '300px');
 
     const toolTipDiv = toolTipContainerDiv
       .append('xhtml:div')
+      .style('pointer-events', 'none')
       .style('background-color', 'white')
       .style('border-radius', '5px')
+      .style('box-shadow', '#33333350 2px 2px 9px')
       .style('text-align', 'center')
       .style('margin', '50px')
+      .style('height', 'auto')
+      .style('min-width', '50px')
+      .style('padding', '6px 12px')
       .html('tooltext');
 
     // wrap node labels if necessary
