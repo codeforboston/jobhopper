@@ -56,13 +56,16 @@ class BlsOesViewSet(viewsets.ReadOnlyModelViewSet):
 class SocListFilter(django_filters.FilterSet):
     """
     Create a filter to use with the BlsOes model. When multiple options are chosen in these filters, there
-    must be no space between comma-separated values
+    must be no space between comma-separated values. min_transition_observations refers to the minimum number of
+    observations used to derive transition probabilities for a given source SOC. According to Schubert, Stansbury,
+    and Taska (2020), this need not be an integer since it can be reweighted by age.
     """
-    socs = django_filters.BaseInFilter(field_name='soc_code', lookup_expr='in')
+    socs = django_filters.BaseInFilter(field_name="soc_code", lookup_expr="in")
+    min_transition_observations = django_filters.NumberFilter(field_name="total_transition_obs", lookup_expr="gte")
 
     class Meta:
         model = SocDescription
-        fields = ['socs']
+        fields = ["socs", "min_transition_observations"]
 
 
 class SocListSimpleViewSet(viewsets.ReadOnlyModelViewSet):
@@ -91,11 +94,11 @@ class OccupationTransitionsFilter(django_filters.FilterSet):
     Create a filter to use with the OccupationTransitions model in the Occupation Transitions viewset
     """
     # field_name instead of name, and lookup_expr instead of lookup_type is used for the NumberFilter for Django 2.0+
-    min_transition_probability = django_filters.NumberFilter(field_name="pi", lookup_expr='gte')
+    min_transition_probability = django_filters.NumberFilter(field_name="pi", lookup_expr="gte")
 
     class Meta:
         model = OccupationTransitions
-        fields = ['min_transition_probability', 'soc1']
+        fields = ["min_transition_probability", "soc1"]
 
 
 class OccupationTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
@@ -115,7 +118,6 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
     A custom ViewSet for BLS OES wage/employment data and occupation transitions/burning glass data
     See Swagger docs for more details on the GET endpoint /transitions-extended/.
     /transitions-extended/{id}/ is not supported.
-
     Sample endpoint query:
     ------------------------
     /?area_title=Massachusetts&soc=35-3031&min_transitions_probability=0.01
@@ -182,23 +184,17 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
         * area_title: Specify an area_title to return wages/employment for that location only
         States should be fully spelled out, consistent with the area_title field in the
         BlsOes model. The default is specified by DEFAULT_AREA
-
         * soc: Specify a source SOC code to return transitions data for people moving from this
         occupation to other occupations. The default is specified by DEFAULT_SOC
-
         * min_transition_probability: Specify the minimum transitions probability. Do not return any
         transitions records that have a probability of moving from SOC1 to SOC2 that is lower
         than this value.
-
         Multiple selections are not supported for this endpoint. The default response is displayed.
-
         Sample endpoint query:
         ------------------------
         * /?area_title=Massachusetts&soc=11-1011&min_transitions_probability=0.01
-
         Response format:
         ------------------------
-        ```
         {"source_soc": {
             "source_soc_id": 242047,
             "source_soc_area_title": "U.S.",
@@ -216,6 +212,7 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
               "soc1": "13-2011",
               "soc2": "11-3031",
               "pi": 0.1782961,
+              "total_transition_obs": 390865.6,
               "soc2_id": 241905,
               "soc2_area_title": "U.S.",
               "soc2_soc_code": "11-3031",
@@ -226,7 +223,6 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
               "soc2_soc_decimal_code": "11-3031.00",
               "soc2_file_year": 2019
             },
-        ```
         """
         self._set_params(request)
 
@@ -278,4 +274,3 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
             "source_soc":  source_soc_info,
             "transition_rows": transitions,
         })
-

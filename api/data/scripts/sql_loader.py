@@ -36,7 +36,7 @@ def create_sqlalchemyengine(
     if not port: port = "5432" if not os.getenv("DB_PORT") else os.getenv("DB_PORT")
     if not host: host = "localhost" if not os.getenv("DB_HOST") else os.getenv("DB_HOST")
     try:
-        log.info("Connecting to Postgres DB via SQLAlchemy")
+        log.info(f"Connecting to Postgres DB {db} via SQLAlchemy")
         engine = create_engine(
             "postgresql://{}:{}@{}:{}/{}".format(username, password, host, port, db)
         )
