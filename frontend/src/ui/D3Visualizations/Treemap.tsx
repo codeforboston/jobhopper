@@ -123,42 +123,44 @@ export default function Treemap({
         hoveredCode = targetCode;
       }
 
-      const tooltiptop =
-        i.y1 + 20 > dimensions.height ? i.y0 - 100 : i.y0 < 100 ? 40 : i.y0;
-      let tooltipleft = i.x0 + (i.x1 - i.x0) / 2 - 150;
-      tooltipleft =
-        tooltipleft + 70 > dimensions.width ? tooltipleft - 100 : tooltipleft;
 
       toolTipContainerDiv
-        .style('left', tooltipleft + 'px')
-        .style('top', tooltiptop + 'px');
+        .style('left', i.x0 + (i.x1 - i.x0) / 2 - 150 + 'px')
+        .style('top', i.y0 + 'px')
+      // .style('width', i.x1 - i.x0 + 'px')
 
-      toolTipDiv.html(name(i.data));
+
+      toolTipDiv
+        .style('height', 'auto')
+        .style('width', '100%')
+        .style('left', 'auto')
+        .style('margin', 'auto')
+        .html(name(i.data))
+
 
       tooltip
-        .style('visibility', 'visible')
-        .style('opacity', '0')
+        .transition().style('visibility', 'visible')
         .transition()
-        .delay(250)
-        .duration(500)
-        .style('opacity', '1')
         .attr('transform', `translate(0 -10)`)
-        .ease(d3.easeCubicInOut);
+        .style('opacity', '1')
+        .duration(500)
+        .ease(d3.easeCubicInOut)
     };
 
     const mouseout = (d: any, i: any) => {
       const targetNode = d3.select(d.currentTarget);
       const targetCode = code(i.data);
-
       if (selectedCode !== targetCode) {
         targetNode.style('stroke-width', '0');
       }
       setHoveredInfo(undefined);
       hoveredCode = undefined;
-
       tooltip
-        .attr('transform', 'translate(0 10)')
-        .style('visibility', 'hidden');
+        .transition().duration(250).attr('transform', 'translate(0 10)').style('opacity', '0')
+        .ease(d3.easeCubicInOut)
+        .transition()
+        .style('visibility', 'hidden')
+
     };
 
     const click = (d: any, i: any) => {
@@ -268,27 +270,24 @@ export default function Treemap({
       .append('foreignObject')
       .attr('width', dimensions.width)
       .attr('height', dimensions.height)
-      .style('position', 'relative');
+      .style('position', 'relative')
 
     const toolTipContainerDiv = toolTipObj
       .append('xhtml:div')
       .style('position', 'absolute')
       .style('height', '70px')
-      .style('min-width', '50px')
-      .style('max-width', '300px');
+      .style('width', '300px')
+      .style('padding', '6px 12px')
+
 
     const toolTipDiv = toolTipContainerDiv
       .append('xhtml:div')
-      .style('pointer-events', 'none')
       .style('background-color', 'white')
       .style('border-radius', '5px')
-      .style('box-shadow', '#33333350 2px 2px 9px')
       .style('text-align', 'center')
       .style('margin', '50px')
-      .style('height', 'auto')
-      .style('min-width', '50px')
-      .style('padding', '6px 12px')
-      .html('tooltext');
+      .html('tooltext')
+
 
     // wrap node labels if necessary
     function wrap(selection: d3.Selection<SVGTextElement, any, any, any>) {
