@@ -7,6 +7,7 @@ import { CaptionText, KeyEntryProps, KeyList, KeyTitle } from './TreemapSubCompo
 export interface TreemapKeyProps {
     occupationCodes: Set<number>;
     footnote_blurb: string;
+    selectedCategory?: number | string;
 }
 
 export default function TreemapKey({

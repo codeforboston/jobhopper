@@ -13,7 +13,6 @@ import { State } from '../../domain/state';
 import { majorLookup, Transition } from '../../domain/transition';
 import { colorDomainMajorOccCodes, colorRange } from './colorSchemes';
 import ToolTip from './ToolTip';
-import TreemapKey from './TreemapKey';
 import useResizeObserver from './useResizeObserver';
 
 const Container = styled.div`
@@ -37,10 +36,11 @@ export type TreeRootNode = { children: CategoryNode[] };
 export type TreeNode = TreeRootNode | CategoryNode | Transition;
 
 export type TreemapProps = {
-  selectedOccupation: Occupation;
+  title: string;
+  selectedOccupation?: Occupation;
   selectedState?: State;
   data: Transition[];
-  sort: string;
+  setSelectedCategory: any;
 };
 
 const groupData = (data: Transition[]): TreeRootNode => {
@@ -84,13 +84,10 @@ export function category(node: TreeNode): number {
 }
 
 export default function Treemap({
+  title,
   data,
-  selectedOccupation,
-  selectedState,
+  setSelectedCategory,
 }: TreemapProps) {
-  const occName = selectedOccupation ? selectedOccupation.name : '';
-  const occCode = selectedOccupation ? selectedOccupation.code : '';
-
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -114,7 +111,8 @@ export default function Treemap({
       const targetCode = code(i.data);
 
       if (selectedCode !== targetCode) {
-        targetNode.style('stroke-width', '2px');
+        targetNode.style('stroke', '#2878C8');
+        setSelectedCategory(category(i.data).toString());
       }
 
       if (hoveredCode !== targetCode) {
@@ -168,6 +166,8 @@ export default function Treemap({
       }
       setHoveredInfo(undefined);
       hoveredCode = undefined;
+      setSelectedCategory(undefined);
+
       tooltip.style('visibility', 'hidden');
     };
 
@@ -289,69 +289,11 @@ export default function Treemap({
       .style('text-align', 'center')
       .style('padding', '3px 10px')
       .html('tooltext');
-
-    // wrap node labels if necessary
-    function wrap(selection: d3.Selection<SVGTextElement, any, any, any>) {
-      selection.each(function () {
-        const node = d3.select(this);
-        const width = +node.attr('data-width');
-        let word: string;
-        const words: Array<string> = node.text().split(' ').reverse();
-        let line: Array<string> = [];
-        let lineNumber = 0;
-        const x = node.attr('x');
-        const y = node.attr('y');
-        const dy = 0;
-        // overwrite current text for node with '' and append empty tspan
-        let tspan: d3.Selection<SVGTSpanElement, any, any, any> = node
-          .text('')
-          .append('tspan')
-          .attr('x', x)
-          .attr('y', y);
-        while (words.length > 1) {
-          word = words.pop()!;
-          line.push(word);
-          tspan.text(line.join(' '));
-          const tspanLength = tspan.node()?.getComputedTextLength?.() ?? 0;
-          if (tspanLength > width) {
-            line.pop();
-            tspan.text(line.join(' '));
-            line = [word];
-            tspan = addTspan(word);
-          }
-        }
-        // add transition rate as last tspan
-        const rateSpan = addTspan(words.pop()!);
-        rateSpan.style('fill', 'black');
-        function addTspan(
-          text: string
-        ): d3.Selection<SVGTSpanElement, any, any, any> {
-          return node
-            .append('tspan')
-            .attr('x', x)
-            .attr('y', y)
-            .attr('dy', ++lineNumber * textFontSize + dy + 'px')
-            .text(text);
-        }
-      });
-    }
-  }, [dimensions.width, dimensions.height, data]);
+  }, [dimensions.width, dimensions.height, data, setSelectedCategory]);
 
   useLayoutEffect(() => {
     renderTreemap();
   }, [renderTreemap]);
-
-  const title = `Job transitions from ${occName} (${occCode}) ${
-    selectedState ? `move to in ${selectedState.name}?` : `move to Nationally?`
-  }`;
-
-  const footnote_blurb = `This visualization shows the occupations which ${occName} move to when they change occupation. The transition share is the proportion of ${occName} who move into a job in each other occupation when they switch jobs. We only break out individual occupations with transition shares greater than 0.2%.`;
-
-  const occCategoryList = new Set<number>();
-
-  data.forEach(item => {
-    occCategoryList.add(category(item));
-  });
 
   return (
     <Container ref={containerRef} data-testid="treemap">
@@ -364,10 +306,6 @@ export default function Treemap({
         </Typography>
         <Svg ref={svgRef} />
         <ToolTip info={hoveredInfo || selectedInfo} />
-        <TreemapKey
-          occupationCodes={occCategoryList}
-          footnote_blurb={footnote_blurb}
-        />
       </div>
     </Container>
   );

@@ -3,9 +3,9 @@ import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
 import { majorLookup, Transition } from 'src/domain/transition';
 import styled from 'styled-components';
+import { colorDomainMajorOccCodes, colorRange } from './colorSchemes';
 import Treemap from './Treemap';
-import { colorRange, colorDomainMajorOccCodes } from './colorSchemes'
-import { Key, KeyTitle, KeyList, KeyExplanation } from './styledDivs';
+import TreemapKey from './TreemapKey';
 
 export interface TreemapWrapperProps {
   selectedOccupation?: Occupation;
@@ -17,52 +17,22 @@ export interface KeyEntryProps {
   code?: string;
   name?: string;
   color?: string;
-  selected?: boolean;
+  selectedCategory?: string | number;
 }
 
-const KeyColorSquare = styled.div.attrs(
-  props =>
-  ({
-    color: props.color,
-    selected: false,
-  } as KeyEntryProps)
-)`
-  flex: 1;
-  max-height: 20px;
-  max-width: 20px;
-  min-height: 20px;
-  min-width: 20px;
-  margin-right: 12px;
-  background-color: ${props => props.color};
-  border: ${props => props.selected ? "3px solid #3CA565" : `3px solid ${props.color}`};
-`;
-
+export interface KeyColorSquareProps {
+  color?: string;
+  isSelected?: boolean;
+}
 
 
 const clipOccupationFromString = (str?: string) => {
-  if (str){
+  if (str) {
     const clippedName: string | undefined = str.replace(/Occupations*/, "") || "none"
     return clippedName
   }
 }
 
-function KeyEntry({ code, name, color, selected }: KeyEntryProps) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        marginTop: '',
-      }}
-    >
-      <KeyColorSquare color={color} selected={selected}></KeyColorSquare>
-      <div style={{ flex: 1 }}>
-        {code} {clipOccupationFromString(name) ?? ""}
-      </div>
-    </div>
-  );
-}
 
 export default function TreemapWrapper({
   selectedState,
@@ -73,6 +43,8 @@ export default function TreemapWrapper({
   function category(trans: Transition): number {
     return parseInt(trans.code.slice(0, 2));
   }
+
+  const [selectedCategory, setSelectedCategory] = useState()
 
   const transData = transitionData;
 
@@ -94,46 +66,32 @@ export default function TreemapWrapper({
     }
   });
 
-  const title = `Job Transitions from ${selectedOccupation?.name} (${selectedOccupation?.code
-  }) ${selectedState ? `in ${selectedState.name}` : `Nationally`} `;
 
-  
+  const occName = selectedOccupation ? selectedOccupation.name : '';
+  const occCode = selectedOccupation ? selectedOccupation.code : '';
+
+
+
+  const title = `Job Transitions from ${occName} (${occCode}) ${selectedState ? `in ${selectedState.name}` : `Nationally`} `;
+
+
+  const footnote_blurb = `This visualization shows the occupations which ${occName} move to when they change occupation. The transition share is the proportion of ${occName} who move into a job in each other occupation when they switch jobs. We only break out individual occupations with transition shares greater than 0.2%.`;
+
+  const occCategoryList = new Set<number>()
+
+  transitionData.forEach(item => {
+    occCategoryList.add(category(item))
+  })
+
 
 
   return (
     <div style={{ display: "flex" }}>
       <div>
-      <Treemap title={title} data={transitionData} />
+        <Treemap title={title} data={transitionData} setSelectedCategory={setSelectedCategory} selectedOccupation={selectedOccupation} />
       </div>
+      <TreemapKey occupationCodes={occCategoryList} footnote_blurb={footnote_blurb} selectedCategory={selectedCategory} />
 
-      <Key>
-        <KeyTitle>Occupation categories shown above*</KeyTitle>
-        <KeyList>
-          {dataArray.map((category, i) => {
-            let { code, name, color, selected } = category;
-            return (
-              <KeyEntry
-                key={1}
-                code={code}
-                name={name}
-                color={color}
-                selected={selected}
-              />
-            );
-          })}
-        </KeyList>
-        <KeyExplanation>
-      *SOC (Standard Occupation Classification) code broad category, used by the
-      Bureau of Labor Statistics to define occupations
-      
-        This treemap shows the occupations which Waiters and Waitresses move to
-        when they change occupation. The transition share is the proportion of
-        Waiters and Waitresses who move into another occupation when they switch
-        jobs. We only break out individual occupations with transition shares
-        greater than 0.2%.
-      </KeyExplanation>
-      </Key>
-     
     </div>
   );
 }
