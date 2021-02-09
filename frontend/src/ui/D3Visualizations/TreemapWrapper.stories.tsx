@@ -1,6 +1,6 @@
 import React from 'react';
 import { Story, Meta } from '@storybook/react/types-6-0';
-import data from 'src/testing/data/transitionData';
+import { longData } from 'src/testing/data/transitionData';
 import TreemapWrapper, { TreemapWrapperProps } from './TreemapWrapper';
 import occupations from 'src/testing/data/occupations';
 import states from 'src/testing/data/states';
@@ -11,4 +11,4 @@ export default {
 } as Meta;
 
 export const Default: Story<TreemapWrapperProps> = args => <TreemapWrapper {...args} />;
-Default.args = { transitionData: data, selectedOccupation: occupations[0], selectedState: states[0] };
+Default.args = { transitionData: longData, selectedOccupation: occupations[0], selectedState: states[0] };

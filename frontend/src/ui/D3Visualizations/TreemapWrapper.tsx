@@ -39,8 +39,11 @@ const KeyColorSquare = styled.div.attrs(
 
 
 
-const clipOccupationFromString = (str: string) => {
-  return str.replace(/Occupations*/, "")
+const clipOccupationFromString = (str?: string) => {
+  if (str){
+    const clippedName: string | undefined = str.replace(/Occupations*/, "") || "none"
+    return clippedName
+  }
 }
 
 function KeyEntry({ code, name, color, selected }: KeyEntryProps) {
@@ -55,7 +58,7 @@ function KeyEntry({ code, name, color, selected }: KeyEntryProps) {
     >
       <KeyColorSquare color={color} selected={selected}></KeyColorSquare>
       <div style={{ flex: 1 }}>
-        {code} {clipOccupationFromString(name)}
+        {code} {clipOccupationFromString(name) ?? ""}
       </div>
     </div>
   );

@@ -123,44 +123,52 @@ export default function Treemap({
         hoveredCode = targetCode;
       }
 
+      toolTipDiv.html(
+        `${name(i.data)} ${Math.round(transitionRate(i.data) * 10000) / 100}%`
+      );
 
-      toolTipContainerDiv
-        .style('left', i.x0 + (i.x1 - i.x0) / 2 - 150 + 'px')
-        .style('top', i.y0 + 'px')
-      // .style('width', i.x1 - i.x0 + 'px')
+      const horizontalNodeMiddle = i.x0 + (i.x1 - i.x0) / 2;
+      const verticalNodeMiddle = i.y0 + (i.y1 - i.y0) / 2;
 
+      const tooltipBounds = (toolTipDiv.node() as HTMLDivElement).getBoundingClientRect();
+      const svgBounds = {
+        width: svg.node()!.clientWidth,
+        height: svg.node()!.clientHeight,
+      };
 
-      toolTipDiv
-        .style('height', 'auto')
-        .style('width', '100%')
-        .style('left', 'auto')
-        .style('margin', 'auto')
-        .html(name(i.data))
+      const leftPosition =
+        horizontalNodeMiddle + tooltipBounds.width / 2 < svgBounds.width + 1
+          ? horizontalNodeMiddle - tooltipBounds.width / 2 < 0
+            ? 20 + 'px'
+            : horizontalNodeMiddle - tooltipBounds.width / 2 + 'px'
+          : svgBounds.width - tooltipBounds.width - 20 + 'px';
 
+      const topPosition =
+        verticalNodeMiddle + tooltipBounds.height / 2 < svgBounds.height + 1
+          ? verticalNodeMiddle - tooltipBounds.height / 2 + 'px'
+          : svgBounds.height - tooltipBounds.height - 20 + 'px';
+
+      toolTipContainerDiv.style('left', leftPosition).style('top', topPosition);
 
       tooltip
-        .transition().style('visibility', 'visible')
         .transition()
-        .attr('transform', `translate(0 -10)`)
-        .style('opacity', '1')
+        .style('visibility', 'visible')
+        .transition()
+        .delay(250)
         .duration(500)
-        .ease(d3.easeCubicInOut)
+        .style('opacity', '1')
+        .ease(d3.easeCubicInOut);
     };
 
     const mouseout = (d: any, i: any) => {
       const targetNode = d3.select(d.currentTarget);
       const targetCode = code(i.data);
       if (selectedCode !== targetCode) {
-        targetNode.style('stroke-width', '0');
+        targetNode.style('stroke', white);
       }
       setHoveredInfo(undefined);
       hoveredCode = undefined;
-      tooltip
-        .transition().duration(250).attr('transform', 'translate(0 10)').style('opacity', '0')
-        .ease(d3.easeCubicInOut)
-        .transition()
-        .style('visibility', 'hidden')
-
+      tooltip.style('visibility', 'hidden');
     };
 
     const click = (d: any, i: any) => {
@@ -209,7 +217,7 @@ export default function Treemap({
       .data(treemapRoot.leaves())
       .enter()
       .append('g')
-      .attr('transform', d => `translate(${d.x0},${d.y0})`);
+      .attr('transform', d => `translate(${d.x0}, ${d.y0})`);
 
     const colorScaleMajorOccupation = d3
       .scaleQuantile<string>()
@@ -223,71 +231,64 @@ export default function Treemap({
       .attr('height', d => d.y1 - d.y0)
       .attr('fill', d => colorScaleMajorOccupation(category(d.data)) || white)
       .style('stroke-linejoin', 'round')
-      .style('stroke', '#2878C8')
+      .style('stroke-width', '2px')
+      .style('stroke', white)
       .on('click', click)
       .on('mouseover', mouseover)
       .on('mouseout', mouseout)
       .style('stroke-width', d => 0);
 
     // add node labels
-    const textHolder = nodes.append('g');
-
-    textHolder
-      .append('text')
-      .attr('pointer-events', 'none')
-      .text(d => `${name(d.data)}`)
+    nodes
+      .append('foreignObject')
+      .attr('width', d => d.x1 - d.x0)
+      .attr('height', d => d.y1 - d.y0)
+      .style('pointer-events', 'none')
+      .append('xhtml:div')
+      .style('padding', '6px')
+      .html(d => `${name(d.data)} `)
       .attr('data-width', d => d.x1 - d.x0)
-      .attr('font-size', `${textFontSize}px`)
-      .attr('font-weight', 400)
-      .style('fill', 'black')
-      .style('text-align', 'top')
-      .attr('x', 18)
-      .attr('y', textFontSize + 8);
+      .style('font-size', `${textFontSize} px`)
+      .style('overflow', 'hidden')
+      .style('height', d => d.y1 - d.y0 - percentFontSize + 'px')
 
-    const percentHolder = nodes.append('g');
+      .append('xhtml:div')
+      .html(d => `${Math.round(transitionRate(d.data) * 10000) / 100}% `)
+      .style('font-size', `${percentFontSize} px`)
+      .style('font-weight', 'bolder')
+      .style('position', 'sticky')
+      .style('bottom', '6px')
+      .style('color', 'black');
 
-    percentHolder
-      .append('text')
-      .attr('pointer-events', 'none')
-      .text(d => `${Math.round(transitionRate(d.data) * 10000) / 100}%`)
-      .attr('y', textFontSize + 8)
-      .attr('height', textFontSize + 8)
-      .attr('data-width', d => d.x1 - d.x0)
-      .style('text-align', 'top')
-      .attr('font-size', `${percentFontSize}px`)
-      .attr('font-weight', 700)
-      .style('fill', 'black')
-      .attr('transform', `translate(${18}, ${percentFontSize * 1.2})`);
+    const tooltipGroup = svg.append('g');
 
-    // tooltip group/container
-    const tooltip = svg
-      .append('g')
+    const tooltip = tooltipGroup
+      .append('foreignObject')
+      .attr('id', 'toolTipObj')
       .style('visibility', 'hidden')
       .style('z-index', 10)
-      .attr('pointer-events', 'none');
-
-    const toolTipObj = tooltip
-      .append('foreignObject')
-      .attr('width', dimensions.width)
-      .attr('height', dimensions.height)
+      .style('padding', '6px')
+      .attr('pointer-events', 'none')
       .style('position', 'relative')
+      .attr('width', svg.node()!.clientWidth)
+      .attr('height', svg.node()!.clientHeight);
 
-    const toolTipContainerDiv = toolTipObj
+    const toolTipContainerDiv = tooltip
       .append('xhtml:div')
-      .style('position', 'absolute')
-      .style('height', '70px')
-      .style('width', '300px')
-      .style('padding', '6px 12px')
-
+      .attr('id', 'tooltipcontainer')
+      .style('height', '5%')
+      .style('min-width', '20%')
+      .style('max-width', '40%')
+      .style('margin', '12px')
+      .style('position', 'absolute');
 
     const toolTipDiv = toolTipContainerDiv
       .append('xhtml:div')
       .style('background-color', 'white')
       .style('border-radius', '5px')
       .style('text-align', 'center')
-      .style('margin', '50px')
-      .html('tooltext')
-
+      .style('padding', '3px 10px')
+      .html('tooltext');
 
     // wrap node labels if necessary
     function wrap(selection: d3.Selection<SVGTextElement, any, any, any>) {
