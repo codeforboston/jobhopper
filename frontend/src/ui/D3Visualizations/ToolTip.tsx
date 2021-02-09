@@ -30,7 +30,6 @@ const TextContainerStyle: any = {
 };
 
 const ToolTipData = (props: any) => {
-  
   const { info } = props;
 
   const hourlyTwoDecimal = (hourly: number) =>
@@ -46,9 +45,7 @@ const ToolTipData = (props: any) => {
         </div>
       </div>
       <div style={{ display: 'flex', flex: 1, flexDirection: 'row' }}>
-        <div style={{ flex: 3 }}>
-          {info.data.category}
-        </div>
+        <div style={{ flex: 3 }}>{info.data.category}</div>
       </div>
       <div
         style={{
