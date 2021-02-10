@@ -41,6 +41,7 @@ export type TreemapProps = {
   selectedOccupation: Occupation;
   selectedState?: State;
   data: Transition[];
+  sort: string;
 };
 
 const groupData = (data: Transition[]): TreeRootNode => {

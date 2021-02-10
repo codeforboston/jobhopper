@@ -39,6 +39,8 @@ export default function TreemapKey({
         }
     })
 
+    const sortedDataArray = dataArray.sort((a, b) => Number(a.code) - Number(b.code))
+
     const keyStyle = {
         display: 'block',
         fontFamily: 'PT Sans',
@@ -53,7 +55,7 @@ export default function TreemapKey({
     return (
         <div style={keyStyle}>
             <KeyTitle>Occupation categories shown above*</KeyTitle>
-            <KeyList dataArray={dataArray} selectedCategory={parseInt(selectedCategory)} />
+            <KeyList dataArray={sortedDataArray} selectedCategory={parseInt(selectedCategory)} />
             <CaptionText>
                 *SOC (Standard Occupation Classification) code broad category, used by the
                 Bureau of Labor Statistics to define occupations

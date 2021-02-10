@@ -7,11 +7,7 @@ import Treemap from '../D3Visualizations/Treemap';
 import TransitionTable from '../TransitionTable';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
-import Canvg, { presets } from 'canvg';
-import { jsPDF } from 'jspdf';
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { useOccupationsState } from 'src/ducks/occupations';
-import EmptyResults from 'src/ui/Results/EmptyResults';
+import TreemapWrapper from '../D3Visualizations/TreemapWrapper';
 
 export interface ResultsProps {
   selectedState?: State;
@@ -149,16 +145,14 @@ const Results: React.FC<ResultsProps> = ({
               transitionData={transitions}
             />
           );
-        } else if (showTreemap && selectedOccupation) {
+        } else if (showTreemap) {
           return (
-            <Treemap
-              data={transitions}
+            <TreemapWrapper
               selectedOccupation={selectedOccupation}
               selectedState={selectedState}
+              transitionData={transitions}
             />
-          );
-        } else if (hasResults && !hasTransitions) {
-          return <EmptyResults />;
+          ); //<Treemap data={transitions} />;
         }
       })()}
     </Column>
