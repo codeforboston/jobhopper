@@ -1,19 +1,21 @@
+import { Typography } from '@material-ui/core';
+import * as d3 from 'd3';
 import React, {
-  MouseEvent,
   useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
   useState,
 } from 'react';
-import * as d3 from 'd3';
-import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Occupation } from '../../domain/occupation';
 import { State } from '../../domain/state';
 import { majorLookup, Transition } from '../../domain/transition';
+import { colorDomainMajorOccCodes, colorRange } from './colorSchemes';
 import ToolTip from './ToolTip';
+import TreemapKey from './TreemapKey';
 import useResizeObserver from './useResizeObserver';
+import { CaptionText } from './TreemapSubComponents';
 
 const Container = styled.div`
   width: 90vw;
@@ -26,59 +28,6 @@ const Svg = styled.svg``;
 const textFontSize = 18;
 const percentFontSize = 20;
 const white = '#ffffff';
-
-// these two arrays must match item for item - index for index - this is how the colors are assigned in the D3 color scale
-const colorRange = [
-  '#2E96FC',
-  '#31B39F',
-  '#5DC2B3',
-  '#73B9FE',
-  '#766CFB',
-  '#8DD5CA',
-  '#958DFA',
-  '#A2D0FD',
-  '#C1BFFE',
-  '#D0E7FF',
-  '#D0EEE9',
-  '#DA8FC7',
-  '#DFDDFE',
-  '#F79FE0',
-  '#FEA333',
-  '#FEB95D',
-  '#FECE8B',
-  '#FED1DE',
-  '#FEE1BA',
-  '#FF4782',
-  '#FF74A1',
-  '#FFA3C0',
-  '#FFD0F3',
-];
-
-const colorDomainMajorOccCodes = [
-  11,
-  13,
-  15,
-  17,
-  19,
-  21,
-  23,
-  25,
-  27,
-  29,
-  31,
-  33,
-  35,
-  37,
-  39,
-  41,
-  43,
-  45,
-  47,
-  49,
-  51,
-  53,
-  55,
-];
 
 export type CategoryNode = {
   name: string;
@@ -130,7 +79,7 @@ function code(node: TreeNode): string {
   return isTransition(node) ? node.code : '0';
 }
 
-function category(node: TreeNode): number {
+export function category(node: TreeNode): number {
   return isTransition(node) ? parseInt(node.code.slice(0, 2)) : 0;
 }
 
@@ -141,11 +90,6 @@ export default function Treemap({
 }: TreemapProps) {
   const occName = selectedOccupation ? selectedOccupation.name : '';
   const occCode = selectedOccupation ? selectedOccupation.code : '';
-
-  const title = `Which occupations do ${occName} (${occCode}) ${selectedState ? `move to in ${selectedState.name}?` : `move to Nationally?`
-    }`;
-
-  const footnote_blurb = `This visualization shows the occupations which ${occName} move to when they change occupation. The transition share is the proportion of ${occName} who move into a job in each other occupation when they switch occupation. We only break out individual occupations with transition shares greater than 0.2%.`;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
@@ -163,13 +107,11 @@ export default function Treemap({
     let selectedCode: string | undefined;
     let selectedNode: any;
 
-
     const mouseover = (d: any, i: any) => {
-      d.stopPropagation()
+      d.stopPropagation();
 
       const targetNode = d3.select(d.currentTarget);
       const targetCode = code(i.data);
-
 
       if (selectedCode !== targetCode) {
         targetNode.style('stroke-width', '2px');
@@ -181,32 +123,26 @@ export default function Treemap({
         hoveredCode = targetCode;
       }
 
-
       toolTipContainerDiv
         .style('left', i.x0 + (i.x1 - i.x0) / 2 - 150 + 'px')
-        .style('top', i.y0 + 'px')
+        .style('top', i.y0 + 'px');
       // .style('width', i.x1 - i.x0 + 'px')
-
 
       toolTipDiv
         .style('height', 'auto')
         .style('width', '100%')
         .style('left', 'auto')
         .style('margin', 'auto')
-        .html(name(i.data))
-
-
-
-
-
+        .html(name(i.data));
 
       tooltip
-        .transition().style('visibility', 'visible')
+        .transition()
+        .style('visibility', 'visible')
         .transition()
         .attr('transform', `translate(0 -10)`)
         .style('opacity', '1')
         .duration(500)
-        .ease(d3.easeCubicInOut)
+        .ease(d3.easeCubicInOut);
     };
 
     const mouseout = (d: any, i: any) => {
@@ -218,11 +154,13 @@ export default function Treemap({
       setHoveredInfo(undefined);
       hoveredCode = undefined;
       tooltip
-        .transition().duration(250).attr('transform', 'translate(0 10)').style('opacity', '0')
+        .transition()
+        .duration(250)
+        .attr('transform', 'translate(0 10)')
+        .style('opacity', '0')
         .ease(d3.easeCubicInOut)
         .transition()
-        .style('visibility', 'hidden')
-
+        .style('visibility', 'hidden');
     };
 
     const click = (d: any, i: any) => {
@@ -292,8 +230,7 @@ export default function Treemap({
       .style('stroke-width', d => 0);
 
     // add node labels
-    const textHolder = nodes
-      .append('g')
+    const textHolder = nodes.append('g');
 
     textHolder
       .append('text')
@@ -305,11 +242,9 @@ export default function Treemap({
       .style('fill', 'black')
       .style('text-align', 'top')
       .attr('x', 18)
-      .attr('y', textFontSize + 8)
-    // .call(wrap);
+      .attr('y', textFontSize + 8);
 
-    const percentHolder = nodes
-      .append('g')
+    const percentHolder = nodes.append('g');
 
     percentHolder
       .append('text')
@@ -322,49 +257,27 @@ export default function Treemap({
       .attr('font-size', `${percentFontSize}px`)
       .attr('font-weight', 700)
       .style('fill', 'black')
-      .attr("transform", `translate(${18}, ${percentFontSize * 1.2})`)
-
-    // .call(wrap);
-
-
-
-
+      .attr('transform', `translate(${18}, ${percentFontSize * 1.2})`);
 
     // tooltip group/container
     const tooltip = svg
       .append('g')
       .style('visibility', 'hidden')
       .style('z-index', 10)
-      .attr("pointer-events", 'none')
-
-
-    // tooltip
-    //   .append('rect')
-    //   .attr('height', '20px')
-    //   .attr('width', '20px')
-    //   .style('fill', 'pink')
-    //   .attr('x', 0)
-    //   .attr('y', 0)
-    //   .style('transform-origin', '0 0')
-    //   .attr('transform', `translate(-50% -50%) rotate(45)`)
-
+      .attr('pointer-events', 'none');
 
     const toolTipObj = tooltip
       .append('foreignObject')
       .attr('width', dimensions.width)
       .attr('height', dimensions.height)
-      .style('position', 'relative')
-      .style('border', '2px solid yellow')
+      .style('position', 'relative');
 
     const toolTipContainerDiv = toolTipObj
       .append('xhtml:div')
-      .style('border', '3px solid pink')
-      .style('background-color', 'pink')
       .style('position', 'absolute')
       .style('height', '70px')
       .style('width', '300px')
-      .style('padding', '6px 12px')
-
+      .style('padding', '6px 12px');
 
     const toolTipDiv = toolTipContainerDiv
       .append('xhtml:div')
@@ -372,10 +285,9 @@ export default function Treemap({
       .style('border-radius', '5px')
       .style('text-align', 'center')
       .style('margin', '50px')
-      .html('tooltext')
+      .html('tooltext');
 
-
-    // wrap node labels if necessary 
+    // wrap node labels if necessary
     function wrap(selection: d3.Selection<SVGTextElement, any, any, any>) {
       selection.each(function () {
         const node = d3.select(this);
@@ -426,22 +338,34 @@ export default function Treemap({
     renderTreemap();
   }, [renderTreemap]);
 
+  const title = `Job transitions from ${occName} (${occCode}) ${
+    selectedState ? `move to in ${selectedState.name}?` : `move to Nationally?`
+  }`;
+
+  const footnote_blurb = `This visualization shows the occupations which ${occName} move to when they change occupation. The transition share is the proportion of ${occName} who move into a job in each other occupation when they switch jobs. We only break out individual occupations with transition shares greater than 0.2%.`;
+
+  const occCategoryList = new Set<number>();
+
+  data.forEach(item => {
+    occCategoryList.add(category(item));
+  });
+
   return (
-    <Container ref={containerRef} data-testid="treemap" id="treemap-container">
-      <Typography
-        variant="h6"
-        style={{ marginTop: '12px', marginBottom: '12px' }}
-      >
-        {title}
-      </Typography>
-      <Svg ref={svgRef} id="treemap-svg" />
-      <ToolTip info={hoveredInfo || selectedInfo} />
-      <Typography
-        variant="h6"
-        style={{ marginTop: '4px', marginBottom: '4px', fontSize: '10' }}
-      >
-        {footnote_blurb}
-      </Typography>
+    <Container ref={containerRef} data-testid="treemap">
+      <div>
+        <Typography
+          variant="h6"
+          style={{ marginTop: '12px', marginBottom: '12px' }}
+        >
+          {title}
+        </Typography>
+        <Svg ref={svgRef} />
+        <ToolTip info={hoveredInfo || selectedInfo} />
+        <TreemapKey
+          occupationCodes={occCategoryList}
+          footnote_blurb={footnote_blurb}
+        />
+      </div>
     </Container>
   );
 }
