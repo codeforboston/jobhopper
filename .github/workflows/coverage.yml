@@ -1,0 +1,52 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Django Test
+
+# Controls when the action will run. Triggers the workflow on push of python files.
+# change to `on: [push]` for all push events.
+on:
+  push:
+    paths:
+    - '**.py'
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    # set up postgres container
+    services:
+      postgres:
+        image: postgres:12-alpine
+        env:
+          POSTGRES_USER: jobhopper
+          POSTGRES_PASSWORD: jobhoppertest
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
+    # steps to run in job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Install requirements
+        run: pip install -r api/requirements.txt
+      - name: Run coverage
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PASSWORD: jobhoppertest
+          DB_USER: jobhopper
+          DB_NAME: test_jobhopperdatabase
+          SECRET_KEY: 77a353957aca463f13b9be321df87539c7cd558474a6b2fbae
+        run: |
+          coverage run --source='.' manage.py test jobhopper
+          coverage report -m

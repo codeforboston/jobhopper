@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -25,3 +26,25 @@ yarn-error.log*
 .firebase/
 
 !.env
+=======
+venv
+__pycache__
+
+*.sqlite3
+.env
+data/bls/downloads
+
+# NPM/Yarn
+node_modules
+
+# IDE settings
+.idea
+.vscode
+
+
+firebase-deploy-credentials.json
+firebase-deploy-passphrase
+build-storybook.log
+
+.vscode
+>>>>>>> 2a1390e9ac35a6194d2ee4f215a8cc01bd6e59c1
