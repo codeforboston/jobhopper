@@ -89,7 +89,6 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(getByTestId('treemap')).toBeInTheDocument();
-      expect(queryByText(/Job Transitions/i)).not.toBeInTheDocument();
     });
   });
 
@@ -119,7 +118,6 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(getByTestId('treemap')).toBeInTheDocument();
-      expect(queryByText(/Job Transitions/i)).not.toBeInTheDocument();
     });
   });
 });

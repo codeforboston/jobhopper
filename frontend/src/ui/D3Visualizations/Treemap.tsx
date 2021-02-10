@@ -1,4 +1,3 @@
-import { Typography } from '@material-ui/core';
 import * as d3 from 'd3';
 import React, {
   useCallback,
@@ -13,6 +12,7 @@ import { State } from '../../domain/state';
 import { majorLookup, Transition } from '../../domain/transition';
 import { colorDomainMajorOccCodes, colorRange } from './colorSchemes';
 import ToolTip from './ToolTip';
+import { Title } from './TreemapSubComponents';
 import useResizeObserver from './useResizeObserver';
 
 const Container = styled.div`
@@ -57,7 +57,6 @@ const groupData = (data: Transition[]): TreeRootNode => {
       });
     }
   });
-
   return {
     children: categories,
   };
@@ -94,6 +93,8 @@ export default function Treemap({
 
   const [hoveredInfo, setHoveredInfo] = useState();
   const [selectedInfo, setSelectedInfo] = useState();
+  const [leftTooltipPosition, setLeftTooltipPosition] = useState<string>('0');
+  const [topTooltipPosition, setTopTooltipPosition] = useState<string>('0');
 
   useEffect(() => {
     containerRef.current?.scrollIntoView?.({ behavior: 'smooth' });
@@ -128,25 +129,40 @@ export default function Treemap({
       const horizontalNodeMiddle = i.x0 + (i.x1 - i.x0) / 2;
       const verticalNodeMiddle = i.y0 + (i.y1 - i.y0) / 2;
 
-      const tooltipBounds = (toolTipDiv.node() as HTMLDivElement).getBoundingClientRect();
+      const toolTipElement = toolTipDiv.node() as HTMLDivElement;
+      const tooltipBounds = {
+        width: toolTipElement.clientWidth,
+        height: toolTipElement.clientHeight,
+      };
+
       const svgBounds = {
         width: svg.node()!.clientWidth,
         height: svg.node()!.clientHeight,
       };
 
-      const leftPosition =
-        horizontalNodeMiddle + tooltipBounds.width / 2 < svgBounds.width + 1
-          ? horizontalNodeMiddle - tooltipBounds.width / 2 < 0
-            ? 20 + 'px'
-            : horizontalNodeMiddle - tooltipBounds.width / 2 + 'px'
-          : svgBounds.width - tooltipBounds.width - 20 + 'px';
+      if (tooltipBounds.width) {
+        const newLeftPosition =
+          horizontalNodeMiddle + tooltipBounds.width / 2 < svgBounds.width + 1
+            ? horizontalNodeMiddle - tooltipBounds.width / 2 < 0
+              ? 20 + 'px'
+              : horizontalNodeMiddle - tooltipBounds.width / 2 + 'px'
+            : svgBounds.width - tooltipBounds.width - 20 + 'px';
+        setLeftTooltipPosition(newLeftPosition);
+        console.log(tooltipBounds, newLeftPosition);
+      }
 
-      const topPosition =
-        verticalNodeMiddle + tooltipBounds.height / 2 < svgBounds.height + 1
-          ? verticalNodeMiddle - tooltipBounds.height / 2 + 'px'
-          : svgBounds.height - tooltipBounds.height - 20 + 'px';
+      if (tooltipBounds.height) {
+        const newTopPosition =
+          tooltipBounds.height &&
+          verticalNodeMiddle + tooltipBounds.height / 2 < svgBounds.height + 1
+            ? verticalNodeMiddle - tooltipBounds.height / 2 + 'px'
+            : svgBounds.height - tooltipBounds.height - 18 + 'px';
+        setTopTooltipPosition(newTopPosition);
+      }
 
-      toolTipContainerDiv.style('left', leftPosition).style('top', topPosition);
+      toolTipContainerDiv
+        .style('left', leftTooltipPosition)
+        .style('top', topTooltipPosition);
 
       tooltip
         .transition()
@@ -278,8 +294,7 @@ export default function Treemap({
       .attr('id', 'tooltipcontainer')
       .style('height', '5%')
       .style('min-width', '20%')
-      .style('max-width', '40%')
-      .style('margin', '12px')
+      .style('max-width', '35%')
       .style('position', 'absolute');
 
     const toolTipDiv = toolTipContainerDiv
@@ -289,7 +304,14 @@ export default function Treemap({
       .style('text-align', 'center')
       .style('padding', '3px 10px')
       .html('tooltext');
-  }, [dimensions.width, dimensions.height, data, setSelectedCategory]);
+  }, [
+    dimensions.width,
+    dimensions.height,
+    data,
+    leftTooltipPosition,
+    topTooltipPosition,
+    setSelectedCategory,
+  ]);
 
   useLayoutEffect(() => {
     renderTreemap();
@@ -297,16 +319,9 @@ export default function Treemap({
 
   return (
     <Container ref={containerRef} data-testid="treemap">
-      <div>
-        <Typography
-          variant="h6"
-          style={{ marginTop: '12px', marginBottom: '12px' }}
-        >
-          {title}
-        </Typography>
-        <Svg ref={svgRef} />
-        <ToolTip info={hoveredInfo || selectedInfo} />
-      </div>
+      <Title>{title}</Title>
+      <Svg ref={svgRef} />
+      <ToolTip info={hoveredInfo || selectedInfo} />
     </Container>
   );
 }

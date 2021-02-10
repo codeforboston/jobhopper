@@ -1,13 +1,16 @@
 import CircularProgress from '@material-ui/core/CircularProgress';
-import React, { createElement, useMemo, useState } from 'react';
-import { Transition } from 'src/domain/transition';
-import ResultError from 'src/ui/Results/ResultError';
-import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
-import Treemap from '../D3Visualizations/Treemap';
-import TransitionTable from '../TransitionTable';
+import Canvg from 'canvg';
+import jsPDF from 'jspdf';
+import React, { useMemo, useState } from 'react';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
+import { Transition } from 'src/domain/transition';
+import { useOccupationsState } from 'src/ducks/occupations';
+import ResultError from 'src/ui/Results/ResultError';
+import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
 import TreemapWrapper from '../D3Visualizations/TreemapWrapper';
+import TransitionTable from '../TransitionTable';
+import EmptyResults from 'src/ui/Results/EmptyResults';
 
 export interface ResultsProps {
   selectedState?: State;
@@ -152,7 +155,7 @@ const Results: React.FC<ResultsProps> = ({
               selectedState={selectedState}
               transitionData={transitions}
             />
-          ); //<Treemap data={transitions} />;
+          );
         }
       })()}
     </Column>
