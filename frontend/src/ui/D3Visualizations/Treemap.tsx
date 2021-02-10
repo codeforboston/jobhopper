@@ -1,18 +1,21 @@
+import { Typography } from '@material-ui/core';
+import * as d3 from 'd3';
 import React, {
   useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
-  useState,
+  useState
 } from 'react';
-import * as d3 from 'd3';
-import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Occupation } from '../../domain/occupation';
 import { State } from '../../domain/state';
 import { majorLookup, Transition } from '../../domain/transition';
+import { colorDomainMajorOccCodes, colorRange } from './colorSchemes';
 import ToolTip from './ToolTip';
+import TreemapKey from './TreemapKey';
 import useResizeObserver from './useResizeObserver';
+import { CaptionText } from './TreemapSubComponents';
 
 const Container = styled.div`
   width: 90vw;
@@ -25,58 +28,7 @@ const Svg = styled.svg``;
 const fontSize = 12;
 const white = '#ffffff';
 
-// these two arrays must match item for item - index for index - this is how the colors are assigned in the D3 color scale
-const colorRange = [
-  '#2E96FC',
-  '#31B39F',
-  '#5DC2B3',
-  '#73B9FE',
-  '#766CFB',
-  '#8DD5CA',
-  '#958DFA',
-  '#A2D0FD',
-  '#C1BFFE',
-  '#D0E7FF',
-  '#D0EEE9',
-  '#DA8FC7',
-  '#DFDDFE',
-  '#F79FE0',
-  '#FEA333',
-  '#FEB95D',
-  '#FECE8B',
-  '#FED1DE',
-  '#FEE1BA',
-  '#FF4782',
-  '#FF74A1',
-  '#FFA3C0',
-  '#FFD0F3',
-];
 
-const colorDomainMajorOccCodes = [
-  11,
-  13,
-  15,
-  17,
-  19,
-  21,
-  23,
-  25,
-  27,
-  29,
-  31,
-  33,
-  35,
-  37,
-  39,
-  41,
-  43,
-  45,
-  47,
-  49,
-  51,
-  53,
-  55,
-];
 
 export type CategoryNode = {
   name: string;
@@ -128,7 +80,7 @@ function code(node: TreeNode): string {
   return isTransition(node) ? node.code : '0';
 }
 
-function category(node: TreeNode): number {
+export function category(node: TreeNode): number {
   return isTransition(node) ? parseInt(node.code.slice(0, 2)) : 0;
 }
 
@@ -139,12 +91,6 @@ export default function Treemap({
 }: TreemapProps) {
   const occName = selectedOccupation ? selectedOccupation.name : '';
   const occCode = selectedOccupation ? selectedOccupation.code : '';
-
-  const title = `Which occupations do ${occName} (${occCode}) ${
-    selectedState ? `move to in ${selectedState.name}?` : `move to Nationally?`
-  }`;
-
-  const footnote_blurb = `This visualization shows the occupations which ${occName} move to when they change occupation. The transition share is the proportion of ${occName} who move into a job in each other occupation when they switch occupation. We only break out individual occupations with transition shares greater than 0.2%.`;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
@@ -174,6 +120,7 @@ export default function Treemap({
         setHoveredInfo(i);
         hoveredCode = targetCode;
       }
+
     };
 
     const mouseout = (d: any, i: any) => {
@@ -318,22 +265,31 @@ export default function Treemap({
     renderTreemap();
   }, [renderTreemap]);
 
+
+  const title = `Job transitions from ${occName} (${occCode}) ${selectedState ? `move to in ${selectedState.name}?` : `move to Nationally?`}`;
+
+
+  const footnote_blurb = `This visualization shows the occupations which ${occName} move to when they change occupation. The transition share is the proportion of ${occName} who move into a job in each other occupation when they switch jobs. We only break out individual occupations with transition shares greater than 0.2%.`;
+
+  const occCategoryList = new Set<number>()
+
+  data.forEach(item => {
+    occCategoryList.add(category(item))
+  })
+
   return (
     <Container ref={containerRef} data-testid="treemap">
-      <Typography
-        variant="h6"
-        style={{ marginTop: '12px', marginBottom: '12px' }}
-      >
-        {title}
-      </Typography>
-      <Svg ref={svgRef} />
-      <ToolTip info={hoveredInfo || selectedInfo} />
-      <Typography
-        variant="h6"
-        style={{ marginTop: '4px', marginBottom: '4px', fontSize: '10' }}
-      >
-        {footnote_blurb}
-      </Typography>
-    </Container>
+      <div>
+        <Typography
+          variant="h6"
+          style={{ marginTop: '12px', marginBottom: '12px' }}
+        >
+          {title}
+        </Typography>
+        <Svg ref={svgRef} />
+        <ToolTip info={hoveredInfo || selectedInfo} />
+        <TreemapKey occupationCodes={occCategoryList} footnote_blurb={footnote_blurb} />
+      </div>
+    </Container >
   );
 }

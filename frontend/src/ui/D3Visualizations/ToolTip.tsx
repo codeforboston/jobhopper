@@ -7,7 +7,7 @@ export default function ToolTipDisplay(props: any) {
     <div
       style={{
         fontWeight: 'bolder',
-        height: '300px',
+        height: '40px',
         padding: '20px',
       }}
     >
