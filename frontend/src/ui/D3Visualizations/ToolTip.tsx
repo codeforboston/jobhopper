@@ -35,7 +35,7 @@ const ToolTipData = (props: any) => {
   const hourlyTwoDecimal = (hourly: number) =>
     (Math.round(hourly * 100) / 100).toFixed(2);
   const annualFormatted = (annual: number) =>
-    annual.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    annual?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   return (
     <div style={TextContainerStyle}>
       <div style={{ display: 'flex', flex: 1, flexDirection: 'row' }}>
@@ -43,6 +43,9 @@ const ToolTipData = (props: any) => {
         <div style={{ flex: 3 }}>
           <OnetLink socCode={info.data.code}>{info.data.name}</OnetLink>
         </div>
+      </div>
+      <div style={{ display: 'flex', flex: 1, flexDirection: 'row' }}>
+        <div style={{ flex: 3 }}>{info.data.category}</div>
       </div>
       <div
         style={{

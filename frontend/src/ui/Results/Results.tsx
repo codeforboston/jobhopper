@@ -81,8 +81,14 @@ const Results: React.FC<ResultsProps> = ({
               transitionData={transitions}
             />
           );
-        } else if (showTreemap) {
-          return <Treemap data={transitions} />;
+        } else if (showTreemap && selectedOccupation) {
+          return (
+            <Treemap
+              data={transitions}
+              selectedOccupation={selectedOccupation}
+              selectedState={selectedState}
+            />
+          );
         } else if (hasResults && !hasTransitions) {
           return <EmptyResults />;
         }

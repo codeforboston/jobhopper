@@ -27,6 +27,7 @@ class OccupationTransitions(models.Model):
     total_soc = models.BigIntegerField(null=True)
     pi = models.DecimalField(decimal_places=10, max_digits=11, null=True)
     occleaveshare = models.DecimalField(decimal_places=10, max_digits=11, null=True)
+    total_transition_obs = models.DecimalField(decimal_places=5, max_digits=20, null=True)
 
 
 class BlsOesFakes(models.Model):
@@ -55,6 +56,7 @@ class SocDescription(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True, serialize=False)
     soc_code = models.CharField(max_length=10, null=True)
     soc_title = models.CharField(max_length=255, null=True)
+    total_transition_obs = models.DecimalField(decimal_places=5, max_digits=20, null=True)
 
 
 class StateAbbPairs(models.Model):

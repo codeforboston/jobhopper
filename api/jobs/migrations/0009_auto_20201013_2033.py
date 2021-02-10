@@ -3,6 +3,9 @@ from django.db import migrations, models, connection
 from data.scripts.sql_loader import (
     load_occupation_transitions_to_sql,
 )
+import logging
+
+log = logging.getLogger()
 
 
 class Migration(migrations.Migration):
@@ -17,21 +20,21 @@ class Migration(migrations.Migration):
 
     def forwards_source_data(apps, schema_editor):
         with connection.schema_editor() as my_schema_editor:
-            print(f" show db {my_schema_editor.connection.alias}")
-        print("Processing data from csv; This will take a few minutes.")
+            log.info(f"0009 show db {my_schema_editor.connection.alias}")
+        log.info("0009 Processing data from csv; This will take a few minutes.")
         conn_info = str(schema_editor.connection.__dict__["connection"])
-        print(conn_info)
+        log.info(f"0009 Connection Info: {conn_info}")
         db_name = conn_info.split("dbname=")[1].split(" ")[0]
-        print(db_name)
+        log.info(f"0009 DB Name: {db_name}")
 
         load_occupation_transitions_to_sql(
             "data/occupation_transitions_public_data_set.csv",
             db_name,
         )
-        print("done with forward load")
+        log.info("0009 done with forward load")
 
     def reverse_source_data(apps, schema_editor):
-        print("removing source data")
+        log.info("0009 removing source data")
         migrations.RunSQL([("drop table occupation_transition")])
 
     def forwards_func(apps, schema_editor):
