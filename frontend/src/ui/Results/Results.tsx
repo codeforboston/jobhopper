@@ -7,6 +7,7 @@ import Treemap from '../D3Visualizations/Treemap';
 import TransitionTable from '../TransitionTable';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
+import EmptyResults from 'src/ui/Results/EmptyResults';
 
 export interface ResultsProps {
   selectedState?: State;
@@ -19,18 +20,19 @@ export interface ResultsProps {
 const Results: React.FC<ResultsProps> = ({
   selectedOccupation,
   selectedState,
-  transitions: immutableTransitions = [],
+  transitions: immutableTransitions,
   loading = false,
   error,
 }) => {
   const [visualization, setVisualization] = useState<'matrix' | 'treemap'>(
     'matrix'
   );
+  const hasResults = immutableTransitions !== undefined;
 
   // Material table mutates its data, but immer freezes objects, so we clone
   // the transition data for compatibility.
   const transitions = useMemo<Transition[]>(
-    () => immutableTransitions.map(t => ({ ...t })),
+    () => (immutableTransitions ?? []).map(t => ({ ...t })),
     [immutableTransitions]
   );
 
@@ -87,6 +89,8 @@ const Results: React.FC<ResultsProps> = ({
               selectedState={selectedState}
             />
           );
+        } else if (hasResults && !hasTransitions) {
+          return <EmptyResults />;
         }
       })()}
     </Column>
