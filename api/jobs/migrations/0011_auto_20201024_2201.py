@@ -3,6 +3,11 @@
 from django.db import migrations, models
 from data.scripts.sql_loader import load_bls_oes_to_sql
 
+import logging
+
+log = logging.getLogger()
+
+
 class Migration(migrations.Migration):
     """
     Load BLS OES data for the prototype into the jobs_blsoes database (BlsOes model, created in the previous migration)
@@ -12,9 +17,16 @@ class Migration(migrations.Migration):
     ]
 
     def forwards_source_data(apps, schema_editor):
+        conn_info = str(schema_editor.connection.__dict__["connection"])
+        log.info(f"0013 Connection info: {conn_info}")
+
+        db_name = conn_info.split("dbname=")[1].split(" ")[0]
+        log.info(f"0013 DB name: {db_name}")
+
         load_bls_oes_to_sql(
             start_year=2018,
             end_year=2019,
+            db=db_name,
             table_name="jobs_blsoes",
             soc_table_name=None)
 

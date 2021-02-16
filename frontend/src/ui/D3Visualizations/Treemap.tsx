@@ -6,8 +6,11 @@ import React, {
   useState,
 } from 'react';
 import * as d3 from 'd3';
+import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { Transition } from '../../domain/transition';
+import { Occupation } from '../../domain/occupation';
+import { State } from '../../domain/state';
+import { majorLookup, Transition } from '../../domain/transition';
 import ToolTip from './ToolTip';
 import useResizeObserver from './useResizeObserver';
 
@@ -21,20 +24,93 @@ const Svg = styled.svg``;
 
 const fontSize = 12;
 const white = '#ffffff';
-// const colorRange = ['#bce4d9', '#6ab6c4', '#357ea1'];
-const colorRange = ['#519a6e', '#83b496', '#b6d7c3'];
 
-export type TreeNode = { children: Transition[] } | Transition;
+// these two arrays must match item for item - index for index - this is how the colors are assigned in the D3 color scale
+const colorRange = [
+  '#2E96FC',
+  '#31B39F',
+  '#5DC2B3',
+  '#73B9FE',
+  '#766CFB',
+  '#8DD5CA',
+  '#958DFA',
+  '#A2D0FD',
+  '#C1BFFE',
+  '#D0E7FF',
+  '#D0EEE9',
+  '#DA8FC7',
+  '#DFDDFE',
+  '#F79FE0',
+  '#FEA333',
+  '#FEB95D',
+  '#FECE8B',
+  '#FED1DE',
+  '#FEE1BA',
+  '#FF4782',
+  '#FF74A1',
+  '#FFA3C0',
+  '#FFD0F3',
+];
+
+const colorDomainMajorOccCodes = [
+  11,
+  13,
+  15,
+  17,
+  19,
+  21,
+  23,
+  25,
+  27,
+  29,
+  31,
+  33,
+  35,
+  37,
+  39,
+  41,
+  43,
+  45,
+  47,
+  49,
+  51,
+  53,
+  55,
+];
+
+export type CategoryNode = {
+  name: string;
+  children: Transition[];
+  category: number;
+};
+export type TreeRootNode = { children: CategoryNode[] };
+export type TreeNode = TreeRootNode | CategoryNode | Transition;
 
 export type TreemapProps = {
+  selectedOccupation: Occupation;
+  selectedState?: State;
   data: Transition[];
 };
 
-function createHierarchy(data: Transition[]): TreeNode {
+const groupData = (data: Transition[]): TreeRootNode => {
+  let categories: any[] = [];
+
+  majorLookup.forEach((name, categoryKey) => {
+    const transitions = data.filter(node => categoryKey === category(node));
+
+    if (transitions.length > 0) {
+      categories.push({
+        name: name,
+        children: transitions,
+        category: categoryKey,
+      });
+    }
+  });
+
   return {
-    children: data,
+    children: categories,
   };
-}
+};
 
 function isTransition(node: TreeNode): node is Transition {
   return (node as Transition).transitionRate !== undefined;
@@ -52,7 +128,24 @@ function code(node: TreeNode): string {
   return isTransition(node) ? node.code : '0';
 }
 
-export default function Treemap({ data }: TreemapProps) {
+function category(node: TreeNode): number {
+  return isTransition(node) ? parseInt(node.code.slice(0, 2)) : 0;
+}
+
+export default function Treemap({
+  data,
+  selectedOccupation,
+  selectedState,
+}: TreemapProps) {
+  const occName = selectedOccupation ? selectedOccupation.name : '';
+  const occCode = selectedOccupation ? selectedOccupation.code : '';
+
+  const title = `Which occupations do ${occName} (${occCode}) ${
+    selectedState ? `move to in ${selectedState.name}?` : `move to Nationally?`
+  }`;
+
+  const footnote_blurb = `This visualization shows the occupations which ${occName} move to when they change occupation. The transition share is the proportion of ${occName} who move into a job in each other occupation when they switch occupation. We only break out individual occupations with transition shares greater than 0.2%.`;
+
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -75,7 +168,9 @@ export default function Treemap({ data }: TreemapProps) {
       if (selectedCode !== targetCode) {
         targetNode.style('stroke-width', '2px');
       }
+
       if (hoveredCode !== targetCode) {
+        i.data.category = majorLookup.get(parseInt(code(i.data).slice(0, 2)));
         setHoveredInfo(i);
         hoveredCode = targetCode;
       }
@@ -101,6 +196,7 @@ export default function Treemap({ data }: TreemapProps) {
       } else {
         selectedNode?.style('stroke-width', 0);
         targetNode.style('stroke-width', '3px');
+        i.data.category = majorLookup.get(parseInt(code(i.data).slice(0, 2)));
         setSelectedInfo(i);
         selectedCode = targetCode;
         selectedNode = targetNode;
@@ -116,9 +212,11 @@ export default function Treemap({ data }: TreemapProps) {
       .attr('width', dimensions.width)
       .attr('height', dimensions.height);
 
+    const dataset = groupData(data);
+
     // create hierarchical layout with data
     const root = d3
-      .hierarchy(createHierarchy(data))
+      .hierarchy(dataset)
       .sum(transitionRate)
       .sort((a, b) => b.value! - a.value!);
 
@@ -136,10 +234,9 @@ export default function Treemap({ data }: TreemapProps) {
       .append('g')
       .attr('transform', d => `translate(${d.x0},${d.y0})`);
 
-    // select color within d3.schemeSet3 (contains array of 12 colors)
-    const colorScale = d3
+    const colorScaleMajorOccupation = d3
       .scaleQuantile<string>()
-      .domain(data.map(d => d.transitionRate))
+      .domain(colorDomainMajorOccCodes)
       .range(colorRange);
 
     // create and fill svg 'rects' based on the node data selected
@@ -147,7 +244,7 @@ export default function Treemap({ data }: TreemapProps) {
       .append('rect')
       .attr('width', d => d.x1 - d.x0)
       .attr('height', d => d.y1 - d.y0)
-      .attr('fill', d => colorScale(transitionRate(d.data)) || white)
+      .attr('fill', d => colorScaleMajorOccupation(category(d.data)) || white)
       .style('stroke-linejoin', 'round')
       .style('stroke', '#2878C8')
       .on('click', click)
@@ -156,7 +253,6 @@ export default function Treemap({ data }: TreemapProps) {
       .style('stroke-width', d => 0);
 
     // add node labels
-
     nodes
       .append('text')
       .text(
@@ -224,8 +320,20 @@ export default function Treemap({ data }: TreemapProps) {
 
   return (
     <Container ref={containerRef} data-testid="treemap" id="treemap-container">
+      <Typography
+        variant="h6"
+        style={{ marginTop: '12px', marginBottom: '12px' }}
+      >
+        {title}
+      </Typography>
       <Svg ref={svgRef} id="treemap-svg" />
       <ToolTip info={hoveredInfo || selectedInfo} />
+      <Typography
+        variant="h6"
+        style={{ marginTop: '4px', marginBottom: '4px', fontSize: '10' }}
+      >
+        {footnote_blurb}
+      </Typography>
     </Container>
   );
 }

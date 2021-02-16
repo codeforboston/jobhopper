@@ -11,6 +11,7 @@ import Canvg, { presets } from 'canvg';
 import { jsPDF } from 'jspdf';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { useOccupationsState } from 'src/ducks/occupations';
+import EmptyResults from 'src/ui/Results/EmptyResults';
 
 export interface ResultsProps {
   selectedState?: State;
@@ -23,20 +24,21 @@ export interface ResultsProps {
 const Results: React.FC<ResultsProps> = ({
   selectedOccupation,
   selectedState,
-  transitions: immutableTransitions = [],
+  transitions: immutableTransitions,
   loading = false,
   error,
 }) => {
   const [visualization, setVisualization] = useState<'matrix' | 'treemap'>(
     'matrix'
   );
+  const hasResults = immutableTransitions !== undefined;
 
   const occupation = useOccupationsState().selectedOccupation;
 
   // Material table mutates its data, but immer freezes objects, so we clone
   // the transition data for compatibility.
   const transitions = useMemo<Transition[]>(
-    () => immutableTransitions.map(t => ({ ...t })),
+    () => (immutableTransitions ?? []).map(t => ({ ...t })),
     [immutableTransitions]
   );
 
@@ -155,8 +157,16 @@ const Results: React.FC<ResultsProps> = ({
               transitionData={transitions}
             />
           );
-        } else if (showTreemap) {
-          return <Treemap data={transitions} />;
+        } else if (showTreemap && selectedOccupation) {
+          return (
+            <Treemap
+              data={transitions}
+              selectedOccupation={selectedOccupation}
+              selectedState={selectedState}
+            />
+          );
+        } else if (hasResults && !hasTransitions) {
+          return <EmptyResults />;
         }
       })()}
     </Column>
