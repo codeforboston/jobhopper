@@ -4,7 +4,6 @@ import { Transition } from 'src/domain/transition';
 import ResultError from 'src/ui/Results/ResultError';
 import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
 import Treemap from '../D3Visualizations/Treemap';
-import Treemap_2 from '../D3Visualizations/Treemap_2';
 import TransitionTable from '../TransitionTable';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
@@ -152,7 +151,7 @@ const Results: React.FC<ResultsProps> = ({
           );
         } else if (showTreemap && selectedOccupation) {
           return (
-            <Treemap_2
+            <Treemap
               data={transitions}
               selectedOccupation={selectedOccupation}
               selectedState={selectedState}
