@@ -4,6 +4,7 @@ import { Transition } from 'src/domain/transition';
 import ResultError from 'src/ui/Results/ResultError';
 import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
 import Treemap from '../D3Visualizations/Treemap';
+import Treemap_2 from '../D3Visualizations/Treemap_2';
 import TransitionTable from '../TransitionTable';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
@@ -97,16 +98,8 @@ const Results: React.FC<ResultsProps> = ({
             197.85,
             { maxWidth: 254.35 }
           );
-
-          const doc = new jsPDF('l', 'mm', [261, 279]);
-
-          const treeChartHTML = document.getElementById('treemap-svg');
-          if (treeChartHTML) {
-            doc.html(treeChartHTML);
-            doc.save('treechart from html');
-          }
         })
-        .then(() => pdf.save('logo'));
+        .then(() => pdf.save('treemap_report'));
     }
   };
 
@@ -139,8 +132,8 @@ const Results: React.FC<ResultsProps> = ({
             label="Export Chart"
             testid="treechartPdf"
             onClick={exportPDF}
-            // disabled={disabled}
-            // selected={showTreemap}
+            disabled={disabled}
+            selected={showTreemap}
           />
         </Row>
       </LabeledSection>
@@ -159,7 +152,7 @@ const Results: React.FC<ResultsProps> = ({
           );
         } else if (showTreemap && selectedOccupation) {
           return (
-            <Treemap
+            <Treemap_2
               data={transitions}
               selectedOccupation={selectedOccupation}
               selectedState={selectedState}
