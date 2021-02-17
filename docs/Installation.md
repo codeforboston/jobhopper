@@ -16,9 +16,9 @@
 
    You can start a shell in the Django container with `docker-compose exec api bash`, and a shell in the database container with `docker-compose exec db bash`.
 
-   To start `psql`, an interactive PostgresQL shell, open a database shell and run `psql -U [your username] -d jobhopper_dev`.
+   To start `psql`, an interactive PostgreSQL shell, open a database shell and run `psql -U [your username] -d jobhopper_dev`.
 
-5. To Run tests, once the container is running, this command will work in a new command window to execute the tests against the running api container:
+5. To Run tests, once the container is running, this command will work in a new command window to execute the tests against the running API container:
 `docker exec jobhopper_api_1 bash -c "python migrate.py test"`
 
 ## Option 1: Clone and run
@@ -74,11 +74,11 @@
 
    You can get your own 50 character secret key from [here](https://miniwebtool.com/django-secret-key-generator/).
 
-8. Create Postgres DB:
+8. Create PostgreSQL DB:
 
-   a. Install [Postgres 12](https://www.postgresql.org/download/)
+   a. Install [PostgreSQL 12](https://www.postgresql.org/download/)
 
-   b. Start postgresql service and check if clusters are running.
+   b. Start PostgreSQL service and check if clusters are running.
 
    ```sh
    sudo service postgresql start
@@ -141,5 +141,5 @@
     ```
 
 11. Go to the URL `[baseurl]/jobs/api/leads/` and test out creating entries.
-12. Go to the url `[baseurl]/api/v1/health` and ensure it returns json data.
-13. Go to the url `[baseurl]/jobs` and ensure it returns data.
+12. Go to the URL `[baseurl]/api/v1/health` and ensure it returns JSON data.
+13. Go to the URL `[baseurl]/jobs` and ensure it returns data.

@@ -1,8 +1,8 @@
 # Django Migrations (Changes to database)
 
-Django is a python based framework that helps us provide standard rest apis to our database backend in postgres. Using a framework allows us to develop solid api endpoints for our application with less time. This document is written from windows for developers of the jobhopper application. Users should be familiar with python, postgres, virtual env and have gotten the application running. This doc explains more detail about how to change the model/data/database structure.
+Django is a Python based framework that helps us provide standard REST APIs to our database backend in PostgreSQL. Using a framework allows us to develop solid API endpoints for our application with less time. This document is written from Windows for developers of the JobHopper application. Users should be familiar with Python, PostgreSQL, virtual env and have the application running. This doc explains more detail about how to change the model/data/database structure.
 
-In order to keep our django application in sync with our database, we leverage Django migrations. Migrations are generally run with the command similar to this (windows):
+In order to keep our Django application in sync with our database, we leverage Django migrations. Migrations are generally run with the command similar to this (Windows):
 
 Migrations can update either the database schema (the tables/structure) or the data inside. Both types of migrations are saved in the migrations subfolder.
 
