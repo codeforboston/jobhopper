@@ -2,9 +2,10 @@ import React from 'react';
 import { LabeledSection } from '../Common';
 import Page from '../Page';
 import { ResultsContainer } from '../Results';
-import LandingBlurb from '../LandingBlurb';
+import { LandingBlurbContainer } from '../LandingBlurb';
 import { OccupationSelectContainer, StateSelectContainer } from '../Select';
 import { createContainerContext } from '../utils';
+
 
 const { ContainerContext, useContainerContext } = createContainerContext({
   OccupationSelectContainer,
@@ -20,7 +21,7 @@ const TransitionPage: React.FC = () => {
   } = useContainerContext();
   return (
     <Page>
-      <LandingBlurb />
+      <LandingBlurbContainer />
       <LabeledSection
         title="Enter occupation"
         subtitle="Type in an occupation by name or SOC code."

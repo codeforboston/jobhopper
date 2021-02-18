@@ -2,8 +2,8 @@ import { Collapse } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Section } from './Common';
-import { Body, Title } from './Typography';
+import { Section } from '../Common';
+import { Body, Title } from '../Typography';
 
 const CollapsingSection = styled(Section)`
   & p {
@@ -16,14 +16,16 @@ const CollapseIcon = styled(ExpandMoreIcon)`
   vertical-align: middle;
 `;
 
-export default function LandingBlurb() {
-  const [show, setShow] = useState(true);
+export default function LandingBlurb({show, onClick}: {show: boolean, onClick: () => {}}) {
   return (
     <CollapsingSection>
-      <Title onClick={() => setShow(show => !show)}>
+      <Title onClick={() => onClick()}>
         Occupation Transitions
         <CollapseIcon transform={`rotate(${show ? 180 : 0})`} />
       </Title>
+
+      //if Title text of Occupation Selection container has text, then show first 2 lines of text from Occupation Transitions
+
       <Collapse in={show}>
         <Body>
           JobHopper is a tool to explore new data on mobility between
