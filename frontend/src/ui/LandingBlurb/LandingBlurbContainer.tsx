@@ -4,13 +4,14 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Section } from '../Common';
 import { Body, Title } from '../Typography';
-import { LandingBlurb } from './LandingBlurb';
-import { useEffect, useOccupationState } from 'react';
+import { useEffect } from 'react';
+import { useOccupationsState } from '../../ducks/occupations';
+
 
 export const LandingBlurbContainer = () => {
   const [show, setShow] = useState(true);
   const [hasClicked, setHasClicked] = useState(false);
-  const {selectedOccupation} = useOccupationState();
+  const {selectedOccupation} = useOccupationsState();
 
   useEffect(() => {
     if (selectedOccupation && show && !hasClicked) {
@@ -18,11 +19,11 @@ export const LandingBlurbContainer = () => {
     }
   })
 
-  return <LandingBlurb show={show} onClick={() => {
+  return <LandingBlurbCN show={show} onClick={() => {
     setShow(show => !show);
     setHasClicked(true);
   }}/>;
-},
+}
 
   const CollapsingSection = styled(Section)`
   & p {
@@ -35,7 +36,7 @@ const CollapseIcon = styled(ExpandMoreIcon)`
   vertical-align: middle;
 `;
 
-export default function LandingBlurb() {
+export default function LandingBlurbCN() {
   const [show, setShow] = useState(true);
   return (
     <CollapsingSection>
