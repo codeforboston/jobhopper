@@ -1,4 +1,3 @@
-import { Link } from '@material-ui/core';
 import React from 'react';
 import { Body, Title } from './Typography';
 import Page from './Page';

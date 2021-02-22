@@ -1,5 +1,5 @@
 # Database Setup
-The database setup has been integrated the Django migrations. Set them up according to instructions in the [Setup Docs](https://github.com/codeforboston/jobhopper/blob/develop/References/Overview.md)
+In order to keep our Django application in sync with our database, we leverage Django migrations. Set them up according to instructions in the [Setup Docs](https://github.com/codeforboston/jobhopper/blob/develop/docs/Installation.md).
 
 ## Load Processes
 

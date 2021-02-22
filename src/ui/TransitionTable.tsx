@@ -64,14 +64,14 @@ const TransitionTable = ({
           field: 'hourlyPay',
           type: 'currency',
           tooltip:
-            'Average hourly pay in this occupation in {YEAR?}, obtained from the Bureau of Labor Statistics Occupational Employment Statistics database. This shows nationwide pay unless you have selected a specific state.',
+            'Average hourly pay in this occupation, obtained from the Bureau of Labor Statistics Occupational Employment Statistics database. This shows nationwide pay unless you have selected a specific state.',
         },
         {
           title: 'Average annual salary',
           field: 'annualSalary',
           type: 'currency',
           tooltip:
-            'Average annual salary in this occupation in {YEAR?}, obtained from the Bureau of Labor Statistics Occupational Employment Statistics database. This shows nationwide salary unless you have selected a specific state.',
+            'Average annual salary in this occupation, obtained from the Bureau of Labor Statistics Occupational Employment Statistics database. This shows nationwide salary unless you have selected a specific state.',
         },
       ]}
       data={transitionData}

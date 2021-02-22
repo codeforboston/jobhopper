@@ -319,14 +319,14 @@ export default function Treemap({
   }, [renderTreemap]);
 
   return (
-    <Container ref={containerRef} data-testid="treemap">
+    <Container ref={containerRef} data-testid="treemap" id="treemap-container">
       <Typography
         variant="h6"
         style={{ marginTop: '12px', marginBottom: '12px' }}
       >
         {title}
       </Typography>
-      <Svg ref={svgRef} />
+      <Svg ref={svgRef} id="treemap-svg" />
       <ToolTip info={hoveredInfo || selectedInfo} />
       <Typography
         variant="h6"

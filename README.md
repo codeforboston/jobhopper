@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # JobHopper Frontend
 
 ## Environment Setup
@@ -42,6 +43,9 @@ We use husky and lint-staged to run linting and fix code formatting whenever you
 You can run these manually from the root directory with `npm run lint` and `npm run fix`.
 =======
 ![Job Hopper Logo](./frontend/src/ui/assets/jobHopperLogo.png)
+=======
+![JobHopper Logo](./frontend/src/ui/assets/jobHopperLogo.png)
+>>>>>>> b072a1c79ce5d373597d181c40604c13d6877069
 
 - Development (`develop`)
   - [App](https://jobhopper-dev.web.app/)
@@ -50,7 +54,7 @@ You can run these manually from the root directory with `npm run lint` and `npm 
 
 ## General Information
 
-Jobhopper is an application for analyzing and querying career mobility and outside options data set to help workers, public sector professionals, and policymakers to improve career training, career paths, and career mobility options.
+JobHopper is an application for analyzing and querying career mobility and outside options data set to help workers, public sector professionals, and policymakers to improve career training, career paths, and career mobility options.
 
 # Installation Overview
 
@@ -63,10 +67,14 @@ For details on setup, see [Installation](./docs/Installation.md)
 | React (JavaScript) | Django (Python 3.7)      | Postgres  |
 
 For more details, see [Architecture](./docs/Architecture.md)
-Also details on [Data Setup](./docs/DataREADME.md) and [Django Data Migrations](./docs/DjangoData.md) are available.
+Also details on [Database Setup](./docs/DataREADME.md) and [Django Migrations](./docs/DjangoData.md) are available.
 
 ## Additional Resources
 
+<<<<<<< HEAD
 The following provides details on how the data was sourced etc.
 [Data References](./docs/References.md)
 >>>>>>> 2a1390e9ac35a6194d2ee4f215a8cc01bd6e59c1
+=======
+For details on the data, see [Data Sources](./docs/References.md).
+>>>>>>> b072a1c79ce5d373597d181c40604c13d6877069

@@ -36,3 +36,9 @@ Display.args = {
   selectedOccupation: occupations[0],
   transitions: transitionData,
 };
+
+export const EmptyResults = Template.bind({});
+EmptyResults.args = {
+  loading: false,
+  transitions: [],
+};
