@@ -20,15 +20,18 @@ export const ResultsContainer = () => {
     error,
   } = useResultLoader();
 
-  return (
-    <Results
-      selectedState={selectedState}
-      selectedOccupation={selectedOccupation}
-      loading={loading}
-      transitions={transitions}
-      error={error}
-    />
-  );
+  if (selectedOccupation) {
+    return (
+      <Results
+        selectedState={selectedState}
+        selectedOccupation={selectedOccupation}
+        loading={loading}
+        transitions={transitions}
+        error={error}
+      />
+    );
+  }
+  return <div />; // normally we'll not hit this. We expect to have a valid selectedOccupation.
 };
 
 function useResultLoader() {
