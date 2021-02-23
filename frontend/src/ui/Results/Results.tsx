@@ -82,8 +82,6 @@ const Results: React.FC<ResultsProps> = ({
             73.73
           );
           pdf.text(blurbString, 265, 9.52, { align: 'right' });
-          // pdf.addFont('../assets/Roboto-Regular.ttf', 'Roboto', 'normal');
-          // pdf.setFont('Roboto', 'normal');
           pdf.setFontSize(12);
           pdf.text(
             `Job Transitions from ${occupation?.name} (${occupation?.code}) to:`,
