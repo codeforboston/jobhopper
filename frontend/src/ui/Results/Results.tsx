@@ -110,7 +110,7 @@ const Results: React.FC<ResultsProps> = ({
       >
         <Row>
           <StyledSecondary
-            label="See a Matrix"
+            label="See a Table"
             testid="matrix-button"
             onClick={() => {
               setVisualization('matrix');
