@@ -2,6 +2,35 @@
 
 A complete, working JobHopper application consists of several services. We use Docker and Docker Compose to build, configure, and run the services.
 
+## Overview
+
+Put simply, the goal is to combine all of the code in the repo into units called containers.
+These containers get hosted on an external site called dockerhub. 
+They are then used to run in a "swarm cluster" within the docker engine.
+
+There are three parts:
+a container for the PostgresDB.
+a container for the django website that interacts with the db providing api calls.
+a container for the nodejs/react front-end website that uses the django website for api calls.
+
+uwsgi is an implementation of the Web Server Gateway Interface. 
+This is used to ensure that the django application has a way to talk to the outside world. 
+That is because django when run in debug mode is not a production worthy webserver. Nginx is. 
+
+This setup is looking to achieve:
+the web client <-> the web server <-> the socket <-> uWSGI <-> Python
+chrome/firefox/ie <-> NginX <-> the socket <-> uWSGI <-> Django/Python
+
+uwsgi --socket mysite.sock --module mysite.wsgi --chmod-socket=664
+
+
+# Nginx configuration for serving the API and frontend behind an HTTPS reverse
+# proxy, using Let's Encrypt for SSL certificates.
+# Cobbled together from:
+# https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html
+# https://gist.github.com/dimitardanailov/7a7c4e3be9e03d1b578a
+# https://github.com/staticfloat/docker-nginx-certbot
+
 ## Setup
 
 Install Docker and Docker Compose.
@@ -19,6 +48,14 @@ The development environment makes development easier by providing additional err
 ### Usage
 
 Run `./stack/start-dev`. To stop the application, press control+C.
+Special notes for native windows users:
+make sure to update the run-debug.sh file to have LF (not CRLF) line endings or your api container may fail.
+
+similarly, this minor edit when debugging was also made to update the line endings on-the-fly did not ensure the process worked:
+RUN chmod +x /wait && \
+    sed -i 's/\r$//' docker/run-debug.sh  && \  
+    chmod +x docker/run-debug.sh
+
 
 ## Production
 
