@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Start the development deployment locally
+
+cd $(dirname $0)
+
+./compose/dev-deployment down && ./compose/dev-deployment up

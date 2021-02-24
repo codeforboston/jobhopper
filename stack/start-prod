@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Start the production deployment locally
+
+cd $(dirname $0)
+
+if [ -z "$SECRET_KEY" ]; then
+  echo "Please specify SECRET_KEY environment variable"
+  exit 1
+fi
+
+if [ -z "$DOMAIN" ]; then
+  echo "Please specify DOMAIN environment variable"
+  exit 1
+fi
+
+./compose/prod-deployment down && ./compose/prod-deployment up

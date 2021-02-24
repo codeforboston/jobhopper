@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  api:
+    image: jobhopper/api-release
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      DOMAIN: ${DOMAIN}
+
+  gateway:
+    image: jobhopper/gateway
+    volumes:
+      - ../gateway/conf.d:/etc/nginx/user.conf.d:ro
+      - letsencrypt:/etc/letsencrypt
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      CERTBOT_EMAIL: me@alexjball.com
+      ENVSUBST_VARS: DOMAIN
+      DOMAIN: ${DOMAIN}
+
+volumes:
+  letsencrypt:
