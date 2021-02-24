@@ -263,19 +263,32 @@ export default function Treemap({
       .domain([5, maxVal() || 100])
       .range([0.2, 1]);
 
+    const toggleCategorySalary = (d: any, toggle: string) => {
+      const opacValue = toggle === 'opacity' ? opacity(hourlyPay(d.data)) : 1;
+
+      const colorValue =
+        toggle === 'fill'
+          ? colorScaleMajorOccupation(category(d.data))
+          : '#3EB56D';
+
+      // return {opacity: opacValue, color: colorValue};
+      return `opacity: ${opacValue}; fill: ${colorValue}`;
+    };
+
     // create and fill svg 'rects' based on the node data selected
     nodes
       .append('rect')
       .attr('width', d => d.x1 - d.x0)
       .attr('height', d => d.y1 - d.y0)
-      .attr('fill', d => colorScaleMajorOccupation(category(d.data)) || white)
+      // .attr('fill', d => colorScaleMajorOccupation(category(d.data)) || white)
       .style('stroke-linejoin', 'round')
       .style('stroke', '#2878C8')
       .on('click', click)
       .on('mouseover', mouseover)
       .on('mouseout', mouseout)
-      .style('opacity', d => opacity(hourlyPay(d.data)) || 0.2)
-      .style('stroke-width', d => 0);
+      // .style('opacity', d => opacity(hourlyPay(d.data)) || 0.2)
+      .style('stroke-width', d => 0)
+      .attr('style', d => toggleCategorySalary(d, 'fill'));
 
     // add node labels
     nodes
@@ -343,6 +356,12 @@ export default function Treemap({
     renderTreemap();
   }, [renderTreemap]);
 
+  const [toggle, setToggle] = useState('fill');
+
+  const chooseToggle = () => {
+    toggle === 'fill' ? setToggle('opacity') : setToggle('fill');
+  };
+
   return (
     <Container ref={containerRef} data-testid="treemap">
       <Typography
@@ -350,6 +369,7 @@ export default function Treemap({
         style={{ marginTop: '12px', marginBottom: '12px' }}
       >
         {title}
+        <button onClick={chooseToggle}>'Toggle Toggle Toggle'</button>
       </Typography>
       <Svg ref={svgRef} id="treemap-svg" />
       <ToolTip info={hoveredInfo || selectedInfo} />
