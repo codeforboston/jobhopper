@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-
 export const ToolTipStyleDiv = styled.div`
   font-weight: 'bolder';
   width: 90vw;
@@ -12,7 +11,7 @@ export const SimpleFlexRow = styled.div`
   display: flex;
   flex: 1;
   flex-direction: row;
-`
+`;
 export const TextContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -27,19 +26,17 @@ export const TextContainer = styled.div`
   height: 60px;
   margin: auto;
   padding: 20px 20px 5px 20px;
-`
-
-
-export const Title = styled.div`
-height: 5vh;
-font-family: PT Sans;
-font-style: normal;
-font-weight: normal;
-font-size: 18px;
-line-height: 30px;
-color: #000000;
 `;
 
+export const Title = styled.div`
+  height: 5vh;
+  font-family: PT Sans;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 30px;
+  color: #000000;
+`;
 
 export const Key = styled.div`
   display: block;
@@ -54,7 +51,7 @@ export const Key = styled.div`
 `;
 
 export const KeyTitle = styled.div`
-font-size: 18px;
+  font-size: 18px;
 `;
 
 export const KeyList = styled.div`
@@ -65,6 +62,5 @@ export const KeyExplanation = styled.div`
   font-size: 14px;
   line-height: 18px;
   padding: 5px;
-  margin-top: 18px
+  margin-top: 18px;
 `;
-

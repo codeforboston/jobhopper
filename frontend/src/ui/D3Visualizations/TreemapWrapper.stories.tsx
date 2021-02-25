@@ -10,5 +10,11 @@ export default {
   component: TreemapWrapper,
 } as Meta;
 
-export const Default: Story<TreemapWrapperProps> = args => <TreemapWrapper {...args} />;
-Default.args = { transitionData: longData, selectedOccupation: occupations[0], selectedState: states[0] };
+export const Default: Story<TreemapWrapperProps> = args => (
+  <TreemapWrapper {...args} />
+);
+Default.args = {
+  transitionData: longData,
+  selectedOccupation: occupations[0],
+  selectedState: states[0],
+};

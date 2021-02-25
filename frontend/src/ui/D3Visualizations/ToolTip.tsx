@@ -2,33 +2,30 @@ import React from 'react';
 import OnetLink from '../OnetLink';
 import { SimpleFlexRow, TextContainer } from './styledDivs';
 
-
-
-
 export default function ToolTipDisplay(props: any) {
   const { info } = props;
   return (
     // <ToolTipStyleDiv>
-    < ToolTipData info={info} />
+    <ToolTipData info={info} />
     // </ToolTipStyleDiv>
   );
 }
 
-
-
 const ToolTipData = (props: any) => {
   const { info } = props;
   if (!info) {
-    return <TextContainer>Roll over or click items in treemap for more information</TextContainer>
+    return (
+      <TextContainer>
+        Roll over or click items in treemap for more information
+      </TextContainer>
+    );
   }
-
 
   const hourlyTwoDecimal = (hourly: number) =>
     (Math.round(hourly * 100) / 100).toFixed(2);
 
   const annualFormatted = (annual: number) =>
     annual?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
 
   return (
     <TextContainer>
