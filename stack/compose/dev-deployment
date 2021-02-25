@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cd $(dirname $0)
+
+docker-compose \
+  -f common.yml \
+  -f deploy.dev.yml \
+  $@

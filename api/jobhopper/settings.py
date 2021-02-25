@@ -17,25 +17,18 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-
-import os
-from dotenv import load_dotenv
-
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Set DJANGO_DEBUG to "False" in production
+DEBUG = os.getenv('DJANGO_DEBUG', '') != 'False'
 
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     "52.204.195.181",
+    os.getenv("DOMAIN"),
     "0.0.0.0"
 ]
 
