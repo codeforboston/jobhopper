@@ -7,7 +7,7 @@ export default createTransitions([
   ['35-3011', 'Bartenders', 0.039, 13.46, 28000],
   [
     '43-6014',
-    'Secretaries and administrative assistants, except legal, edical, and executive',
+    'Secretaries and administrative assistants, except legal, medical, and executive',
     0.0391,
     18.84,
     39180,
@@ -17,7 +17,7 @@ export default createTransitions([
   ['11-9000', 'Other Management Occupations', 0.0303, 49.31, 102560],
   [
     '35-1012',
-    'First-line supervisors of food preparation and erving workers',
+    'First-line supervisors of food preparation and serving workers',
     0.0231,
     17.77,
     36960,

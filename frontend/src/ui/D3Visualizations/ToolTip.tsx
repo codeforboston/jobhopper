@@ -29,7 +29,7 @@ const ToolTipData = (props: any) => {
 
   return (
     <TextContainer>
-      <SimpleFlexRow style={{}}>
+      <SimpleFlexRow>
         <div style={{ marginRight: '2em' }}>{info.data.code}</div>
         <div style={{ flex: 3 }}>
           <OnetLink socCode={info.data.code}>{info.data.name}</OnetLink>

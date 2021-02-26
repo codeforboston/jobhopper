@@ -1,27 +1,19 @@
 import React, { useState } from 'react';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
-import { majorLookup, Transition } from 'src/domain/transition';
-import { colorDomainMajorOccCodes, colorRange } from './colorSchemes';
+import { Transition } from 'src/domain/transition';
 import Treemap from './Treemap';
 import TreemapKey from './TreemapKey';
+import { Title, CaptionText } from './TreemapSubComponents';
 
 export interface TreemapWrapperProps {
-  selectedOccupation?: Occupation;
+  selectedOccupation: Occupation;
   selectedState?: State;
   transitionData: Transition[];
 }
 
-export interface KeyEntryProps {
-  code?: string;
-  name?: string;
-  color?: string;
-  selectedCategory?: string | number;
-}
-
-export interface KeyColorSquareProps {
-  color?: string;
-  isSelected?: boolean;
+function category(trans: Transition): number {
+  return parseInt(trans.code.slice(0, 2));
 }
 
 export default function TreemapWrapper({
@@ -29,29 +21,7 @@ export default function TreemapWrapper({
   selectedOccupation,
   transitionData,
 }: TreemapWrapperProps) {
-  function category(trans: Transition): number {
-    return parseInt(trans.code.slice(0, 2));
-  }
-
-  const [selectedCategory, setSelectedCategory] = useState();
-
-  const transData = transitionData;
-
-  const dataArray: Partial<KeyEntryProps>[] = [];
-
-  transData.forEach(trans => {
-    const categoryCode = category(trans);
-    if (!dataArray.find(entry => entry.code === categoryCode.toString())) {
-      const idx = colorDomainMajorOccCodes.findIndex(
-        code => code === categoryCode
-      );
-      dataArray.push({
-        code: categoryCode.toString(),
-        name: majorLookup.get(categoryCode),
-        color: colorRange[idx],
-      } as Partial<KeyEntryProps>);
-    }
-  });
+  const [selectedCategory, setSelectedCategory] = useState<string>();
 
   const occName = selectedOccupation ? selectedOccupation.name : '';
   const occCode = selectedOccupation ? selectedOccupation.code : '';
@@ -60,7 +30,7 @@ export default function TreemapWrapper({
     selectedState ? `in ${selectedState.name}` : `Nationally`
   } `;
 
-  const footnote_blurb = `This visualization shows the occupations which ${occName} move to when they change occupation. The transition share is the proportion of ${occName} who move into a job in each other occupation when they switch jobs. We only break out individual occupations with transition shares greater than 0.2%.`;
+  const footnoteBlurb = `This visualization shows the occupations which ${occName} move to when they change occupation. The transition share is the proportion of ${occName} who move into a job in each other occupation when they switch jobs. We only break out individual occupations with transition shares greater than 0.2%.`;
 
   const occCategoryList = new Set<number>();
 
@@ -70,9 +40,9 @@ export default function TreemapWrapper({
 
   return (
     <div style={{ display: 'flex' }}>
+      <Title>{title}</Title>
       <div>
         <Treemap
-          title={title}
           data={transitionData}
           setSelectedCategory={setSelectedCategory}
           selectedOccupation={selectedOccupation}
@@ -80,9 +50,9 @@ export default function TreemapWrapper({
       </div>
       <TreemapKey
         occupationCodes={occCategoryList}
-        footnote_blurb={footnote_blurb}
         selectedCategory={selectedCategory}
       />
+      <CaptionText>{footnoteBlurb}</CaptionText>
     </div>
   );
 }

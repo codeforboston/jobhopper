@@ -1,34 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export const ToolTipStyleDiv = styled.div`
-  font-weight: 'bolder';
-  width: 90vw;
-  height: 10vh;
-  margin: auto;
-`;
-
-export const SimpleFlexRow = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-`;
-export const TextContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  font-family: 'PT sans';
-  font-weight: 400;
-  font-size: 16px;
-  color: black;
-  width: 100%;
-  height: 60px;
-  margin: auto;
-  padding: 20px 20px 5px 20px;
-`;
-
 export const Title = styled.div`
   height: 5vh;
   font-family: 'PT Sans';
@@ -122,3 +94,13 @@ const KeyColorSquare = ({ color, isSelected }: KeyColorSquareProps) => {
 
   return <div style={style} />;
 };
+
+export const KeyContainer = styled.div`
+  display: block;
+  font-family: 'PT Sans';
+  line-height: 30px;
+  text-align: left;
+  margin: 2em;
+  width: 80vw;
+  height: 50%;
+`;

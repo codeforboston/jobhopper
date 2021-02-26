@@ -24,11 +24,7 @@ data.forEach(item => {
   occCategoryList.add(category(item));
 });
 
-const footnote_blurb = () =>
-  `This visualization shows the occupations which ${occupations[0]} move to when they change occupation. The transition share is the proportion of ${occupations[0]} who move into a job in each other occupation when they switch jobs. We only break out individual occupations with transition shares greater than 0.2%.`;
-
 export const Key: Story<TreemapKeyProps> = args => <TreemapKey {...args} />;
 Key.args = {
   occupationCodes: occCategoryList,
-  footnote_blurb: footnote_blurb(),
 };

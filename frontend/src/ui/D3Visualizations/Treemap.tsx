@@ -12,7 +12,6 @@ import { State } from '../../domain/state';
 import { majorLookup, Transition } from '../../domain/transition';
 import { colorDomainMajorOccCodes, colorRange } from './colorSchemes';
 import ToolTip from './ToolTip';
-import { Title } from './TreemapSubComponents';
 import useResizeObserver from './useResizeObserver';
 
 const Container = styled.div`
@@ -36,11 +35,10 @@ export type TreeRootNode = { children: CategoryNode[] };
 export type TreeNode = TreeRootNode | CategoryNode | Transition;
 
 export type TreemapProps = {
-  title: string;
-  selectedOccupation?: Occupation;
+  selectedOccupation: Occupation;
   selectedState?: State;
   data: Transition[];
-  setSelectedCategory: any;
+  setSelectedCategory: (category: string | undefined) => void;
 };
 
 const groupData = (data: Transition[]): TreeRootNode => {
@@ -82,11 +80,7 @@ export function category(node: TreeNode): number {
   return isTransition(node) ? parseInt(node.code.slice(0, 2)) : 0;
 }
 
-export default function Treemap({
-  title,
-  data,
-  setSelectedCategory,
-}: TreemapProps) {
+export default function Treemap({ data, setSelectedCategory }: TreemapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -318,9 +312,8 @@ export default function Treemap({
   }, [renderTreemap]);
 
   return (
-    <Container ref={containerRef} data-testid="treemap">
-      <Title>{title}</Title>
-      <Svg ref={svgRef} />
+    <Container ref={containerRef} data-testid="treemap" id="treemap-container">
+      <Svg ref={svgRef} id="treemap-svg" />
       <ToolTip info={hoveredInfo || selectedInfo} />
     </Container>
   );
