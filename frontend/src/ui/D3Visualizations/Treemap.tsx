@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { groupBy } from 'lodash';
 import React, {
   useCallback,
   useEffect,
@@ -9,8 +10,8 @@ import React, {
 import styled from 'styled-components';
 import { Occupation } from '../../domain/occupation';
 import { State } from '../../domain/state';
-import { getCategory, majorLookup, Transition } from '../../domain/transition';
-import { colorDomainMajorOccCodes, colorRange } from './colorSchemes';
+import { getCategory, Transition } from '../../domain/transition';
+import { categories, getCategoryForCode } from './category';
 import ToolTip from './ToolTip';
 import useResizeObserver from './useResizeObserver';
 
@@ -42,21 +43,22 @@ export type TreemapProps = {
 };
 
 const groupData = (data: Transition[]): TreeRootNode => {
-  let categories: any[] = [];
+  let categoryGroups: any[] = [];
 
-  majorLookup.forEach((name, categoryKey) => {
-    const transitions = data.filter(node => categoryKey === category(node));
+  const transitionsByCategory = groupBy(data, category);
+  categories.forEach(({ name: categoryName, code: categoryCode }) => {
+    const transitions = transitionsByCategory[categoryCode];
 
-    if (transitions.length > 0) {
-      categories.push({
-        name: name,
+    if (transitions) {
+      categoryGroups.push({
+        name: categoryName,
         children: transitions,
-        category: categoryKey,
+        category: categoryCode,
       });
     }
   });
   return {
-    children: categories,
+    children: categoryGroups,
   };
 };
 
@@ -114,7 +116,7 @@ export default function Treemap({
       }
 
       if (hoveredCode !== targetCode) {
-        i.data.category = majorLookup.get(parseInt(code(i.data).slice(0, 2)));
+        i.data.category = getCategoryForCode(category(i.data)).name;
         setHoveredInfo(i);
         hoveredCode = targetCode;
       }
@@ -193,7 +195,7 @@ export default function Treemap({
       } else {
         selectedNode?.style('stroke-width', 0);
         targetNode.style('stroke-width', '3px');
-        i.data.category = majorLookup.get(parseInt(code(i.data).slice(0, 2)));
+        i.data.category = getCategoryForCode(category(i.data)).name;
         setSelectedInfo(i);
         selectedCode = targetCode;
         selectedNode = targetNode;
@@ -233,8 +235,8 @@ export default function Treemap({
 
     const colorScaleMajorOccupation = d3
       .scaleQuantile<string>()
-      .domain(colorDomainMajorOccCodes)
-      .range(colorRange);
+      .domain(categories.map(({ code }) => code))
+      .range(categories.map(({ color }) => color));
 
     // create and fill svg 'rects' based on the node data selected
     nodes

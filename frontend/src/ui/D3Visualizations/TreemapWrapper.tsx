@@ -35,7 +35,7 @@ export default function TreemapWrapper({
         />
       </div>
       <TreemapKey
-        categoryCodes={categoryCodes}
+        categoryCodes={Array.from(categoryCodes)}
         selectedCategory={selectedCategory}
       />
       <CaptionText>

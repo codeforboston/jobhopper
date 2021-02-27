@@ -64,19 +64,11 @@ function KeyEntry({ code, name, color, selectedCategory }: KeyEntryProps) {
     >
       <KeyColorSquare color={color} isSelected={isSelected} />
       <div style={{ flex: 1 }}>
-        {code} {clipOccupationFromString(name) ?? ''}
+        {code} {name}
       </div>
     </div>
   );
 }
-
-const clipOccupationFromString = (str?: string) => {
-  if (str) {
-    const clippedName: string | undefined =
-      str.replace(/Occupations*/, '') || 'none';
-    return clippedName;
-  }
-};
 
 const KeyColorSquare = ({ color, isSelected }: KeyColorSquareProps) => {
   const style = {

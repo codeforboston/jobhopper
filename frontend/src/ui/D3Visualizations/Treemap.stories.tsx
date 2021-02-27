@@ -18,13 +18,17 @@ Default.args = {
   selectedOccupation: occupations[0],
 };
 
-const occCategoryList = new Set<number>();
-
-transitions.forEach(item => {
-  occCategoryList.add(category(item));
-});
-
 export const Key: Story<TreemapKeyProps> = args => <TreemapKey {...args} />;
 Key.args = {
-  categoryCodes: occCategoryList,
+  categoryCodes: testCategoryCodes(),
 };
+
+function testCategoryCodes() {
+  const categoryCodes = new Set<number>();
+
+  transitions.forEach(item => {
+    categoryCodes.add(category(item));
+  });
+
+  return Array.from(categoryCodes);
+}
