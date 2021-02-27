@@ -11,35 +11,30 @@ import {
 
 export interface TreemapKeyProps {
   categoryCodes: Set<number>;
-  selectedCategory?: number | string;
+  selectedCategory?: number;
 }
 
 export default function TreemapKey({
   categoryCodes,
   selectedCategory,
 }: TreemapKeyProps) {
-  const dataArray: Partial<KeyEntryProps>[] = [];
+  const keyEntries: KeyEntryProps[] = [];
 
   categoryCodes.forEach(code => {
     const idx = colorDomainMajorOccCodes.findIndex(occCode => code === occCode);
-    dataArray.push({
-      code: code.toString(),
+    keyEntries.push({
+      code,
       name: majorLookup.get(code),
       color: colorRange[idx],
-    } as Partial<KeyEntryProps>);
+    });
   });
 
-  const sortedDataArray = dataArray.sort(
-    (a, b) => Number(a.code) - Number(b.code)
-  );
+  keyEntries.sort((a, b) => Number(a.code) - Number(b.code));
 
   return (
     <KeyContainer>
       <KeyTitle>Occupation categories shown above*</KeyTitle>
-      <KeyList
-        dataArray={sortedDataArray}
-        selectedCategory={selectedCategory}
-      />
+      <KeyList keyEntries={keyEntries} selectedCategory={selectedCategory} />
       <CaptionText>
         *SOC (Standard Occupation Classification) code broad category, used by
         the Bureau of Labor Statistics to define occupations

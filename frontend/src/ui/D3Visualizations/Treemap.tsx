@@ -145,7 +145,6 @@ export default function Treemap({
               : horizontalNodeMiddle - tooltipBounds.width / 2 + 'px'
             : svgBounds.width - tooltipBounds.width - 20 + 'px';
         setLeftTooltipPosition(newLeftPosition);
-        console.log(tooltipBounds, newLeftPosition);
       }
 
       if (tooltipBounds.height) {

@@ -24,10 +24,10 @@ export const CaptionText = styled.div`
 `;
 
 export interface KeyEntryProps {
-  code?: string;
+  code?: number;
   name?: string;
   color?: string;
-  selectedCategory?: string | number;
+  selectedCategory?: number;
 }
 
 export interface KeyColorSquareProps {
@@ -35,22 +35,20 @@ export interface KeyColorSquareProps {
   isSelected?: boolean;
 }
 
-export const KeyList = (props: {
-  dataArray: any;
-  selectedCategory?: number | string;
+export const KeyList = ({
+  keyEntries,
+  selectedCategory,
+}: {
+  keyEntries: KeyEntryProps[];
+  selectedCategory?: number;
 }) => {
-  return props.dataArray.map((category: any, i: number) => {
-    let { code, name, color } = category;
-    return (
-      <KeyEntry
-        key={i}
-        code={code}
-        name={name}
-        color={color}
-        selectedCategory={props.selectedCategory}
-      />
-    );
-  });
+  return (
+    <>
+      {keyEntries.map((entry, i) => (
+        <KeyEntry key={i} {...entry} selectedCategory={selectedCategory} />
+      ))}
+    </>
+  );
 };
 
 function KeyEntry({ code, name, color, selectedCategory }: KeyEntryProps) {
