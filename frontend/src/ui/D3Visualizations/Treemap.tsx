@@ -9,7 +9,7 @@ import React, {
 import styled from 'styled-components';
 import { Occupation } from '../../domain/occupation';
 import { State } from '../../domain/state';
-import { majorLookup, Transition } from '../../domain/transition';
+import { getCategory, majorLookup, Transition } from '../../domain/transition';
 import { colorDomainMajorOccCodes, colorRange } from './colorSchemes';
 import ToolTip from './ToolTip';
 import useResizeObserver from './useResizeObserver';
@@ -37,8 +37,8 @@ export type TreeNode = TreeRootNode | CategoryNode | Transition;
 export type TreemapProps = {
   selectedOccupation: Occupation;
   selectedState?: State;
-  data: Transition[];
-  setSelectedCategory: (category: string | undefined) => void;
+  transitions: Transition[];
+  setSelectedCategory: (category: number | undefined) => void;
 };
 
 const groupData = (data: Transition[]): TreeRootNode => {
@@ -77,10 +77,13 @@ function code(node: TreeNode): string {
 }
 
 export function category(node: TreeNode): number {
-  return isTransition(node) ? parseInt(node.code.slice(0, 2)) : 0;
+  return isTransition(node) ? getCategory(node) : 0;
 }
 
-export default function Treemap({ data, setSelectedCategory }: TreemapProps) {
+export default function Treemap({
+  transitions: data,
+  setSelectedCategory,
+}: TreemapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -107,7 +110,7 @@ export default function Treemap({ data, setSelectedCategory }: TreemapProps) {
 
       if (selectedCode !== targetCode) {
         targetNode.style('stroke', '#2878C8');
-        setSelectedCategory(category(i.data).toString());
+        setSelectedCategory(category(i.data));
       }
 
       if (hoveredCode !== targetCode) {

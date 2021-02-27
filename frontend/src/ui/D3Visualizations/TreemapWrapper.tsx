@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
-import { Transition } from 'src/domain/transition';
+import { getCategory, Transition } from 'src/domain/transition';
 import Treemap from './Treemap';
 import TreemapKey from './TreemapKey';
 import { Title, CaptionText } from './TreemapSubComponents';
@@ -9,50 +9,52 @@ import { Title, CaptionText } from './TreemapSubComponents';
 export interface TreemapWrapperProps {
   selectedOccupation: Occupation;
   selectedState?: State;
-  transitionData: Transition[];
-}
-
-function category(trans: Transition): number {
-  return parseInt(trans.code.slice(0, 2));
+  transitions: Transition[];
 }
 
 export default function TreemapWrapper({
   selectedState,
   selectedOccupation,
-  transitionData,
+  transitions,
 }: TreemapWrapperProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>();
-
-  const occName = selectedOccupation ? selectedOccupation.name : '';
-  const occCode = selectedOccupation ? selectedOccupation.code : '';
-
-  const title = `Job Transitions from ${occName} (${occCode}) ${
-    selectedState ? `in ${selectedState.name}` : `Nationally`
-  } `;
-
-  const footnoteBlurb = `This visualization shows the occupations which ${occName} move to when they change occupation. The transition share is the proportion of ${occName} who move into a job in each other occupation when they switch jobs. We only break out individual occupations with transition shares greater than 0.2%.`;
-
-  const occCategoryList = new Set<number>();
-
-  transitionData.forEach(item => {
-    occCategoryList.add(category(item));
-  });
+  const [selectedCategory, setSelectedCategory] = useState<number>();
+  const categoryCodes = useCategoryCodes(transitions);
 
   return (
     <div style={{ display: 'flex' }}>
-      <Title>{title}</Title>
+      <Title>
+        Job Transitions from {selectedOccupation.name} (
+        {selectedOccupation.code})
+        {selectedState ? `in ${selectedState.name}` : `Nationally`}
+      </Title>
       <div>
         <Treemap
-          data={transitionData}
+          transitions={transitions}
           setSelectedCategory={setSelectedCategory}
           selectedOccupation={selectedOccupation}
         />
       </div>
       <TreemapKey
-        occupationCodes={occCategoryList}
+        categoryCodes={categoryCodes}
         selectedCategory={selectedCategory}
       />
-      <CaptionText>{footnoteBlurb}</CaptionText>
+      <CaptionText>
+        This visualization shows the occupations which {selectedOccupation.name}
+        move to when they change occupation. The transition share is the
+        proportion of {selectedOccupation.name} who move into a job in each
+        other occupation when they switch jobs. We only break out individual
+        occupations with transition shares greater than 0.2%.
+      </CaptionText>
     </div>
   );
 }
+
+const useCategoryCodes = (transitions: Transition[]) => {
+  return useMemo(() => {
+    const categoryCodes = new Set<number>();
+    transitions.forEach(transition => {
+      categoryCodes.add(getCategory(transition));
+    });
+    return categoryCodes;
+  }, [transitions]);
+};

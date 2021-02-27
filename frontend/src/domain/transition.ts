@@ -6,6 +6,9 @@ export interface Transition {
   annualSalary: number;
 }
 
+export const getCategory = (transition: Transition) =>
+  parseInt(transition.code.slice(0, 2));
+
 type TransitionTuple = [string, string, number, number, number];
 
 const createTransition = ([

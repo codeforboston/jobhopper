@@ -1,7 +1,7 @@
 import React from 'react';
 import { Story, Meta } from '@storybook/react/types-6-0';
 import Treemap, { TreemapProps, category } from './Treemap';
-import data from '../../testing/data/transitionData';
+import transitions from '../../testing/data/transitionData';
 import states from '../../testing/data/states';
 import occupations from '../../testing/data/occupations';
 import TreemapKey, { TreemapKeyProps } from './TreemapKey';
@@ -13,18 +13,18 @@ export default {
 
 export const Default: Story<TreemapProps> = args => <Treemap {...args} />;
 Default.args = {
-  data,
+  transitions: transitions,
   selectedState: states[0],
   selectedOccupation: occupations[0],
 };
 
 const occCategoryList = new Set<number>();
 
-data.forEach(item => {
+transitions.forEach(item => {
   occCategoryList.add(category(item));
 });
 
 export const Key: Story<TreemapKeyProps> = args => <TreemapKey {...args} />;
 Key.args = {
-  occupationCodes: occCategoryList,
+  categoryCodes: occCategoryList,
 };

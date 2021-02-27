@@ -153,7 +153,7 @@ const Results: React.FC<ResultsProps> = ({
             <TreemapWrapper
               selectedOccupation={selectedOccupation}
               selectedState={selectedState}
-              transitionData={transitions}
+              transitions={transitions}
             />
           );
         } else if (hasResults && !hasTransitions) {

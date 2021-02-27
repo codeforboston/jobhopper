@@ -10,17 +10,17 @@ import {
 } from './TreemapSubComponents';
 
 export interface TreemapKeyProps {
-  occupationCodes: Set<number>;
+  categoryCodes: Set<number>;
   selectedCategory?: number | string;
 }
 
 export default function TreemapKey({
-  occupationCodes,
+  categoryCodes,
   selectedCategory,
 }: TreemapKeyProps) {
   const dataArray: Partial<KeyEntryProps>[] = [];
 
-  occupationCodes.forEach(code => {
+  categoryCodes.forEach(code => {
     const idx = colorDomainMajorOccCodes.findIndex(occCode => code === occCode);
     dataArray.push({
       code: code.toString(),
