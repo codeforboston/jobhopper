@@ -2,10 +2,30 @@ import { Collapse } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Section } from './Common';
-import { Body, Title } from './Typography';
+import { Section } from '../Common';
+import { Body, Title } from '../Typography';
+import { useEffect } from 'react';
+import { useOccupationsState } from '../../ducks/occupations';
 
-const CollapsingSection = styled(Section)`
+
+export const LandingBlurbContainer = () => {
+  const [show, setShow] = useState(true);
+  const [hasClicked, setHasClicked] = useState(false);
+  const {selectedOccupation} = useOccupationsState();
+
+  useEffect(() => {
+    if (selectedOccupation && show && !hasClicked) {
+      setShow(false);
+    }
+  })
+
+  return <LandingBlurbCN show={show} onClick={() => {
+    setShow(show => !show);
+    setHasClicked(true);
+  }}/>;
+}
+
+  const CollapsingSection = styled(Section)`
   & p {
     margin-block: 0;
     margin-bottom: 48px;
@@ -16,7 +36,7 @@ const CollapseIcon = styled(ExpandMoreIcon)`
   vertical-align: middle;
 `;
 
-export default function LandingBlurb() {
+export default function LandingBlurbCN() {
   const [show, setShow] = useState(true);
   return (
     <CollapsingSection>
