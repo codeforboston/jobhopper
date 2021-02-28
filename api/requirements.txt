@@ -28,6 +28,7 @@ pathspec==0.8.0
 psycopg2==2.8.6
 pyparsing==2.4.7
 python-dateutil==2.8.1
+python-decouple==3.4
 python-dotenv==0.14.0
 pytz==2020.1
 regex==2020.7.14
