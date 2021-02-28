@@ -92,16 +92,29 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
     """
     ViewSet for finding SOC codes matching a user's requested keyword
     """
-    # TODO: Parameter keyword, limit to onet search, soc, min transition observations
     serializer_class = SocListSerializer
     permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle]
 
-    # Include a manual parameter that can be included with the request (+ swagger_auto_schema decorator)
+    DEFAULT_ONET_LIMIT = 10
+    MAX_ONET_LIMIT = 50
+
+    DEFAULT_OBS_LIMIT = 1000
+
+    # Include a manual parameter that can be included in the request query (+ swagger_auto_schema decorator)
     KEYWORD_PARAMETER = openapi.Parameter("keyword_search",
                                           openapi.IN_QUERY,
                                           description="Keyword search via O*NET",
                                           type=openapi.TYPE_STRING)
+    ONET_LIMIT_PARAMETER = openapi.Parameter("onet_limit",
+                                             openapi.IN_QUERY,
+                                             description=f"Limit to O*NET search results",
+                                             type=openapi.TYPE_INTEGER)
+
+    OBS_LIMIT_PARAM = openapi.Parameter("min_weighted_obs",
+                                        openapi.IN_QUERY,
+                                        description="Minimum (weighted) observed transitions from source SOC",
+                                        type=openapi.TYPE_NUMBER)
 
     def _set_params(self, request):
         """
@@ -111,6 +124,13 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
         :return: Relevant parameters from the request
         """
         self.keyword_search = request.query_params.get("keyword_search")
+        self.onet_limit = request.query_params.get("onet_limit")
+        self.obs_limit = request.query_params.get("min_weighted_obs")
+
+        if not self.onet_limit or int(self.onet_limit) > self.MAX_ONET_LIMIT:
+            self.onet_limit = self.DEFAULT_ONET_LIMIT
+        if not self.obs_limit:
+            self.obs_limit = self.DEFAULT_OBS_LIMIT
 
     def get_queryset(self):
         """
@@ -127,23 +147,18 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
 
         :param keyword: Keyword that's requested (user search)
         :param limit: Limit to number of results (should expose this as a parameter)
-        :return: JSON response, e.g. {'keyword': 'doctor',
-                                      'start': 1,
-                                      'end': 20,
-                                      'total': 56,
-                                      'link': [{'href': '',
-                                                'rel': 'next'}],
+        :return: JSON response, e.g. {'keyword': 'doctor', ...
                                       'career': [{'href': '',
                                                 'code': '29-1216.00',
                                                 'title': 'General Internal Medicine Physicians',
                                                 'tags': {'bright_outlook': ...},
                                       ...]}
         """
-        headers = {'Accept': 'application/json'}
-        username = config('ONET_USERNAME')
-        password = config('ONET_PASSWORD')
+        headers = {"Accept": "application/json"}
+        username = config("ONET_USERNAME")
+        password = config("ONET_PASSWORD")
         try:
-            response = requests.get(f'https://services.onetcenter.org/ws/mnm/search?keyword={keyword}',
+            response = requests.get(f"https://services.onetcenter.org/ws/mnm/search?keyword={keyword}",
                                     headers=headers,
                                     params={'end': limit},
                                     auth=HTTPBasicAuth(username, password))
@@ -154,17 +169,28 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
             log.warning(e)
             return None
 
-    @swagger_auto_schema(manual_parameters=[KEYWORD_PARAMETER])
+    @swagger_auto_schema(manual_parameters=[KEYWORD_PARAMETER, ONET_LIMIT_PARAMETER, OBS_LIMIT_PARAM])
     def list(self, request):
+        """
+        Query parameters:
+        ------------------------
+        * keyword_search: User-input keyword search for related professions
+        * onet_limit: Limit to the number of results pulled back from O*NET; capped by MAX_ONET_LIMIT. Responses will
+            only include smart-search SOCs with transitions data available. If no response is found from O*NET, all
+            available SOC codes are returned.
+        * min_weighted_obs: Minimum number of observed transitions (weighted) for a response to be included
+        """
+        # Parameters are pulled from request query, as defined by openapi.Parameter
         self._set_params(request=request)
-        limit = 5
 
         # Django QuerySet with all objects in the SocDescription model
         # model_to_dict serializes each object in the model into a JSON/dict
-        available_socs = SocDescription.objects.all()
+        available_socs = (SocDescription
+                          .objects
+                          .filter(total_transition_obs__gte=self.obs_limit))
         available_socs = [model_to_dict(item)
                           for item in available_socs]
-        available_soc_codes = [soc.get('soc_code', '') for soc in available_socs]
+        available_soc_codes = [soc.get("soc_code", "") for soc in available_socs]
         available_soc_codes = set(available_soc_codes)
 
         # Query for O*NET Socs
@@ -172,14 +198,14 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
         if self.keyword_search:
             try:
                 onet_socs = self.search_onet_keyword(keyword=self.keyword_search,
-                                                     limit=limit)
-                log.info(f'Smart search results: {onet_socs}')
-                onet_soc_codes = onet_socs.get('career')
-                onet_soc_codes = [soc.get('code', '') for soc in onet_soc_codes]
-                onet_soc_codes = set([soc.split('.')[0] for soc in onet_soc_codes])
-                log.info(f'Smart search SOC codes: {onet_soc_codes}')
+                                                     limit=self.onet_limit)
+                log.info(f"Smart search results: {onet_socs}")
+                onet_soc_codes = onet_socs.get("career")
+                onet_soc_codes = [soc.get("code", "") for soc in onet_soc_codes]
+                onet_soc_codes = set([soc.split(".")[0] for soc in onet_soc_codes])
+                log.info(f"Smart search SOC codes: {onet_soc_codes}")
             except Exception as e:
-                log.info(f'Unable to find search results from O*NET for keyword {self.keyword_search} | {e}')
+                log.info(f"Unable to find search results from O*NET for keyword {self.keyword_search} | {e}")
 
         # Combine O*NET and available transition SOCs to return a response
         if not onet_soc_codes:
@@ -187,7 +213,7 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
 
         smart_soc_codes = list(onet_soc_codes.intersection(available_soc_codes))
         smart_socs = [soc for soc in available_socs
-                      if soc.get('soc_code') in smart_soc_codes]
+                      if soc.get("soc_code") in smart_soc_codes]
 
         return Response(smart_socs)
 
