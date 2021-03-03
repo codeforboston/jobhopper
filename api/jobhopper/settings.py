@@ -29,13 +29,13 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "52.204.195.181",
     os.getenv("DOMAIN"),
-    "jobhopper-dev.web.app",
     "0.0.0.0"
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
-    "http://localhost:3000",   
+    "http://localhost:3000",
+    "https://jobhopper-dev.web.app",
 ]
 
 # Application definition

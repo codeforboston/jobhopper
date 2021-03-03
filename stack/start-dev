@@ -4,4 +4,4 @@
 
 cd $(dirname $0)
 
-./compose/dev-deployment down && ./compose/dev-deployment up
+./compose/dev-deployment down && ./compose/dev-deployment up $@
