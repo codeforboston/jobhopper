@@ -26,22 +26,18 @@
 
 ## Papers
 
-1. 2020-03 - Monopsony and Outside Options _Gregor Schubert, Anna Stansbury, and Bledi Taska_
+1. [2020-03 - Monopsony and Outside Options _Gregor Schubert, Anna Stansbury, and Bledi Taska_](https://scholar.harvard.edu/files/stansbury/files/schubertstansburytaskamain_0.pdf)
 
 - Sections of Note:
 
   - p.13 to p.19, from "Using occupational transitions to identify outside-occupation options" to "4 Empirical Approach"
   - p.41 to p.47 Appendix Chapter A Burning Glass Technologies Resume Data
   - p. 62 to p. 69 Appendix Figures A1-A10
-  - p. 75 to p.76 Appendix Tables A1 and A2
-
-- [Linked Here](chrome-extension://cbnaodkpfinfiipjblikofhlhlcickei/src/pdfviewer/web/viewer.html?file=https://scholar.harvard.edu/files/stansbury/files/schubertstansburytaskamain_0.pdf)
+  - p. 75 to p.76 Appendix Tables A1 and A2ß
 
 ## Other/Miscellaneous
 
-1. Dice - A good visualization example of what our clients may want for job/career profiles
-
-- [Dice](https://www.dice.com/)
+1. [Dice](https://www.dice.com/)- A good visualization example of what our clients may want for job/career profiles
 
 ### Questions That JobHopper Will Be Trying To Answer
 

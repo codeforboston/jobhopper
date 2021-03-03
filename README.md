@@ -19,8 +19,10 @@ For details on setup, see [Installation](./docs/Installation.md)
 | ------------------ | ------------------------ | --------- |
 | React (JavaScript) | Django (Python 3.7)      | Postgres  |
 
-For more details, see [Architecture](./docs/Architecture.md)
-Also details on [Database Setup](./docs/DataREADME.md) and [Django Migrations](./docs/DjangoData.md) are available.
+For details, see 
+- [Architecture](./docs/Architecture.md)
+- [Database Setup](./docs/DataREADME.md)
+- [Django Migrations](./docs/DjangoData.md)
 
 ## Additional Resources
 
