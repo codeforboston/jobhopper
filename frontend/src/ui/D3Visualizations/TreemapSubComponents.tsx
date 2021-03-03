@@ -2,12 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 
 export const Title = styled.div`
-  height: 5vh;
+  /* height: 5vh; */
   font-family: 'PT Sans';
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
-  line-height: 30px;
+  margin-bottom: 6px;
   color: #000000;
 `;
 
@@ -91,6 +91,6 @@ export const KeyContainer = styled.div`
   line-height: 30px;
   text-align: left;
   margin: 2em;
-  width: 80vw;
+  width: 20vw;
   height: 50%;
 `;

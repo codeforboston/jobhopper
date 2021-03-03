@@ -16,9 +16,10 @@ import ToolTip from './ToolTip';
 import useResizeObserver from './useResizeObserver';
 
 const Container = styled.div`
-  width: 90vw;
+  position: relative;
+  top: 0;
   height: 70vh;
-  align-self: center;
+  flex: 1;
 `;
 
 const Svg = styled.svg``;

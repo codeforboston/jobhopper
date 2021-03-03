@@ -4,11 +4,7 @@ import { SimpleFlexRow, TextContainer } from './styledDivs';
 
 export default function ToolTipDisplay(props: any) {
   const { info } = props;
-  return (
-    // <ToolTipStyleDiv>
-    <ToolTipData info={info} />
-    // </ToolTipStyleDiv>
-  );
+  return <ToolTipData info={info} />;
 }
 
 const ToolTipData = (props: any) => {

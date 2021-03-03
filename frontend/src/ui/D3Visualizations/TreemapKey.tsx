@@ -24,10 +24,6 @@ export default function TreemapKey({
     <KeyContainer>
       <KeyTitle>Occupation categories shown above*</KeyTitle>
       <KeyList keyEntries={keyEntries} selectedCategory={selectedCategory} />
-      <CaptionText>
-        *SOC (Standard Occupation Classification) code broad category, used by
-        the Bureau of Labor Statistics to define occupations
-      </CaptionText>
     </KeyContainer>
   );
 }
