@@ -13,6 +13,8 @@ services:
 
   api:
     environment:
+      ONET_USERNAME: ${ONET_USERNAME}
+      ONET_PASSWORD: ${ONET_PASSWORD}
       DB_USER: postgres
       DB_PASSWORD: password
       DB_NAME: jobhopper
