@@ -67,8 +67,6 @@ describe('Main', () => {
   }
 
   it('Can show national transitions', async () => {
-    return;
-    /*
     await waitForPageToLoad();
 
     const {
@@ -83,9 +81,7 @@ describe('Main', () => {
       '01-2345 | Doctor'
     );
 
-    await waitFor(() =>
-      expect(getByText(/Job Transitions.*Nationally/i)).toBeInTheDocument()
-    );
+    await waitFor(() => expect(getByText(/Nationally/i)).toBeInTheDocument());
 
     userEvent.click(getByTestId('treemap-button'));
 
@@ -93,7 +89,6 @@ describe('Main', () => {
       expect(getByTestId('treemap')).toBeInTheDocument();
       expect(queryByText(/Job Transitions/i)).not.toBeInTheDocument();
     });
-    */
   });
 
   it('Can show state transitions', async () => {
@@ -115,24 +110,16 @@ describe('Main', () => {
     );
     await selectEvent.select(getByLabelText('state-select'), 'California');
 
-    expect(
-      renderResult.getAllByText(/California/i).length
-    ).toBeGreaterThanOrEqual(1);
-
-    //console.log('testing');
-    //console.warn(renderResult);
-
-    // await waitFor(() =>
-    //  expect(getByText(/Job Transitions.*California/i)).toBeInTheDocument()
-    // );
+    await waitFor(() =>
+      expect(getByText(/in California/i)).toBeInTheDocument()
+    );
 
     userEvent.click(getByTestId('treemap-button'));
 
-    debug();
-    return;
-    //await waitFor(() => {
-    //  expect(getByTestId('treemap')).toBeInTheDocument();
-    //  // expect(queryByText(/Job Transitions/i)).not.toBeInTheDocument();
-    //});
+    await waitFor(() => {
+      expect(getByTestId('treemap')).toBeInTheDocument();
+      expect(renderResult.getAllByText(/California/i)).not.toBe(null);
+      expect(queryByText(/Job Transitions/i)).not.toBeInTheDocument();
+    });
   });
 });

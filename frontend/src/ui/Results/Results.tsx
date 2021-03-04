@@ -97,6 +97,7 @@ const Results: React.FC<ResultsProps> = ({
             <Treemap
               data={transitions}
               selectedOccupation={selectedOccupation}
+              selectedState={selectedState}
             />
           );
         }
