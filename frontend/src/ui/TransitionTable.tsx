@@ -44,7 +44,9 @@ const TransitionTable = ({
           title: 'Occupation name',
           field: 'name',
           render: ({ code, name }) => (
-            <OnetLink socCode={code}>{name}</OnetLink>
+            <OnetLink socCode={code} occupation={name}>
+              {name}
+            </OnetLink>
           ),
           tooltip:
             'Shows occupation that workers in the selected occupation switch into. Clicking on the occupation will take you to the Bureau of Labor Statistics’ O*NET page for that occupation.',
