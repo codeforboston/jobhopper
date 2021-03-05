@@ -132,6 +132,10 @@ function category(node: TreeNode): number {
   return isTransition(node) ? parseInt(node.code.slice(0, 2)) : 0;
 }
 
+function hourlyPay(node: TreeNode): number {
+  return isTransition(node) ? node.hourlyPay : 0;
+}
+
 export default function Treemap({
   data,
   selectedOccupation,
@@ -212,6 +216,10 @@ export default function Treemap({
       .attr('height', dimensions.height);
 
     const dataset = groupData(data);
+    const hourlyArray: number[] = [];
+    dataset.children.forEach(e => {
+      hourlyArray.push(e.category);
+    });
 
     // create hierarchical layout with data
     const root = d3
@@ -238,6 +246,22 @@ export default function Treemap({
       .domain(colorDomainMajorOccCodes)
       .range(colorRange);
 
+    function maxVal() {
+      const hrPayArray: number[] = [];
+      dataset.children.forEach(child => {
+        child.children.forEach(e => {
+          hrPayArray.push(e.hourlyPay);
+        });
+      });
+      console.log('maxVal:', d3.max(hrPayArray));
+      return d3.max(hrPayArray);
+    }
+
+    const opacity = d3
+      .scaleLinear()
+      .domain([5, maxVal() || 100])
+      .range([0.2, 1]);
+
     // create and fill svg 'rects' based on the node data selected
     nodes
       .append('rect')
@@ -249,6 +273,7 @@ export default function Treemap({
       .on('click', click)
       .on('mouseover', mouseover)
       .on('mouseout', mouseout)
+      .style('opacity', d => opacity(hourlyPay(d.data)) || 0.2)
       .style('stroke-width', d => 0);
 
     // add node labels
@@ -318,7 +343,7 @@ export default function Treemap({
   }, [renderTreemap]);
 
   return (
-    <Container ref={containerRef} data-testid="treemap" id="treemap-container">
+    <Container ref={containerRef} data-testid="treemap">
       <Typography
         variant="h6"
         style={{ marginTop: '12px', marginBottom: '12px' }}
