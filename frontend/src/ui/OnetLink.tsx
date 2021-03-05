@@ -2,7 +2,6 @@ import React, { ReactNode } from 'react';
 
 export interface OnetLinkProps {
   socCode: string;
-  occupation: string;
   children: ReactNode;
 }
 
