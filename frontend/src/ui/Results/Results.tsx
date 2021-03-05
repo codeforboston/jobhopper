@@ -1,5 +1,7 @@
 import CircularProgress from '@material-ui/core/CircularProgress';
-import React, { createElement, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import Canvg, { presets } from 'canvg';
+import { jsPDF } from 'jspdf';
 import { Transition } from 'src/domain/transition';
 import ResultError from 'src/ui/Results/ResultError';
 import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
@@ -7,15 +9,11 @@ import Treemap from '../D3Visualizations/Treemap';
 import TransitionTable from '../TransitionTable';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
-import Canvg, { presets } from 'canvg';
-import { jsPDF } from 'jspdf';
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { useOccupationsState } from 'src/ducks/occupations';
-import EmptyResults from 'src/ui/Results/EmptyResults';
+import { Body } from '../Typography';
 
 export interface ResultsProps {
   selectedState?: State;
-  selectedOccupation?: Occupation;
+  selectedOccupation: Occupation;
   loading?: boolean;
   transitions?: Transition[];
   error?: string;
@@ -24,21 +22,18 @@ export interface ResultsProps {
 const Results: React.FC<ResultsProps> = ({
   selectedOccupation,
   selectedState,
-  transitions: immutableTransitions,
+  transitions: immutableTransitions = [],
   loading = false,
   error,
 }) => {
   const [visualization, setVisualization] = useState<'matrix' | 'treemap'>(
     'matrix'
   );
-  const hasResults = immutableTransitions !== undefined;
-
-  const occupation = useOccupationsState().selectedOccupation;
 
   // Material table mutates its data, but immer freezes objects, so we clone
   // the transition data for compatibility.
   const transitions = useMemo<Transition[]>(
-    () => (immutableTransitions ?? []).map(t => ({ ...t })),
+    () => immutableTransitions.map(t => ({ ...t })),
     [immutableTransitions]
   );
 
@@ -84,13 +79,13 @@ const Results: React.FC<ResultsProps> = ({
           pdf.text(blurbString, 265, 9.52, { align: 'right' });
           pdf.setFontSize(12);
           pdf.text(
-            `Job Transitions from ${occupation?.name} (${occupation?.code}) to:`,
+            `Job Transitions from ${selectedOccupation?.name} (${selectedOccupation?.code}) to:`,
             14.82,
             23
           );
           pdf.setFontSize(10);
           pdf.text(
-            `This treemap shows where ${occupation?.name} move to when they switch occupations. This data was calculated by academic researchers from around 16 million resumes of U.S. workers which were generously provided and parsed by Burning Glass Technologies`,
+            `This treemap shows where ${selectedOccupation?.name} move to when they switch occupations. This data was calculated by academic researchers from around 16 million resumes of U.S. workers which were generously provided and parsed by Burning Glass Technologies`,
             11.3,
             197.85,
             { maxWidth: 254.35 }
@@ -125,13 +120,6 @@ const Results: React.FC<ResultsProps> = ({
             disabled={disabled}
             selected={showTreemap}
           />
-          <StyledSecondary
-            label="Export Chart"
-            testid="treechartPdf"
-            onClick={exportPDF}
-            disabled={disabled}
-            selected={showTreemap}
-          />
         </Row>
       </LabeledSection>
       {(() => {
@@ -141,13 +129,25 @@ const Results: React.FC<ResultsProps> = ({
           return <ResultError error={error} />;
         } else if (showMatrix && selectedOccupation) {
           return (
-            <TransitionTable
-              selectedOccupation={selectedOccupation}
-              selectedState={selectedState}
-              transitionData={transitions}
-            />
+            <React.Fragment>
+              <TransitionTable
+                selectedOccupation={selectedOccupation}
+                selectedState={selectedState}
+                transitionData={transitions}
+              />
+              <Body>
+                This table/matrix shows the occupations that{' '}
+                {selectedOccupation.name.toLowerCase()} move to when they change
+                occupation. The transition share is the percentage proportion of{' '}
+                {selectedOccupation.name.toLowerCase()} who move into a job in
+                each other occupation when they switch occupation. We only show
+                occupations with more than with transition shares greater than
+                0.2% of {selectedOccupation.name.toLowerCase()} transitioning
+                into them.
+              </Body>
+            </React.Fragment>
           );
-        } else if (showTreemap && selectedOccupation) {
+        } else if (showTreemap) {
           return (
             <Treemap
               data={transitions}
@@ -155,8 +155,6 @@ const Results: React.FC<ResultsProps> = ({
               selectedState={selectedState}
             />
           );
-        } else if (hasResults && !hasTransitions) {
-          return <EmptyResults />;
         }
       })()}
     </Column>

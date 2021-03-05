@@ -21,9 +21,9 @@ const TransitionTable = ({
 }: TransitionTableProps): JSX.Element => {
   const theme = useTheme();
 
-  const title = `Job Transitions from ${selectedOccupation.name} (${
+  const title = `Which occupations do ${selectedOccupation.name}  (${
     selectedOccupation.code
-  }) ${selectedState ? `in ${selectedState.name}` : `Nationally`}`;
+  }) move to ${selectedState ? `in ${selectedState.name}` : `Nationally`} ?`;
 
   return (
     <MaterialTable
@@ -38,14 +38,16 @@ const TransitionTable = ({
           title: 'SOC code',
           field: 'code',
           tooltip:
-            'The Standard Occupational Classification (SOC) system is a federal statistical standard used by federal agencies to classify workers into occupational categories for the purpose of collecting, calculating, or disseminating data.',
+            'The Standard Occupational Classification (SOC) system is a federal statistical standard used by federal agencies to classify workers into occupational categories for the purpose of collecting, calculating, or disseminating data. These codes are 6-digit SOC codes using the 2010 classification system.',
         },
         {
-          title: 'Job name',
+          title: 'Occupation name',
           field: 'name',
           render: ({ code, name }) => (
             <OnetLink socCode={code}>{name}</OnetLink>
           ),
+          tooltip:
+            'Shows occupation that workers in the selected occupation switch into. Clicking on the occupation will take you to the Bureau of Labor Statistics’ O*NET page for that occupation.',
           width: 1000,
         },
         {
@@ -54,18 +56,22 @@ const TransitionTable = ({
           render: ({ transitionRate }) =>
             `${DataHelper.transformNumber(100 * transitionRate, 2)}%`,
           tooltip:
-            'The proportion of individuals in the selected occupation that switch to this job in a given year',
+            'This data focuses on workers who move from one occupation to another. The transition share is the percentage of workers from the selected occupation who move into each destination occupation, when they leave their occupation. This is calculated from national data using 16 million workers’ resumes.',
           defaultSort: 'desc',
         },
         {
-          title: 'Hourly pay',
+          title: 'Average hourly pay',
           field: 'hourlyPay',
           type: 'currency',
+          tooltip:
+            'Average hourly pay in this occupation, obtained from the Bureau of Labor Statistics Occupational Employment Statistics database. This shows nationwide pay unless you have selected a specific state.',
         },
         {
-          title: 'Annual salary',
+          title: 'Average annual salary',
           field: 'annualSalary',
           type: 'currency',
+          tooltip:
+            'Average annual salary in this occupation, obtained from the Bureau of Labor Statistics Occupational Employment Statistics database. This shows nationwide salary unless you have selected a specific state.',
         },
       ]}
       data={transitionData}
