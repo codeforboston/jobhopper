@@ -90,6 +90,7 @@ export type TreemapProps = {
   selectedOccupation: Occupation;
   selectedState?: State;
   data: Transition[];
+  display: string;
 };
 
 const groupData = (data: Transition[]): TreeRootNode => {
@@ -137,6 +138,7 @@ function hourlyPay(node: TreeNode): number {
 }
 
 export default function Treemap({
+  display,
   data,
   selectedOccupation,
   selectedState,
@@ -155,6 +157,8 @@ export default function Treemap({
 
   const [hoveredInfo, setHoveredInfo] = useState();
   const [selectedInfo, setSelectedInfo] = useState();
+
+  console.log('from Treemap: Display=', display);
 
   useEffect(() => {
     containerRef.current?.scrollIntoView?.({ behavior: 'smooth' });
@@ -262,19 +266,30 @@ export default function Treemap({
       .domain([5, maxVal() || 100])
       .range([0.2, 1]);
 
+    const toggleCategorySalary = (d: any, toggle: string) => {
+      const opacValue = toggle === 'opacity' ? opacity(hourlyPay(d.data)) : 1;
+
+      const colorValue =
+        toggle === 'fill'
+          ? colorScaleMajorOccupation(category(d.data))
+          : '#3EB56D';
+
+      // return {opacity: opacValue, color: colorValue};
+      return `opacity: ${opacValue}; fill: ${colorValue}`;
+    };
+
     // create and fill svg 'rects' based on the node data selected
     nodes
       .append('rect')
       .attr('width', d => d.x1 - d.x0)
       .attr('height', d => d.y1 - d.y0)
-      .attr('fill', d => colorScaleMajorOccupation(category(d.data)) || white)
       .style('stroke-linejoin', 'round')
       .style('stroke', '#2878C8')
       .on('click', click)
       .on('mouseover', mouseover)
       .on('mouseout', mouseout)
-      .style('opacity', d => opacity(hourlyPay(d.data)) || 0.2)
-      .style('stroke-width', d => 0);
+      .style('stroke-width', d => 0)
+      .attr('style', d => toggleCategorySalary(d, display));
 
     // add node labels
     nodes
@@ -336,7 +351,7 @@ export default function Treemap({
         }
       });
     }
-  }, [dimensions.width, dimensions.height, data]);
+  }, [dimensions.width, dimensions.height, data, display]);
 
   useLayoutEffect(() => {
     renderTreemap();

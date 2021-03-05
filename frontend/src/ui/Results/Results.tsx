@@ -95,6 +95,13 @@ const Results: React.FC<ResultsProps> = ({
     }
   };
 
+  const [toggle, setToggle] = useState('fill');
+
+  const chooseToggle = () => {
+    console.log('Toggle!');
+    toggle === 'fill' ? setToggle('opacity') : setToggle('fill');
+  };
+
   return (
     <Column>
       <LabeledSection
@@ -120,6 +127,14 @@ const Results: React.FC<ResultsProps> = ({
             disabled={disabled}
             selected={showTreemap}
           />
+          <StyledSecondary
+            label="Export Chart"
+            testid="treechartPdf"
+            onClick={exportPDF}
+            disabled={disabled}
+            selected={showTreemap}
+          />
+          <button onClick={chooseToggle}>Toggle Toggle Toggle</button>
         </Row>
       </LabeledSection>
       {(() => {
@@ -150,6 +165,7 @@ const Results: React.FC<ResultsProps> = ({
         } else if (showTreemap) {
           return (
             <Treemap
+              display={toggle}
               data={transitions}
               selectedOccupation={selectedOccupation}
               selectedState={selectedState}
