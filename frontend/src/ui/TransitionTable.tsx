@@ -44,7 +44,7 @@ const TransitionTable = ({
           title: 'Job name',
           field: 'name',
           render: ({ code, name }) => (
-            <OnetLink socCode={code}>{name}</OnetLink>            
+            <OnetLink socCode={code}>{name}</OnetLink>
           ),
           width: 1000,
         },
