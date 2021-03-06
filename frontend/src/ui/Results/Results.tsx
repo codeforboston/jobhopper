@@ -9,6 +9,10 @@ import Treemap from '../D3Visualizations/Treemap';
 import TransitionTable from '../TransitionTable';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
+import GreenRadio from '../RadioButton';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { useStateState } from 'src/ducks/states';
 import { Body } from '../Typography';
 
 export interface ResultsProps {
@@ -29,6 +33,8 @@ const Results: React.FC<ResultsProps> = ({
   const [visualization, setVisualization] = useState<'matrix' | 'treemap'>(
     'matrix'
   );
+
+  const state = useStateState().selectedState;
 
   // Material table mutates its data, but immer freezes objects, so we clone
   // the transition data for compatibility.
@@ -97,6 +103,10 @@ const Results: React.FC<ResultsProps> = ({
 
   const [toggle, setToggle] = useState('fill');
 
+  const [selectedValue, setSelectedValue] = useState<
+    'occupationDisplay' | 'salaryDisplay'
+  >('occupationDisplay');
+
   const chooseToggle = () => {
     console.log('Toggle!');
     toggle === 'fill' ? setToggle('opacity') : setToggle('fill');
@@ -134,8 +144,32 @@ const Results: React.FC<ResultsProps> = ({
             disabled={disabled}
             selected={showTreemap}
           />
-          <button onClick={chooseToggle}>Toggle Toggle Toggle</button>
         </Row>
+        <RadioGroup
+          value={selectedValue}
+          onChange={chooseToggle}
+          row
+          style={{
+            alignSelf: 'center',
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}
+        >
+          <FormControlLabel
+            value="occupationDisplay"
+            control={<GreenRadio />}
+            onChange={() => setSelectedValue('occupationDisplay')}
+            label="Occupation"
+            checked={selectedValue === 'occupationDisplay'}
+          />
+          <FormControlLabel
+            value="salaryDisplay"
+            control={<GreenRadio />}
+            onChange={() => setSelectedValue('salaryDisplay')}
+            label={`Salary ${state ? state.name : ''}`}
+            checked={selectedValue === 'salaryDisplay'}
+          />
+        </RadioGroup>
       </LabeledSection>
       {(() => {
         if (loading) {
