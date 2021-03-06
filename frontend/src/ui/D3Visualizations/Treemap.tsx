@@ -144,11 +144,10 @@ export default function Treemap({
   selectedState,
 }: TreemapProps) {
   const occName = selectedOccupation ? selectedOccupation.name : '';
-  const occCode = selectedOccupation ? selectedOccupation.code : '';
 
-  const title = `Which occupations do ${occName} (${occCode}) ${
-    selectedState ? `move to in ${selectedState.name}?` : `move to Nationally?`
-  }`;
+  const title = `Which occupations do ${selectedOccupation.name}  (${
+    selectedOccupation.code
+  }) move to ${selectedState ? `in ${selectedState.name}` : `Nationally`} ?`;
 
   const footnote_blurb = `This visualization shows the occupations which ${occName} move to when they change occupation. The transition share is the proportion of ${occName} who move into a job in each other occupation when they switch occupation. We only break out individual occupations with transition shares greater than 0.2%.`;
 

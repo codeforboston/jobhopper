@@ -21,7 +21,8 @@
 5. To Run tests, once the container is running, this command will work in a new command window to execute the tests against the running API container:
 `docker exec jobhopper_api_1 bash -c "python migrate.py test"`
 
-## Option 1: Clone and run
+
+## Option 2: Clone and run
 
 1. Install [Python 3.7](https://www.python.org/downloads/release/python-378/).
 
