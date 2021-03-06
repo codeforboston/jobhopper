@@ -8,7 +8,7 @@
 
    Or you can install [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) directly.
 
-2. Create a copy of `.env.template` in the `docker` directory. Replace the `SECRET_KEY` value with your Django key, and rename the file `.env.`
+2. Create a copy of `.env.template` in the `docker` directory. Replace the `SECRET_KEY` value with your Django key, and replace the `ONET_PASSWORD` with the O*NET account password (ping the jobhopper channel if you don't know the password). Rename the file `.env.`
 
 3. Build the Docker image by running `docker-compose build` in the `docker` directory. You will need to run this whenever the dependencies for the frontend or api change.
 

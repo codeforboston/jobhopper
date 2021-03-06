@@ -8,14 +8,16 @@ from .api import (
     StateViewSet,
     OccupationTransitionsViewSet,
     BlsTransitionsViewSet,
+    SocListSmartViewSet
 )
 
 router = routers.DefaultRouter()
 router.register("transitions", OccupationTransitionsViewSet)
 router.register("soc-codes", BlsOesViewSet)
 router.register("soc-list", SocListSimpleViewSet)
-router.register(r"state", StateViewSet, basename="abbr")
+router.register("state", StateViewSet, basename="abbr")
 router.register("transitions-extended", BlsTransitionsViewSet, basename="lol")
+router.register("soc-smart-list", SocListSmartViewSet, basename="onet")
 
 urlpatterns = [
     path("", include(router.urls)),
