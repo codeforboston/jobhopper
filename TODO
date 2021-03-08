@@ -1,0 +1,6 @@
+TODO
++ consolidate occupation category color, code, and name
++ clean up TreemapKey
+- add functions to hide rendering details in Treemap
+- debug treemap interactions, tooltip rendering in treemap story
+- fix title and footnote positioning

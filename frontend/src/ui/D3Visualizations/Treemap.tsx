@@ -1,3 +1,5 @@
+import { Typography } from '@material-ui/core';
+import * as d3 from 'd3';
 import React, {
   useCallback,
   useEffect,
@@ -5,8 +7,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import * as d3 from 'd3';
-import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Occupation } from '../../domain/occupation';
 import { State } from '../../domain/state';
@@ -22,8 +22,8 @@ const Container = styled.div`
 
 const Svg = styled.svg``;
 
-const fontSize = 12;
-const white = '#ffffff';
+const textFontSize = 18;
+const percentFontSize = 20;
 
 // these two arrays must match item for item - index for index - this is how the colors are assigned in the D3 color scale
 const colorRange = [
@@ -292,65 +292,40 @@ export default function Treemap({
       .attr('style', d => toggleCategorySalary(d, display));
 
     // add node labels
-    nodes
-      .append('text')
-      .text(
-        d =>
-          `${name(d.data)} ${Math.round(transitionRate(d.data) * 10000) / 100}%`
-      )
-      .attr('data-width', d => d.x1 - d.x0)
-      .attr('font-size', `${fontSize}px`)
-      .style('fill', '#165085')
-      .style('text-align', 'top')
-      .attr('x', 3)
-      .attr('y', fontSize)
-      .call(wrap);
-
-    // wrap node labels if necessary
-    function wrap(selection: d3.Selection<SVGTextElement, any, any, any>) {
-      selection.each(function () {
-        const node = d3.select(this);
-        const width = +node.attr('data-width');
-        let word: string;
-        const words: Array<string> = node.text().split(' ').reverse();
-        let line: Array<string> = [];
-        let lineNumber = 0;
-        const x = node.attr('x');
-        const y = node.attr('y');
-        const dy = 0;
-        // overwrite current text for node with '' and append empty tspan
-        let tspan: d3.Selection<SVGTSpanElement, any, any, any> = node
-          .text('')
-          .append('tspan')
-          .attr('x', x)
-          .attr('y', y);
-        while (words.length > 1) {
-          word = words.pop()!;
-          line.push(word);
-          tspan.text(line.join(' '));
-          const tspanLength = tspan.node()?.getComputedTextLength?.() ?? 0;
-          if (tspanLength > width) {
-            line.pop();
-            tspan.text(line.join(' '));
-            line = [word];
-            tspan = addTspan(word);
-          }
-        }
-        // add transition rate as last tspan
-        const rateSpan = addTspan(words.pop()!);
-        rateSpan.style('fill', 'black');
-        function addTspan(
-          text: string
-        ): d3.Selection<SVGTSpanElement, any, any, any> {
-          return node
-            .append('tspan')
-            .attr('x', x)
-            .attr('y', y)
-            .attr('dy', ++lineNumber * fontSize + dy + 'px')
-            .text(text);
+    const textHolder = nodes
+      .append('foreignObject')
+      .attr('width', d => d.x1 - d.x0)
+      .attr('height', d => d.y1 - d.y0)
+      .style('pointer-events', 'none')
+      .style('display', d => {
+        if (d.x1 - d.x0 < textFontSize * 4 || d.y1 - d.y0 < textFontSize * 4) {
+          return 'none';
+        } else {
+          return 'initial';
         }
       });
-    }
+
+    //add title
+    textHolder
+      .append('xhtml:div')
+      .style('padding', '6px')
+      .html(
+        d => `${name(d.data).replace(/ /g, '&nbsp;').replace(/\s/g, '&nbsp;')}`
+      )
+      .attr('data-width', d => d.x1 - d.x0)
+      .style('font-size', `${textFontSize} px`)
+      .style('max-height', '2.5em')
+      .style('overflow', 'hidden')
+      .style('text-overflow', 'ellipsis');
+
+    //add transition percent
+    textHolder
+      .append('xhtml:div')
+      .html(d => `${Math.round(transitionRate(d.data) * 10000) / 100}% `)
+      .style('font-size', `${percentFontSize} px`)
+      .style('font-weight', 'bolder')
+      .style('padding', '0 6px 6px 6px')
+      .style('color', 'black');
   }, [dimensions.width, dimensions.height, data, display]);
 
   useLayoutEffect(() => {
