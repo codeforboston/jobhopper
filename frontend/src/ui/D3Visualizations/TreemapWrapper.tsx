@@ -28,6 +28,9 @@ export default function TreemapWrapper({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-start',
+        position: 'relative',
+        alignSelf: 'center',
+        width: '90vw',
       }}
     >
       <Title>
@@ -35,7 +38,7 @@ export default function TreemapWrapper({
         {selectedOccupation.code})
         {selectedState ? ` in ${selectedState.name}` : ` Nationally`}
       </Title>
-      <div>
+      <div style={{ width: '100%' }}>
         <Treemap
           display={display}
           transitions={transitions}
