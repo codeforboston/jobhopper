@@ -4,10 +4,11 @@ name: Django Test
 
 # Controls when the action will run. Triggers the workflow on push of python files.
 # change to `on: [push]` for all push events.
-on:
-  push:
-    paths:
-    - '**.py'
+# on:
+#  push:
+#    paths:
+#      - "**.py"
+on: [push]
 
 jobs:
   coverage:
@@ -48,5 +49,6 @@ jobs:
           DB_NAME: test_jobhopperdatabase
           SECRET_KEY: 77a353957aca463f13b9be321df87539c7cd558474a6b2fbae
         run: |
+          cd api
           coverage run --source='.' manage.py test jobhopper
           coverage report -m

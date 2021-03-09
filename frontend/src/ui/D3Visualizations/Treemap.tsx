@@ -27,6 +27,7 @@ const Svg = styled.svg``;
 const textFontSize = 18;
 const percentFontSize = 20;
 const white = '#ffffff';
+const fontSize = 12;
 
 export type CategoryNode = {
   name: string;
@@ -41,6 +42,7 @@ export type TreemapProps = {
   selectedState?: State;
   transitions: Transition[];
   setSelectedCategory: (category: number | undefined) => void;
+  display: string;
 };
 
 const groupData = (data: Transition[]): TreeRootNode => {
@@ -83,9 +85,14 @@ export function category(node: TreeNode): number {
   return isTransition(node) ? getCategory(node) : 0;
 }
 
+function hourlyPay(node: TreeNode): number {
+  return isTransition(node) ? node.hourlyPay : 0;
+}
+
 export default function Treemap({
   transitions: data,
   setSelectedCategory,
+  display,
 }: TreemapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
@@ -213,6 +220,10 @@ export default function Treemap({
       .attr('height', dimensions.height);
 
     const dataset = groupData(data);
+    const hourlyArray: number[] = [];
+    dataset.children.forEach(e => {
+      hourlyArray.push(e.category);
+    });
 
     // create hierarchical layout with data
     const root = d3
@@ -239,19 +250,47 @@ export default function Treemap({
       .domain(categories.map(({ code }) => code))
       .range(categories.map(({ color }) => color));
 
+    function maxVal() {
+      const hrPayArray: number[] = [];
+      dataset.children.forEach(child => {
+        child.children.forEach(e => {
+          hrPayArray.push(e.hourlyPay);
+        });
+      });
+      console.log('maxVal:', d3.max(hrPayArray));
+      return d3.max(hrPayArray);
+    }
+
+    const opacity = d3
+      .scaleLinear()
+      .domain([5, maxVal() || 100])
+      .range([0.2, 1]);
+
+    const toggleCategorySalary = (d: any, toggle: string) => {
+      const opacValue = toggle === 'opacity' ? opacity(hourlyPay(d.data)) : 1;
+
+      const colorValue =
+        toggle === 'fill'
+          ? colorScaleMajorOccupation(category(d.data))
+          : '#3EB56D';
+
+      // return {opacity: opacValue, color: colorValue};
+      return `opacity: ${opacValue}; fill: ${colorValue}`;
+    };
+
     // create and fill svg 'rects' based on the node data selected
     nodes
       .append('rect')
       .attr('width', d => d.x1 - d.x0)
       .attr('height', d => d.y1 - d.y0)
-      .attr('fill', d => colorScaleMajorOccupation(category(d.data)) || white)
       .style('stroke-linejoin', 'round')
       .style('stroke-width', '2px')
       .style('stroke', white)
       .on('click', click)
       .on('mouseover', mouseover)
       .on('mouseout', mouseout)
-      .style('stroke-width', d => 0);
+      .style('stroke-width', d => 0)
+      .attr('style', d => toggleCategorySalary(d, display));
 
     // add node labels
     nodes
@@ -310,6 +349,7 @@ export default function Treemap({
     leftTooltipPosition,
     topTooltipPosition,
     setSelectedCategory,
+    display,
   ]);
 
   useLayoutEffect(() => {

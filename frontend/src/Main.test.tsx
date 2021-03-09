@@ -81,9 +81,7 @@ describe('Main', () => {
       '01-2345 | Doctor'
     );
 
-    await waitFor(() =>
-      expect(getByText(/Job Transitions.*Nationally/i)).toBeInTheDocument()
-    );
+    await waitFor(() => expect(getByText(/Nationally/i)).toBeInTheDocument());
 
     userEvent.click(getByTestId('treemap-button'));
 
@@ -111,13 +109,15 @@ describe('Main', () => {
     await selectEvent.select(getByLabelText('state-select'), 'California');
 
     await waitFor(() =>
-      expect(getByText(/Job Transitions.*California/i)).toBeInTheDocument()
+      expect(getByText(/in California/i)).toBeInTheDocument()
     );
 
     userEvent.click(getByTestId('treemap-button'));
 
     await waitFor(() => {
       expect(getByTestId('treemap')).toBeInTheDocument();
+      expect(renderResult.getAllByText(/California/i)).not.toBe(null);
+      expect(queryByText(/Job Transitions/i)).not.toBeInTheDocument();
     });
   });
 });

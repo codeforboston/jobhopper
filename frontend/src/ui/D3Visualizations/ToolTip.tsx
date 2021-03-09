@@ -28,7 +28,9 @@ const ToolTipData = (props: any) => {
       <SimpleFlexRow>
         <div style={{ marginRight: '2em' }}>{info.data.code}</div>
         <div style={{ flex: 3 }}>
-          <OnetLink socCode={info.data.code}>{info.data.name}</OnetLink>
+          <OnetLink socCode={info.data.code} occupation={info.data.name}>
+            {info.data.name}
+          </OnetLink>
         </div>
       </SimpleFlexRow>
       <SimpleFlexRow>

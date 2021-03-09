@@ -7,12 +7,14 @@ import TreemapKey from './TreemapKey';
 import { Title, CaptionText } from './TreemapSubComponents';
 
 export interface TreemapWrapperProps {
+  display: string;
   selectedOccupation: Occupation;
   selectedState?: State;
   transitions: Transition[];
 }
 
 export default function TreemapWrapper({
+  display,
   selectedState,
   selectedOccupation,
   transitions,
@@ -35,6 +37,7 @@ export default function TreemapWrapper({
       </Title>
       <div>
         <Treemap
+          display={display}
           transitions={transitions}
           setSelectedCategory={setSelectedCategory}
           selectedOccupation={selectedOccupation}

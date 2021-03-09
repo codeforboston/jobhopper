@@ -14,6 +14,7 @@ export const Default: Story<TreemapWrapperProps> = args => (
   <TreemapWrapper {...args} />
 );
 Default.args = {
+  display: 'fill',
   transitions: longData,
   selectedOccupation: occupations[0],
   selectedState: states[0],
