@@ -12,7 +12,9 @@ export const Title = styled.div`
 `;
 
 export const KeyTitle = styled.div`
+  flex: 1 0 100%;
   font-size: 18px;
+  width: 100%;
 `;
 
 export const CaptionText = styled.div`
@@ -43,11 +45,19 @@ export const KeyList = ({
   selectedCategory?: number;
 }) => {
   return (
-    <>
+    <div
+      style={{
+        display: 'flex',
+        flex: '1 0 100%',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'flex-start',
+      }}
+    >
       {keyEntries.map((entry, i) => (
         <KeyEntry key={i} {...entry} selectedCategory={selectedCategory} />
       ))}
-    </>
+    </div>
   );
 };
 
@@ -57,13 +67,16 @@ function KeyEntry({ code, name, color, selectedCategory }: KeyEntryProps) {
     <div
       style={{
         display: 'flex',
+        flex: '0 0 30%',
         justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        margin: '0 0 5px 5px',
+        alignItems: 'center',
+        margin: '2.5px 0 2.5px 5px',
+        height: '4em',
       }}
     >
       <KeyColorSquare color={color} isSelected={isSelected} />
-      <div style={{ flex: 1 }}>
+
+      <div style={{ height: '2em' }}>
         {code} {name}
       </div>
     </div>
@@ -79,18 +92,20 @@ const KeyColorSquare = ({ color, isSelected }: KeyColorSquareProps) => {
     minWidth: '20px',
     margin: '0 12px 0 0',
     backgroundColor: color,
-    border: isSelected ? '3px solid #3CA565' : `3px solid ${color}`,
+    outline: isSelected ? '3px solid #3CA565' : 'none',
+    outlineOffset: isSelected ? '1px' : '0',
+    transition: 'outline-offset 0.5s ease',
   };
 
   return <div style={style} />;
 };
 
 export const KeyContainer = styled.div`
-  display: block;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
   font-family: 'PT Sans';
   line-height: 30px;
   text-align: left;
-  margin: 2em;
-  width: 20vw;
-  height: 50%;
+  margin: 4em 2em;
 `;

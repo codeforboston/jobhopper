@@ -33,17 +33,17 @@ export default function TreemapWrapper({
         {selectedOccupation.code})
         {selectedState ? ` in ${selectedState.name}` : ` Nationally`}
       </Title>
-      <div style={{ display: 'flex', justifyContent: 'flex-start', flex: 1 }}>
+      <div>
         <Treemap
           transitions={transitions}
           setSelectedCategory={setSelectedCategory}
           selectedOccupation={selectedOccupation}
         />
-        <TreemapKey
-          categoryCodes={Array.from(categoryCodes)}
-          selectedCategory={selectedCategory}
-        />
       </div>
+      <TreemapKey
+        categoryCodes={Array.from(categoryCodes)}
+        selectedCategory={selectedCategory}
+      />
       <CaptionText>
         This visualization shows the occupations which {selectedOccupation.name}
         s move to when they change occupation. The transition share is the

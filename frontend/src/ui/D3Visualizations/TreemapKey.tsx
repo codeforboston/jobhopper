@@ -1,11 +1,6 @@
 import React from 'react';
 import { getCategoryForCode } from './category';
-import {
-  CaptionText,
-  KeyContainer,
-  KeyList,
-  KeyTitle,
-} from './TreemapSubComponents';
+import { KeyContainer, KeyList, KeyTitle } from './TreemapSubComponents';
 
 export interface TreemapKeyProps {
   categoryCodes: number[];
