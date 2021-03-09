@@ -27,7 +27,6 @@ const Svg = styled.svg``;
 const textFontSize = 18;
 const percentFontSize = 20;
 const white = '#ffffff';
-const fontSize = 12;
 
 export type CategoryNode = {
   name: string;

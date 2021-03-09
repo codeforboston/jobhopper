@@ -69,12 +69,7 @@ describe('Main', () => {
   it('Can show national transitions', async () => {
     await waitForPageToLoad();
 
-    const {
-      getByTestId,
-      getByLabelText,
-      getByText,
-      queryByText,
-    } = renderResult;
+    const { getByTestId, getByLabelText, getByText } = renderResult;
 
     await selectEvent.select(
       getByLabelText('occupation-select'),
@@ -93,12 +88,7 @@ describe('Main', () => {
   it('Can show state transitions', async () => {
     await waitForPageToLoad();
 
-    const {
-      getByLabelText,
-      getByText,
-      getByTestId,
-      queryByText,
-    } = renderResult;
+    const { getByLabelText, getByText, getByTestId } = renderResult;
 
     await new Promise(resolve => setTimeout(resolve, 100));
 
@@ -117,7 +107,6 @@ describe('Main', () => {
     await waitFor(() => {
       expect(getByTestId('treemap')).toBeInTheDocument();
       expect(renderResult.getAllByText(/California/i)).not.toBe(null);
-      expect(queryByText(/Job Transitions/i)).not.toBeInTheDocument();
     });
   });
 });
