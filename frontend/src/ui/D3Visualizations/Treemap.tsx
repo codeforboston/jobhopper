@@ -23,7 +23,6 @@ const Container = styled.div`
 const Svg = styled.svg``;
 
 const fontSize = 12;
-const white = '#ffffff';
 
 // these two arrays must match item for item - index for index - this is how the colors are assigned in the D3 color scale
 const colorRange = [

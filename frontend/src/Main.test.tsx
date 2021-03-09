@@ -99,7 +99,6 @@ describe('Main', () => {
       getByText,
       getByTestId,
       queryByText,
-      debug,
     } = renderResult;
 
     await new Promise(resolve => setTimeout(resolve, 100));
