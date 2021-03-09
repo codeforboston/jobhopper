@@ -5,13 +5,13 @@
 The frontend uses Node and NPM for building, linting, and running tests. Here's how you set it up:
 
 1. Install [Node 14](https://nodejs.org/en/download/)
-2. Instal project dependencies by running `npm install` from this directory.
+2. Install project dependencies by running `npm install` from this directory.
 3. Start the app with `npm start` from this directory.
 4. Start the storybook UI with `npm run storybook` from this directory.
 
 You should run `npm install` whenever `package.json` changes.
 
-## VSCode Editor Setup
+## VSCode Editor Setup (Optional)
 
 The frontend is set up to show linting/syntax/types and automatically format code in VSCode. Here's how you set it up:
 

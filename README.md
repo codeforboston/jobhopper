@@ -13,13 +13,18 @@ JobHopper is an application for analyzing and querying career mobility and outsi
 
 For details on setup, see [Installation](./docs/Installation.md)
 
+# Contributing
+
+See [Contributing](./docs/Contributing.md) for how to commit and submit code to the project!
+
 # Technologies Used
 
 | Front End          | Logic & Data Processing: | Database: |
 | ------------------ | ------------------------ | --------- |
-| React (JavaScript) | Django (Python 3.7)      | Postgres  |
+| React (Typescript) | Django (Python 3.7)      | Postgres  |
 
-For details, see 
+For details, see
+
 - [Architecture](./docs/Architecture.md)
 - [Database Setup](./docs/DataREADME.md)
 
