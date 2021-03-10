@@ -1,5 +1,5 @@
-import { Typography } from '@material-ui/core';
 import * as d3 from 'd3';
+import { groupBy } from 'lodash';
 import React, {
   useCallback,
   useEffect,
@@ -10,73 +10,23 @@ import React, {
 import styled from 'styled-components';
 import { Occupation } from '../../domain/occupation';
 import { State } from '../../domain/state';
-import { majorLookup, Transition } from '../../domain/transition';
+import { getCategory, Transition } from '../../domain/transition';
+import { categories, getCategoryForCode } from './category';
 import ToolTip from './ToolTip';
 import useResizeObserver from './useResizeObserver';
 
 const Container = styled.div`
-  width: 90vw;
+  position: relative;
+  top: 0;
   height: 70vh;
-  align-self: center;
+  flex: 1;
 `;
 
 const Svg = styled.svg``;
 
 const textFontSize = 18;
 const percentFontSize = 20;
-
-// these two arrays must match item for item - index for index - this is how the colors are assigned in the D3 color scale
-const colorRange = [
-  '#2E96FC',
-  '#31B39F',
-  '#5DC2B3',
-  '#73B9FE',
-  '#766CFB',
-  '#8DD5CA',
-  '#958DFA',
-  '#A2D0FD',
-  '#C1BFFE',
-  '#D0E7FF',
-  '#D0EEE9',
-  '#DA8FC7',
-  '#DFDDFE',
-  '#F79FE0',
-  '#FEA333',
-  '#FEB95D',
-  '#FECE8B',
-  '#FED1DE',
-  '#FEE1BA',
-  '#FF4782',
-  '#FF74A1',
-  '#FFA3C0',
-  '#FFD0F3',
-];
-
-const colorDomainMajorOccCodes = [
-  11,
-  13,
-  15,
-  17,
-  19,
-  21,
-  23,
-  25,
-  27,
-  29,
-  31,
-  33,
-  35,
-  37,
-  39,
-  41,
-  43,
-  45,
-  47,
-  49,
-  51,
-  53,
-  55,
-];
+const white = '#ffffff';
 
 export type CategoryNode = {
   name: string;
@@ -89,27 +39,28 @@ export type TreeNode = TreeRootNode | CategoryNode | Transition;
 export type TreemapProps = {
   selectedOccupation: Occupation;
   selectedState?: State;
-  data: Transition[];
+  transitions: Transition[];
+  setSelectedCategory: (category: number | undefined) => void;
   display: string;
 };
 
 const groupData = (data: Transition[]): TreeRootNode => {
-  let categories: any[] = [];
+  let categoryGroups: any[] = [];
 
-  majorLookup.forEach((name, categoryKey) => {
-    const transitions = data.filter(node => categoryKey === category(node));
+  const transitionsByCategory = groupBy(data, category);
+  categories.forEach(({ name: categoryName, code: categoryCode }) => {
+    const transitions = transitionsByCategory[categoryCode];
 
-    if (transitions.length > 0) {
-      categories.push({
-        name: name,
+    if (transitions) {
+      categoryGroups.push({
+        name: categoryName,
         children: transitions,
-        category: categoryKey,
+        category: categoryCode,
       });
     }
   });
-
   return {
-    children: categories,
+    children: categoryGroups,
   };
 };
 
@@ -129,8 +80,8 @@ function code(node: TreeNode): string {
   return isTransition(node) ? node.code : '0';
 }
 
-function category(node: TreeNode): number {
-  return isTransition(node) ? parseInt(node.code.slice(0, 2)) : 0;
+export function category(node: TreeNode): number {
+  return isTransition(node) ? getCategory(node) : 0;
 }
 
 function hourlyPay(node: TreeNode): number {
@@ -138,27 +89,18 @@ function hourlyPay(node: TreeNode): number {
 }
 
 export default function Treemap({
+  transitions: data,
+  setSelectedCategory,
   display,
-  data,
-  selectedOccupation,
-  selectedState,
 }: TreemapProps) {
-  const occName = selectedOccupation ? selectedOccupation.name : '';
-
-  const title = `Which occupations do ${selectedOccupation.name}  (${
-    selectedOccupation.code
-  }) move to ${selectedState ? `in ${selectedState.name}` : `Nationally`} ?`;
-
-  const footnote_blurb = `This visualization shows the occupations which ${occName} move to when they change occupation. The transition share is the proportion of ${occName} who move into a job in each other occupation when they switch occupation. We only break out individual occupations with transition shares greater than 0.2%.`;
-
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
   const svgRef = useRef<SVGSVGElement>(null);
 
   const [hoveredInfo, setHoveredInfo] = useState();
   const [selectedInfo, setSelectedInfo] = useState();
-
-  console.log('from Treemap: Display=', display);
+  const [leftTooltipPosition, setLeftTooltipPosition] = useState<string>('0');
+  const [topTooltipPosition, setTopTooltipPosition] = useState<string>('0');
 
   useEffect(() => {
     containerRef.current?.scrollIntoView?.({ behavior: 'smooth' });
@@ -170,27 +112,84 @@ export default function Treemap({
     let selectedNode: any;
 
     const mouseover = (d: any, i: any) => {
+      d.stopPropagation();
+
       const targetNode = d3.select(d.currentTarget);
       const targetCode = code(i.data);
+
       if (selectedCode !== targetCode) {
-        targetNode.style('stroke-width', '2px');
+        targetNode.style('stroke', '#2878C8');
+        setSelectedCategory(category(i.data));
       }
 
       if (hoveredCode !== targetCode) {
-        i.data.category = majorLookup.get(parseInt(code(i.data).slice(0, 2)));
+        i.data.category = getCategoryForCode(category(i.data)).name;
         setHoveredInfo(i);
         hoveredCode = targetCode;
       }
+
+      toolTipDiv.html(
+        `${name(i.data)} ${Math.round(transitionRate(i.data) * 10000) / 100}%`
+      );
+
+      const horizontalNodeMiddle = i.x0 + (i.x1 - i.x0) / 2;
+      const verticalNodeMiddle = i.y0 + (i.y1 - i.y0) / 2;
+
+      const toolTipElement = toolTipDiv.node() as HTMLDivElement;
+      const tooltipBounds = {
+        width: toolTipElement.clientWidth,
+        height: toolTipElement.clientHeight,
+      };
+
+      const svgBounds = {
+        width: svg.node()!.clientWidth,
+        height: svg.node()!.clientHeight,
+      };
+
+      if (tooltipBounds.width) {
+        const newLeftPosition =
+          horizontalNodeMiddle + tooltipBounds.width / 2 < svgBounds.width + 1
+            ? horizontalNodeMiddle - tooltipBounds.width / 2 < 0
+              ? 20 + 'px'
+              : horizontalNodeMiddle - tooltipBounds.width / 2 + 'px'
+            : svgBounds.width - tooltipBounds.width - 20 + 'px';
+        setLeftTooltipPosition(newLeftPosition);
+      }
+
+      if (tooltipBounds.height) {
+        const newTopPosition =
+          tooltipBounds.height &&
+          verticalNodeMiddle + tooltipBounds.height / 2 < svgBounds.height + 1
+            ? verticalNodeMiddle - tooltipBounds.height / 2 + 'px'
+            : svgBounds.height - tooltipBounds.height - 18 + 'px';
+        setTopTooltipPosition(newTopPosition);
+      }
+
+      toolTipContainerDiv
+        .style('left', leftTooltipPosition)
+        .style('top', topTooltipPosition);
+
+      tooltip
+        .transition()
+        .style('visibility', 'visible')
+        .transition()
+        .delay(250)
+        .duration(500)
+        .style('opacity', '1')
+        .ease(d3.easeCubicInOut);
     };
 
     const mouseout = (d: any, i: any) => {
       const targetNode = d3.select(d.currentTarget);
       const targetCode = code(i.data);
       if (selectedCode !== targetCode) {
-        targetNode.style('stroke-width', '0');
+        targetNode.style('stroke', white);
       }
       setHoveredInfo(undefined);
       hoveredCode = undefined;
+      setSelectedCategory(undefined);
+
+      tooltip.style('visibility', 'hidden');
     };
 
     const click = (d: any, i: any) => {
@@ -203,7 +202,7 @@ export default function Treemap({
       } else {
         selectedNode?.style('stroke-width', 0);
         targetNode.style('stroke-width', '3px');
-        i.data.category = majorLookup.get(parseInt(code(i.data).slice(0, 2)));
+        i.data.category = getCategoryForCode(category(i.data)).name;
         setSelectedInfo(i);
         selectedCode = targetCode;
         selectedNode = targetNode;
@@ -243,12 +242,12 @@ export default function Treemap({
       .data(treemapRoot.leaves())
       .enter()
       .append('g')
-      .attr('transform', d => `translate(${d.x0},${d.y0})`);
+      .attr('transform', d => `translate(${d.x0}, ${d.y0})`);
 
     const colorScaleMajorOccupation = d3
       .scaleQuantile<string>()
-      .domain(colorDomainMajorOccCodes)
-      .range(colorRange);
+      .domain(categories.map(({ code }) => code))
+      .range(categories.map(({ color }) => color));
 
     function maxVal() {
       const hrPayArray: number[] = [];
@@ -284,7 +283,8 @@ export default function Treemap({
       .attr('width', d => d.x1 - d.x0)
       .attr('height', d => d.y1 - d.y0)
       .style('stroke-linejoin', 'round')
-      .style('stroke', '#2878C8')
+      .style('stroke-width', '2px')
+      .style('stroke', white)
       .on('click', click)
       .on('mouseover', mouseover)
       .on('mouseout', mouseout)
@@ -326,28 +326,53 @@ export default function Treemap({
       .style('font-weight', 'bolder')
       .style('padding', '0 6px 6px 6px')
       .style('color', 'black');
-  }, [dimensions.width, dimensions.height, data, display]);
+
+    const tooltipGroup = svg.append('g');
+
+    const tooltip = tooltipGroup
+      .append('foreignObject')
+      .attr('id', 'toolTipObj')
+      .style('visibility', 'hidden')
+      .style('z-index', 10)
+      .style('padding', '6px')
+      .attr('pointer-events', 'none')
+      .style('position', 'relative')
+      .attr('width', svg.node()!.clientWidth)
+      .attr('height', svg.node()!.clientHeight);
+
+    const toolTipContainerDiv = tooltip
+      .append('xhtml:div')
+      .attr('id', 'tooltipcontainer')
+      .style('height', '5%')
+      .style('min-width', '20%')
+      .style('max-width', '35%')
+      .style('position', 'absolute');
+
+    const toolTipDiv = toolTipContainerDiv
+      .append('xhtml:div')
+      .style('background-color', 'white')
+      .style('border-radius', '5px')
+      .style('text-align', 'center')
+      .style('padding', '3px 10px')
+      .html('tooltext');
+  }, [
+    dimensions.width,
+    dimensions.height,
+    data,
+    leftTooltipPosition,
+    topTooltipPosition,
+    setSelectedCategory,
+    display,
+  ]);
 
   useLayoutEffect(() => {
     renderTreemap();
   }, [renderTreemap]);
 
   return (
-    <Container ref={containerRef} data-testid="treemap">
-      <Typography
-        variant="h6"
-        style={{ marginTop: '12px', marginBottom: '12px' }}
-      >
-        {title}
-      </Typography>
+    <Container ref={containerRef} data-testid="treemap" id="treemap-container">
       <Svg ref={svgRef} id="treemap-svg" />
       <ToolTip info={hoveredInfo || selectedInfo} />
-      <Typography
-        variant="h6"
-        style={{ marginTop: '4px', marginBottom: '4px', fontSize: '10' }}
-      >
-        {footnote_blurb}
-      </Typography>
     </Container>
   );
 }
