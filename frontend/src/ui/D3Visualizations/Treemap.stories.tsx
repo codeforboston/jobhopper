@@ -13,6 +13,7 @@ export default {
 
 export const Default: Story<TreemapProps> = args => <Treemap {...args} />;
 Default.args = {
+  display: 'fill',
   transitions: transitions,
   selectedState: states[0],
   selectedOccupation: occupations[0],

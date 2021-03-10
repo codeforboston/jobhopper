@@ -292,25 +292,39 @@ export default function Treemap({
       .attr('style', d => toggleCategorySalary(d, display));
 
     // add node labels
-    nodes
+    const textHolder = nodes
       .append('foreignObject')
       .attr('width', d => d.x1 - d.x0)
       .attr('height', d => d.y1 - d.y0)
       .style('pointer-events', 'none')
+      .style('display', d => {
+        if (Math.round(transitionRate(d.data) * 10000) / 100 < 0.5) {
+          return 'none';
+        } else {
+          return 'initial';
+        }
+      });
+
+    //add title
+    textHolder
       .append('xhtml:div')
       .style('padding', '6px')
-      .html(d => `${name(d.data)} `)
+      .html(
+        d => `${name(d.data).replace(/ /g, '&nbsp;').replace(/\s/g, '&nbsp;')}`
+      )
       .attr('data-width', d => d.x1 - d.x0)
       .style('font-size', `${textFontSize} px`)
+      .style('max-height', '2.5em')
       .style('overflow', 'hidden')
-      .style('height', d => d.y1 - d.y0 - percentFontSize + 'px')
+      .style('text-overflow', 'ellipsis');
 
+    //add transition percent
+    textHolder
       .append('xhtml:div')
       .html(d => `${Math.round(transitionRate(d.data) * 10000) / 100}% `)
       .style('font-size', `${percentFontSize} px`)
       .style('font-weight', 'bolder')
-      .style('position', 'sticky')
-      .style('bottom', '6px')
+      .style('padding', '0 6px 6px 6px')
       .style('color', 'black');
 
     const tooltipGroup = svg.append('g');
