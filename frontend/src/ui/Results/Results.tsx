@@ -1,6 +1,6 @@
 import CircularProgress from '@material-ui/core/CircularProgress';
 import React, { useMemo, useState } from 'react';
-import Canvg, { presets } from 'canvg';
+import Canvg from 'canvg';
 import { jsPDF } from 'jspdf';
 import { Transition } from 'src/domain/transition';
 import ResultError from 'src/ui/Results/ResultError';
