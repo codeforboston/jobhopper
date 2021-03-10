@@ -1,18 +1,18 @@
 import CircularProgress from '@material-ui/core/CircularProgress';
-import React, { useMemo, useState } from 'react';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import RadioGroup from '@material-ui/core/RadioGroup';
 import Canvg from 'canvg';
-import { jsPDF } from 'jspdf';
-import { Transition } from 'src/domain/transition';
-import ResultError from 'src/ui/Results/ResultError';
-import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
-import Treemap from '../D3Visualizations/Treemap';
-import TransitionTable from '../TransitionTable';
+import jsPDF from 'jspdf';
+import React, { useMemo, useState } from 'react';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
-import GreenRadio from '../RadioButton';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { Transition } from 'src/domain/transition';
 import { useStateState } from 'src/ducks/states';
+import ResultError from 'src/ui/Results/ResultError';
+import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
+import TreemapWrapper from '../D3Visualizations/TreemapWrapper';
+import GreenRadio from '../RadioButton';
+import TransitionTable from '../TransitionTable';
 import { Body } from '../Typography';
 
 export interface ResultsProps {
@@ -198,11 +198,11 @@ const Results: React.FC<ResultsProps> = ({
           );
         } else if (showTreemap) {
           return (
-            <Treemap
+            <TreemapWrapper
               display={toggle}
-              data={transitions}
               selectedOccupation={selectedOccupation}
               selectedState={selectedState}
+              transitions={transitions}
             />
           );
         }
