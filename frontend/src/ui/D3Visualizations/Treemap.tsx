@@ -298,7 +298,7 @@ export default function Treemap({
       .attr('height', d => d.y1 - d.y0)
       .style('pointer-events', 'none')
       .style('display', d => {
-        if (d.x1 - d.x0 < textFontSize * 4 || d.y1 - d.y0 < textFontSize * 4) {
+        if (Math.round(transitionRate(d.data) * 10000) / 100 < 0.5) {
           return 'none';
         } else {
           return 'initial';
