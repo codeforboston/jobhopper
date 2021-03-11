@@ -45,7 +45,7 @@ const ToolTipData = (props: any) => {
         }}
       >
         <div style={{ flex: 1, fontVariantNumeric: 'lining-nums' }}>
-          Transition Share:
+          Transition Share:&nbsp;
           {Math.round(info.data.transitionRate * 10000) / 100}%
         </div>
         <div
