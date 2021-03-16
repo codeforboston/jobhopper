@@ -12,6 +12,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 from typing import Dict, Any
 from decouple import config
+from rapidfuzz import fuzz
 from .serializers import (
     BlsOesSerializer,
     StateNamesSerializer,
@@ -96,10 +97,13 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle]
 
+    # Default API parameters for O*NET observations and (weighted) minimum number of transitions observed
     DEFAULT_ONET_LIMIT = 10
     MAX_ONET_LIMIT = 50
-
     DEFAULT_OBS_LIMIT = 1000
+
+    # Fuzz.partial_ratio score limit for tiered exact match on SOC title/code and keyword
+    FUZZ_LIMIT = 90
 
     # Include a manual parameter that can be included in the request query (+ swagger_auto_schema decorator)
     KEYWORD_PARAMETER = openapi.Parameter("keyword_search",
@@ -190,7 +194,7 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
                           .filter(total_transition_obs__gte=self.obs_limit))
         available_socs = [model_to_dict(item)
                           for item in available_socs]
-        available_soc_codes = [soc.get("soc_code", "") for soc in available_socs]
+        available_soc_codes = [soc.get("soc_code") for soc in available_socs]
         available_soc_codes = set(available_soc_codes)
 
         # Query for O*NET Socs
@@ -211,7 +215,18 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
         if not onet_soc_codes:
             return Response(available_socs)
 
-        smart_soc_codes = list(onet_soc_codes.intersection(available_soc_codes))
+        # SOC codes in transitions data that are close to an exact match to the keyword - tiered matching, since O*NET
+        # does not include older SOC codes that exist in the transitions data
+        fuzz_soc_codes = [soc.get("soc_code") for soc in available_socs
+                          if fuzz.partial_ratio(self.keyword_search.lower(),
+                                                soc.get("soc_title").lower() + soc.get("soc_code")) >= self.FUZZ_LIMIT]
+        fuzz_soc_codes = set(fuzz_soc_codes)
+        log.info(f"SOC codes/titles that are a close exact match to the keyword search {fuzz_soc_codes}")
+
+        # SOC codes in both O*NET and transitions data, + SOC codes whose title closely matches the search parameter
+        smart_soc_codes = onet_soc_codes.intersection(available_soc_codes)
+        smart_soc_codes = smart_soc_codes.union(fuzz_soc_codes)
+
         smart_socs = [soc for soc in available_socs
                       if soc.get("soc_code") in smart_soc_codes]
 
