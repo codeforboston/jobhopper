@@ -20,6 +20,8 @@ const ToolTipData = (props: any) => {
   const hourlyTwoDecimal = (hourly: number) =>
     (Math.round(hourly * 100) / 100).toFixed(2);
 
+  const hourlyNoDecimal = (hourly: number) => Math.round(hourly);
+
   const annualFormatted = (annual: number) =>
     annual?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
@@ -45,7 +47,7 @@ const ToolTipData = (props: any) => {
         <SimpleFlexUnit>Salary: </SimpleFlexUnit>
         <SimpleFlexRow style={{ display: 'flex', flexDirection: 'row' }}>
           <SimpleFlexUnit>
-            Hourly {`$${hourlyTwoDecimal(info.data.hourlyPay)}`}
+            Hourly {`$${hourlyNoDecimal(info.data.hourlyPay)}`}
           </SimpleFlexUnit>
           <SimpleFlexUnit>
             Annual {`$${annualFormatted(info.data.annualSalary)}`}

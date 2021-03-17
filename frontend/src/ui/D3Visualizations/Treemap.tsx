@@ -321,7 +321,11 @@ export default function Treemap({
     //add transition percent
     textHolder
       .append('xhtml:div')
-      .html(d => `${Math.round(transitionRate(d.data) * 10000) / 100}% `)
+      .html(d => {
+        return display === 'opacity'
+          ? `$${Math.round(hourlyPay(d.data))}`
+          : `${Math.round(transitionRate(d.data) * 10000) / 100}% `;
+      })
       .style('font-size', `${percentFontSize} px`)
       .style('font-weight', 'bolder')
       .style('padding', '0 6px 6px 6px')
