@@ -13,11 +13,13 @@ const Template: Story<OnetLinkProps> = args => <OnetLink {...args} />;
 export const OnetLinkDecimalCode = Template.bind({});
 OnetLinkDecimalCode.args = {
   socCode: '15-1131.00',
-  children: 'Computer Programmer',
+  children: '15-1131.00',
+  occupation: 'Computer Programmer',
 };
 
 export const OnetLinkIntegerCode = Template.bind({});
 OnetLinkIntegerCode.args = {
   socCode: '15-1131',
-  children: 'Computer Programmer',
+  children: '16-161616',
+  occupation: 'Computer Programmer',
 };
