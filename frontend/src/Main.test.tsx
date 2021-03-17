@@ -76,7 +76,7 @@ describe('Main', () => {
       '01-2345 | Doctor'
     );
 
-    await waitFor(() => expect(getByText(/Nationally/i)).toBeInTheDocument());
+    await waitFor(() => expect(getByText(/move to\?/i)).toBeInTheDocument());
 
     userEvent.click(getByTestId('treemap-button'));
 
@@ -88,7 +88,12 @@ describe('Main', () => {
   it('Can show state transitions', async () => {
     await waitForPageToLoad();
 
-    const { getByLabelText, getByText, getByTestId } = renderResult;
+    const {
+      getByLabelText,
+      getByText,
+      getAllByText,
+      getByTestId,
+    } = renderResult;
 
     await new Promise(resolve => setTimeout(resolve, 100));
 
@@ -98,9 +103,7 @@ describe('Main', () => {
     );
     await selectEvent.select(getByLabelText('state-select'), 'California');
 
-    await waitFor(() =>
-      expect(getByText(/in California/i)).toBeInTheDocument()
-    );
+    await waitFor(() => expect(getByText(/move to\?/i)).toBeInTheDocument());
 
     userEvent.click(getByTestId('treemap-button'));
 
