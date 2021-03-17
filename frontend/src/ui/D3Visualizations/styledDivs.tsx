@@ -1,5 +1,14 @@
 import styled from 'styled-components';
 
+export const Container = styled.div`
+  position: relative;
+  top: 0;
+  height: 70vh;
+  flex: 1;
+`;
+
+export const Svg = styled.svg``;
+
 export const ToolTipStyleDiv = styled.div`
   font-weight: 'bolder';
   width: 90vw;
@@ -32,7 +41,6 @@ export const TextContainer = styled.div`
   font-size: 16px;
   color: black;
   width: 100%;
-  height: 26px;
   margin: 0 5px;
 `;
 
