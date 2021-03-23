@@ -16,7 +16,7 @@ drf-yasg==1.17.1
 idna==2.10
 inflection==0.5.1
 itypes==1.2.0
-Jinja2==2.11.2
+Jinja2==2.11.3
 lxml==4.6.2
 MarkupSafe==1.1.1
 mypy-extensions==0.4.3
