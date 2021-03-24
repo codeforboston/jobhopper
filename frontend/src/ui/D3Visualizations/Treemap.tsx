@@ -7,26 +7,17 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import styled from 'styled-components';
 import { Occupation } from '../../domain/occupation';
 import { State } from '../../domain/state';
 import { getCategory, Transition } from '../../domain/transition';
 import { categories, getCategoryForCode } from './category';
+import { colorScaleMajorOccupation, createOpacityScale } from './d3Utilities';
+import { Container, Svg } from './styledDivs';
 import ToolTip from './ToolTip';
 import useResizeObserver from './useResizeObserver';
 
-const Container = styled.div`
-  position: relative;
-  top: 0;
-  height: 70vh;
-  flex: 1;
-`;
-
-const Svg = styled.svg``;
-
 const textFontSize = 18;
 const percentFontSize = 20;
-const white = '#ffffff';
 
 export type CategoryNode = {
   name: string;
@@ -35,6 +26,13 @@ export type CategoryNode = {
 };
 export type TreeRootNode = { children: CategoryNode[] };
 export type TreeNode = TreeRootNode | CategoryNode | Transition;
+
+export type D3SelectionBaseType = d3.Selection<
+  d3.BaseType,
+  unknown,
+  null,
+  undefined
+>;
 
 export type TreemapProps = {
   selectedOccupation: Occupation;
@@ -88,6 +86,20 @@ function hourlyPay(node: TreeNode): number {
   return isTransition(node) ? node.hourlyPay : 0;
 }
 
+function formatHourlyPay(i: TreeNode): string {
+  return `$${Math.round(hourlyPay(i))}`;
+}
+
+function formatTransitionRate(i: TreeNode): string {
+  return `${Math.round(transitionRate(i) * 10000) / 100}%`;
+}
+
+const outlineStyle: { selected: string; hovered: string; none: string } = {
+  selected: '4px solid #2E724A',
+  hovered: '3px solid #2878C8',
+  none: 'none',
+};
+
 export default function Treemap({
   transitions: data,
   setSelectedCategory,
@@ -96,37 +108,41 @@ export default function Treemap({
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
   const svgRef = useRef<SVGSVGElement>(null);
+  const leftTooltipPosition = useRef<string>('0');
+  const topTooltipPosition = useRef<string>('0');
 
   const [hoveredInfo, setHoveredInfo] = useState();
   const [selectedInfo, setSelectedInfo] = useState();
-  const [leftTooltipPosition, setLeftTooltipPosition] = useState<string>('0');
-  const [topTooltipPosition, setTopTooltipPosition] = useState<string>('0');
 
   useEffect(() => {
     containerRef.current?.scrollIntoView?.({ behavior: 'smooth' });
   }, []);
 
   const renderTreemap = useCallback(() => {
-    let hoveredCode: string | undefined;
     let selectedCode: string | undefined;
-    let selectedNode: any;
+    let selectedNode: D3SelectionBaseType | undefined;
+    let hoveredCode: string | undefined;
+    let hoveredNode: D3SelectionBaseType | undefined;
 
     const mouseover = (d: any, i: any) => {
-      d.stopPropagation();
-
-      const targetNode = d3.select(d.currentTarget);
       const targetCode = code(i.data);
+      const outlineNode: D3SelectionBaseType = d3
+        .select(d.currentTarget.parentElement)
+        .select('.outline');
 
-      if (selectedCode !== targetCode) {
-        targetNode.style('stroke', '#2878C8');
-        setSelectedCategory(category(i.data));
+      hoveredCode = targetCode;
+      hoveredNode = outlineNode;
+      hoveredNode.style('outline', outlineStyle.hovered);
+      hoveredNode.style('outline-offset', '-3px');
+
+      if (targetCode === selectedCode) {
+        selectedNode!.style('outline', outlineStyle.selected);
+        selectedNode!.style('outline-offset', '-4px');
       }
 
-      if (hoveredCode !== targetCode) {
-        i.data.category = getCategoryForCode(category(i.data)).name;
-        setHoveredInfo(i);
-        hoveredCode = targetCode;
-      }
+      setHoveredInfo(i);
+      setSelectedCategory(category(i.data));
+      i.data.category = getCategoryForCode(category(i.data)).name;
 
       toolTipDiv.html(
         `${name(i.data)} ${Math.round(transitionRate(i.data) * 10000) / 100}%`
@@ -153,7 +169,7 @@ export default function Treemap({
               ? 20 + 'px'
               : horizontalNodeMiddle - tooltipBounds.width / 2 + 'px'
             : svgBounds.width - tooltipBounds.width - 20 + 'px';
-        setLeftTooltipPosition(newLeftPosition);
+        leftTooltipPosition.current = newLeftPosition;
       }
 
       if (tooltipBounds.height) {
@@ -162,12 +178,12 @@ export default function Treemap({
           verticalNodeMiddle + tooltipBounds.height / 2 < svgBounds.height + 1
             ? verticalNodeMiddle - tooltipBounds.height / 2 + 'px'
             : svgBounds.height - tooltipBounds.height - 18 + 'px';
-        setTopTooltipPosition(newTopPosition);
+        topTooltipPosition.current = newTopPosition;
       }
 
       toolTipContainerDiv
-        .style('left', leftTooltipPosition)
-        .style('top', topTooltipPosition);
+        .style('left', leftTooltipPosition.current)
+        .style('top', topTooltipPosition.current);
 
       tooltip
         .transition()
@@ -180,32 +196,52 @@ export default function Treemap({
     };
 
     const mouseout = (d: any, i: any) => {
-      const targetNode = d3.select(d.currentTarget);
       const targetCode = code(i.data);
-      if (selectedCode !== targetCode) {
-        targetNode.style('stroke', white);
+      const outlineNode: D3SelectionBaseType = d3
+        .select(d.currentTarget.parentElement)
+        .select('.outline');
+
+      if (targetCode !== selectedCode) {
+        hoveredNode?.style('outline', outlineStyle.none);
+        hoveredNode?.style('outline-offset', '0');
+        hoveredNode = undefined;
+        hoveredCode = undefined;
       }
+      if (targetCode === selectedCode) {
+        selectedNode!.style('outline', outlineStyle.selected);
+        selectedNode!.style('outline-offset', '-4px');
+      }
+
       setHoveredInfo(undefined);
-      hoveredCode = undefined;
       setSelectedCategory(undefined);
 
       tooltip.style('visibility', 'hidden');
     };
 
     const click = (d: any, i: any) => {
-      const targetNode = d3.select(d.currentTarget);
       const targetCode = code(i.data);
-      if (selectedCode === targetCode) {
-        targetNode.style('stroke-width', '2px');
-        setSelectedInfo(undefined);
+      const outlineNode: D3SelectionBaseType = d3
+        .select(d.currentTarget.parentElement)
+        .select('.outline');
+
+      if (targetCode === selectedCode) {
+        selectedNode!.style('outline', outlineStyle.none);
         selectedCode = undefined;
+        selectedNode = undefined;
+        setSelectedInfo(undefined);
+        setHoveredInfo(i);
+        hoveredNode?.style('outline', outlineStyle.hovered);
+        hoveredNode?.style('outline-offset', '-3px');
       } else {
-        selectedNode?.style('stroke-width', 0);
-        targetNode.style('stroke-width', '3px');
-        i.data.category = getCategoryForCode(category(i.data)).name;
-        setSelectedInfo(i);
+        selectedNode?.style('outline', outlineStyle.none);
         selectedCode = targetCode;
-        selectedNode = targetNode;
+        selectedNode = outlineNode;
+        hoveredNode = outlineNode;
+        selectedNode.style('outline', outlineStyle.selected);
+        selectedNode.style('outline-offset', '-4px');
+        setSelectedInfo(i);
+
+        i.data.category = getCategoryForCode(category(i.data)).name;
       }
     };
 
@@ -219,10 +255,16 @@ export default function Treemap({
       .attr('height', dimensions.height);
 
     const dataset = groupData(data);
+
     const hourlyArray: number[] = [];
-    dataset.children.forEach(e => {
-      hourlyArray.push(e.category);
+
+    dataset.children.forEach(child => {
+      child.children.forEach((e: Transition) => {
+        hourlyArray.push(e.hourlyPay);
+      });
     });
+
+    const opacity = createOpacityScale(hourlyArray);
 
     // create hierarchical layout with data
     const root = d3
@@ -244,52 +286,31 @@ export default function Treemap({
       .append('g')
       .attr('transform', d => `translate(${d.x0}, ${d.y0})`);
 
-    const colorScaleMajorOccupation = d3
-      .scaleQuantile<string>()
-      .domain(categories.map(({ code }) => code))
-      .range(categories.map(({ color }) => color));
-
-    function maxVal() {
-      const hrPayArray: number[] = [];
-      dataset.children.forEach(child => {
-        child.children.forEach(e => {
-          hrPayArray.push(e.hourlyPay);
-        });
-      });
-      console.log('maxVal:', d3.max(hrPayArray));
-      return d3.max(hrPayArray);
-    }
-
-    const opacity = d3
-      .scaleLinear()
-      .domain([5, maxVal() || 100])
-      .range([0.2, 1]);
-
-    const toggleCategorySalary = (d: any, toggle: string) => {
-      const opacValue = toggle === 'opacity' ? opacity(hourlyPay(d.data)) : 1;
-
-      const colorValue =
-        toggle === 'fill'
-          ? colorScaleMajorOccupation(category(d.data))
-          : '#3EB56D';
-
-      // return {opacity: opacValue, color: colorValue};
-      return `opacity: ${opacValue}; fill: ${colorValue}`;
-    };
-
     // create and fill svg 'rects' based on the node data selected
     nodes
       .append('rect')
       .attr('width', d => d.x1 - d.x0)
       .attr('height', d => d.y1 - d.y0)
-      .style('stroke-linejoin', 'round')
-      .style('stroke-width', '2px')
-      .style('stroke', white)
+      .style('opacity', d =>
+        display === 'salaryDisplay' ? (opacity(hourlyPay(d.data)) as number) : 1
+      )
+      .style('fill', d =>
+        display === 'occupationDisplay'
+          ? (colorScaleMajorOccupation(category(d.data)) as string)
+          : '#3EB56D'
+      )
       .on('click', click)
       .on('mouseover', mouseover)
-      .on('mouseout', mouseout)
-      .style('stroke-width', d => 0)
-      .attr('style', d => toggleCategorySalary(d, display));
+      .on('mouseout', mouseout);
+
+    // create nodes that will show hovered and selection states
+    nodes
+      .append('rect')
+      .attr('class', 'outline')
+      .attr('pointer-events', 'none')
+      .attr('width', d => d.x1 - d.x0)
+      .attr('height', d => d.y1 - d.y0)
+      .style('fill', 'transparent');
 
     // add node labels
     const textHolder = nodes
@@ -321,7 +342,11 @@ export default function Treemap({
     //add transition percent
     textHolder
       .append('xhtml:div')
-      .html(d => `${Math.round(transitionRate(d.data) * 10000) / 100}% `)
+      .html(d => {
+        return display === 'occupationDisplay'
+          ? formatTransitionRate(d.data)
+          : formatHourlyPay(d.data);
+      })
       .style('font-size', `${percentFontSize} px`)
       .style('font-weight', 'bolder')
       .style('padding', '0 6px 6px 6px')
@@ -355,15 +380,7 @@ export default function Treemap({
       .style('text-align', 'center')
       .style('padding', '3px 10px')
       .html('tooltext');
-  }, [
-    dimensions.width,
-    dimensions.height,
-    data,
-    leftTooltipPosition,
-    topTooltipPosition,
-    setSelectedCategory,
-    display,
-  ]);
+  }, [dimensions.width, dimensions.height, data, setSelectedCategory, display]);
 
   useLayoutEffect(() => {
     renderTreemap();
