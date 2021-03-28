@@ -17,9 +17,6 @@ const ToolTipData = (props: any) => {
     );
   }
 
-  const hourlyTwoDecimal = (hourly: number) =>
-    (Math.round(hourly * 100) / 100).toFixed(2);
-
   const hourlyNoDecimal = (hourly: number) => Math.round(hourly);
 
   const annualFormatted = (annual: number) =>

@@ -121,7 +121,6 @@ export default function Treemap({
   const renderTreemap = useCallback(() => {
     let selectedCode: string | undefined;
     let selectedNode: D3SelectionBaseType | undefined;
-    let hoveredCode: string | undefined;
     let hoveredNode: D3SelectionBaseType | undefined;
 
     const mouseover = (d: any, i: any) => {
@@ -130,7 +129,6 @@ export default function Treemap({
         .select(d.currentTarget.parentElement)
         .select('.outline');
 
-      hoveredCode = targetCode;
       hoveredNode = outlineNode;
       hoveredNode.style('outline', outlineStyle.hovered);
       hoveredNode.style('outline-offset', '-3px');
@@ -197,15 +195,11 @@ export default function Treemap({
 
     const mouseout = (d: any, i: any) => {
       const targetCode = code(i.data);
-      const outlineNode: D3SelectionBaseType = d3
-        .select(d.currentTarget.parentElement)
-        .select('.outline');
 
       if (targetCode !== selectedCode) {
         hoveredNode?.style('outline', outlineStyle.none);
         hoveredNode?.style('outline-offset', '0');
         hoveredNode = undefined;
-        hoveredCode = undefined;
       }
       if (targetCode === selectedCode) {
         selectedNode!.style('outline', outlineStyle.selected);
