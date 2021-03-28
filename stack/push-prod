@@ -1,6 +1,0 @@
-#!/bin/sh
-
-# Push production images to Docker Hub # Must be logged in with push access to
-# the repos in https://hub.docker.com/u/jobhopper
-
-./compose/prod-builder push gateway api
