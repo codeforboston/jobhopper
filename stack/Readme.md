@@ -68,8 +68,6 @@ The production environment is designed to be more secure and performant than the
 
 Nginx serves the app to the public, providing HTTPS support, static hosting for the frontend website, and a reverse proxy for API requests. Certbot runs periodically to renew SSL certificates.
 
-### Environment variables
-
 ### Running Locally with Docker Compose
 
 You can start an instance of the production application with these commands:
@@ -77,7 +75,7 @@ You can start an instance of the production application with these commands:
 ```sh
 cd stack
 ./prod build
-./prod up
+./compose/prod-deployment up
 ```
 
 The machine you run this on must be reachable on ports 80 and 443 at the `DOMAIN` you specified.
