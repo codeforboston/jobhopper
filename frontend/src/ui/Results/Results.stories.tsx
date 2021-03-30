@@ -12,12 +12,13 @@ export default {
   title: 'JobHopper/Results',
   component: Results,
 } as Meta;
-
-const Template: Story<ResultsProps> = args => (
+/*
   <Provider store={createStore()}>
     <Results {...args} />
   </Provider>
-);
+
+  */
+const Template: Story<ResultsProps> = args => <Results {...args} />;
 
 export const WaitingForSelection = Template.bind({});
 WaitingForSelection.args = {
