@@ -106,6 +106,7 @@ const Results: React.FC<ResultsProps> = ({
 
   const chooseToggle = () => {
     console.log('Toggle!');
+
     toggle === 'fill' ? setToggle('opacity') : setToggle('fill');
   };
 
@@ -196,7 +197,7 @@ const Results: React.FC<ResultsProps> = ({
         } else if (showTreemap) {
           return (
             <TreemapWrapper
-              display={toggle}
+              display={selectedValue}
               selectedOccupation={selectedOccupation}
               selectedState={selectedState}
               transitions={transitions}
