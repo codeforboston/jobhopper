@@ -88,12 +88,7 @@ describe('Main', () => {
   it('Can show state transitions', async () => {
     await waitForPageToLoad();
 
-    const {
-      getByLabelText,
-      getByText,
-      getAllByText,
-      getByTestId,
-    } = renderResult;
+    const { getByLabelText, getByText, getByTestId } = renderResult;
 
     await new Promise(resolve => setTimeout(resolve, 100));
 
