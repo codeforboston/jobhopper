@@ -4,8 +4,8 @@ services:
   api:
     image: jobhopper/api-release
     environment:
-      SECRET_KEY: ${SECRET_KEY}
-      DOMAIN: ${DOMAIN}
+      SECRET_KEY: ${SECRET_KEY:?Secret key required in production}
+      DOMAIN: ${DOMAIN:?FQDN required in production}
 
   gateway:
     image: jobhopper/gateway
@@ -18,7 +18,7 @@ services:
     environment:
       CERTBOT_EMAIL: me@alexjball.com
       ENVSUBST_VARS: DOMAIN
-      DOMAIN: ${DOMAIN}
+      DOMAIN: ${DOMAIN:?FQDN required in production}
 
 volumes:
   letsencrypt:
