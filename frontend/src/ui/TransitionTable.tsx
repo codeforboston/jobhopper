@@ -21,9 +21,7 @@ const TransitionTable = ({
 }: TransitionTableProps): JSX.Element => {
   const theme = useTheme();
 
-  const title = `Which occupations do ${selectedOccupation.name}  (${
-    selectedOccupation.code
-  }) move to ${selectedState ? `in ${selectedState.name}` : `Nationally`} ?`;
+  const title = `Which occupations do ${selectedOccupation.name}  (${selectedOccupation.code}) move to?`;
 
   return (
     <MaterialTable
