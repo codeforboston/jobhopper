@@ -70,6 +70,10 @@ const TransitionTable = ({
           title: 'Average annual salary',
           field: 'annualSalary',
           type: 'currency',
+          render: ({ annualSalary }) =>
+            `$${Math.floor(annualSalary)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
           tooltip:
             'Average annual salary in this occupation, obtained from the Bureau of Labor Statistics Occupational Employment Statistics database. This shows nationwide salary unless you have selected a specific state.',
         },

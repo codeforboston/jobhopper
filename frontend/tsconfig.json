@@ -15,7 +15,8 @@
     "noEmit": true,
     "jsx": "react",
     "baseUrl": "./",
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "allowUnreachableCode": true
   },
   "include": ["src"]
 }
