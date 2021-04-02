@@ -7,7 +7,6 @@ import React, { useMemo, useState } from 'react';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
 import { Transition } from 'src/domain/transition';
-import { useStateState } from 'src/ducks/states';
 import ResultError from 'src/ui/Results/ResultError';
 import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
 import TreemapWrapper from '../D3Visualizations/TreemapWrapper';
@@ -33,8 +32,6 @@ const Results: React.FC<ResultsProps> = ({
   const [visualization, setVisualization] = useState<'matrix' | 'treemap'>(
     'matrix'
   );
-
-  const state = useStateState().selectedState;
 
   // Material table mutates its data, but immer freezes objects, so we clone
   // the transition data for compatibility.
@@ -167,7 +164,7 @@ const Results: React.FC<ResultsProps> = ({
             value="salaryDisplay"
             control={<GreenRadio />}
             onChange={() => setSelectedValue('salaryDisplay')}
-            label={`Salary ${state ? state.name : ''}`}
+            label={`Salary ${selectedState ? selectedState.name : ''}`}
             checked={selectedValue === 'salaryDisplay'}
           />
         </RadioGroup>
