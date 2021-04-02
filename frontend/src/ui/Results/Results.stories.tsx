@@ -5,19 +5,13 @@ import occupations from '../../testing/data/occupations';
 import states from '../../testing/data/states';
 import transitionData from '../../testing/data/transitionData';
 import Results, { ResultsProps } from './Results';
-import { Provider } from 'react-redux';
-import { createStore } from '../../ducks';
+
 
 export default {
   title: 'JobHopper/Results',
   component: Results,
 } as Meta;
-/*
-  <Provider store={createStore()}>
-    <Results {...args} />
-  </Provider>
 
-  */
 const Template: Story<ResultsProps> = args => <Results {...args} />;
 
 export const WaitingForSelection = Template.bind({});
