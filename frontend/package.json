@@ -32,9 +32,7 @@
     "react-select": "^3.1.0",
     "resize-observer-polyfill": "^1.5.1",
     "styled-components": "^5.2.0",
-    "svg-to-pdfkit": "^0.1.8",
-    "typescript": "^3.7.5",
-    "xmldom": "^0.4.0"
+    "typescript": "^3.7.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -84,7 +82,6 @@
     "@storybook/preset-create-react-app": "^3.1.4",
     "@storybook/react": "^6.0.22",
     "@types/lodash": "^4.14.167",
-    "@types/xmldom": "^0.1.30",
     "babel-loader": "^8.1.0",
     "chromatic": "^5.4.0",
     "eslint": "^7.20.0",
