@@ -54,17 +54,6 @@ export const Title = styled.div`
   color: #000000;
 `;
 
-export const Key = styled.div`
-  display: block;
-  font-family: PT Sans;
-  font-weight: 400;
-  line-height: 30px;
-  text-align: left;
-  margin: 2em;
-  width: 30%;
-  height: 50%;
-`;
-
 export const KeyTitle = styled.div`
   font-size: 18px;
 `;
