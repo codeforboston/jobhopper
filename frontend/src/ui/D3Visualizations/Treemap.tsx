@@ -137,7 +137,8 @@ export default function Treemap({
       );
 
       const horizontalNodeMiddle = i.x0 + (i.x1 - i.x0) / 2;
-      const verticalNodeMiddle = i.y0 + (i.y1 - i.y0) / 2;
+      const verticalNodeStart = i.y0;
+      const verticalNodeEnd = i.y1;
 
       const toolTipElement = toolTipDiv.node() as HTMLDivElement;
       const tooltipBounds = {
@@ -161,11 +162,12 @@ export default function Treemap({
       }
 
       if (tooltipBounds.height) {
+        const buffer = 3;
         const newTopPosition =
           tooltipBounds.height &&
-          verticalNodeMiddle + tooltipBounds.height / 2 < svgBounds.height + 1
-            ? verticalNodeMiddle - tooltipBounds.height / 2 + 'px'
-            : svgBounds.height - tooltipBounds.height - 18 + 'px';
+          verticalNodeStart - tooltipBounds.height - buffer < 0
+            ? verticalNodeEnd + buffer + 'px'
+            : verticalNodeStart - tooltipBounds.height - buffer + 'px';
         topTooltipPosition.current = newTopPosition;
       }
 
