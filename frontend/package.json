@@ -43,7 +43,7 @@
     "test:ci": "CI=1 react-scripts test --env=jest-environment-jsdom-sixteen --verbose --color --coverage --testPathIgnorePatterns DjangoApiClient",
     "test:all": "react-scripts test --env=jest-environment-jsdom-sixteen --watchAll --verbose",
     "eject": "react-scripts eject",
-    "eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "eslint": "eslint . --max-warnings 0 --ext .js,.jsx,.ts,.tsx",
     "check-types": "tsc --noemit",
     "lint": "node scripts/npm.js lint",
     "ci:lint-and-test": "CI=true node scripts/npm.js lint-and-test",
