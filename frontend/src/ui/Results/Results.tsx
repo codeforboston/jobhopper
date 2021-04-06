@@ -105,10 +105,52 @@ const Results: React.FC<ResultsProps> = ({
   >('occupationDisplay');
 
   const chooseToggle = () => {
-    console.log('Toggle!');
-
+    // console.log('Toggle!');
     toggle === 'fill' ? setToggle('opacity') : setToggle('fill');
   };
+
+  const exportChart = '';
+  // // if we want to keep "export chart" button use below code
+  // const exportChart = (visualization == "matrix" ? "" :
+  //     <StyledSecondary
+  //       label="Export Chart"
+  //       testid="treechartPdf"
+  //       onClick={exportPDF}
+  //       disabled={disabled}
+  //       selected={showTreemap}
+  //     />
+  // )
+
+  const OccupationSalary =
+    visualization == 'matrix' ? (
+      ''
+    ) : (
+      <RadioGroup
+        value={selectedValue}
+        onChange={chooseToggle}
+        row
+        style={{
+          alignSelf: 'center',
+          flexDirection: 'row',
+          justifyContent: 'center',
+        }}
+      >
+        <FormControlLabel
+          value="occupationDisplay"
+          control={<GreenRadio />}
+          onChange={() => setSelectedValue('occupationDisplay')}
+          label="Occupation"
+          checked={selectedValue === 'occupationDisplay'}
+        />
+        <FormControlLabel
+          value="salaryDisplay"
+          control={<GreenRadio />}
+          onChange={() => setSelectedValue('salaryDisplay')}
+          label={`Salary ${selectedState ? selectedState.name : ''}`}
+          checked={selectedValue === 'salaryDisplay'}
+        />
+      </RadioGroup>
+    );
 
   return (
     <Column>
@@ -135,39 +177,9 @@ const Results: React.FC<ResultsProps> = ({
             disabled={disabled}
             selected={showTreemap}
           />
-          <StyledSecondary
-            label="Export Chart"
-            testid="treechartPdf"
-            onClick={exportPDF}
-            disabled={disabled}
-            selected={showTreemap}
-          />
+          {exportChart}
+          {OccupationSalary}
         </Row>
-        <RadioGroup
-          value={selectedValue}
-          onChange={chooseToggle}
-          row
-          style={{
-            alignSelf: 'center',
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}
-        >
-          <FormControlLabel
-            value="occupationDisplay"
-            control={<GreenRadio />}
-            onChange={() => setSelectedValue('occupationDisplay')}
-            label="Occupation"
-            checked={selectedValue === 'occupationDisplay'}
-          />
-          <FormControlLabel
-            value="salaryDisplay"
-            control={<GreenRadio />}
-            onChange={() => setSelectedValue('salaryDisplay')}
-            label={`Salary ${selectedState ? selectedState.name : ''}`}
-            checked={selectedValue === 'salaryDisplay'}
-          />
-        </RadioGroup>
       </LabeledSection>
       {(() => {
         if (loading) {
