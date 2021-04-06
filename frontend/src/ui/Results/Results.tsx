@@ -14,6 +14,8 @@ import GreenRadio from '../RadioButton';
 import TransitionTable from '../TransitionTable';
 import { Body } from '../Typography';
 
+const MIN_DISPLAY_TRANSITION_RATE = 0.002;
+
 export interface ResultsProps {
   selectedState?: State;
   selectedOccupation: Occupation;
@@ -180,7 +182,9 @@ const Results: React.FC<ResultsProps> = ({
               <TransitionTable
                 selectedOccupation={selectedOccupation}
                 selectedState={selectedState}
-                transitionData={transitions}
+                transitionData={transitions.filter(
+                  t => t.transitionRate > MIN_DISPLAY_TRANSITION_RATE
+                )}
               />
               <Body>
                 This table/matrix shows the occupations that{' '}
