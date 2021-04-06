@@ -1,12 +1,6 @@
 import * as d3 from 'd3';
 import { groupBy } from 'lodash';
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { Occupation } from '../../domain/occupation';
 import { State } from '../../domain/state';
 import { getCategory, Transition } from '../../domain/transition';
@@ -113,10 +107,6 @@ export default function Treemap({
 
   const [hoveredInfo, setHoveredInfo] = useState();
   const [selectedInfo, setSelectedInfo] = useState();
-
-  useEffect(() => {
-    containerRef.current?.scrollIntoView?.({ behavior: 'smooth' });
-  }, []);
 
   const renderTreemap = useCallback(() => {
     let selectedCode: string | undefined;

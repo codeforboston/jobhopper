@@ -5,6 +5,7 @@ import { getCategory, Transition } from 'src/domain/transition';
 import Treemap from './Treemap';
 import TreemapKey from './TreemapKey';
 import { Title, CaptionText } from './TreemapSubComponents';
+import useScrollToOnMount from './useScrollToOnMount';
 
 export interface TreemapWrapperProps {
   display: string;
@@ -21,6 +22,7 @@ export default function TreemapWrapper({
 }: TreemapWrapperProps) {
   const [selectedCategory, setSelectedCategory] = useState<number>();
   const categoryCodes = useCategoryCodes(transitions);
+  const scrollToRef = useScrollToOnMount<HTMLDivElement>();
 
   return (
     <div
@@ -33,7 +35,7 @@ export default function TreemapWrapper({
         width: '90vw',
       }}
     >
-      <Title>
+      <Title ref={scrollToRef}>
         Which occupations do {selectedOccupation.name} (
         {selectedOccupation.code}) move to?
       </Title>
