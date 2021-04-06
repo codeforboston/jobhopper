@@ -1,3 +1,4 @@
+import { groupBy, sumBy, toPairs } from 'lodash';
 import React, { useMemo, useState } from 'react';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
@@ -66,12 +67,24 @@ export default function TreemapWrapper({
   );
 }
 
-const useCategoryCodes = (transitions: Transition[]) => {
+/** Gets a list of transition codes, sorted by decreasing total transition share */
+const useCategoryCodes = (transitions: Transition[]): number[] => {
   return useMemo(() => {
-    const categoryCodes = new Set<number>();
-    transitions.forEach(transition => {
-      categoryCodes.add(getCategory(transition));
-    });
+    const categoryCodes: number[] = [];
+    const totalRateByCode: { [code: string]: number } = {};
+
+    toPairs(groupBy(transitions, getCategory)).forEach(
+      ([stringCode, categoryTransitions]) => {
+        const code = Number(stringCode);
+        totalRateByCode[code] = sumBy(
+          categoryTransitions,
+          t => t.transitionRate
+        );
+        categoryCodes.push(code);
+      }
+    );
+
+    categoryCodes.sort((a, b) => totalRateByCode[b] - totalRateByCode[a]);
     return categoryCodes;
   }, [transitions]);
 };
