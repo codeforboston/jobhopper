@@ -12,7 +12,6 @@ import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
 import TreemapWrapper from '../D3Visualizations/TreemapWrapper';
 import GreenRadio from '../RadioButton';
 import TransitionTable from '../TransitionTable';
-import { Body } from '../Typography';
 
 export interface ResultsProps {
   selectedState?: State;
@@ -176,23 +175,10 @@ const Results: React.FC<ResultsProps> = ({
           return <ResultError error={error} />;
         } else if (showMatrix && selectedOccupation) {
           return (
-            <React.Fragment>
-              <TransitionTable
-                selectedOccupation={selectedOccupation}
-                selectedState={selectedState}
-                transitionData={transitions}
-              />
-              <Body>
-                This table/matrix shows the occupations that{' '}
-                {selectedOccupation.name.toLowerCase()} move to when they change
-                occupation. The transition share is the percentage proportion of{' '}
-                {selectedOccupation.name.toLowerCase()} who move into a job in
-                each other occupation when they switch occupation. We only show
-                occupations with more than with transition shares greater than
-                0.2% of {selectedOccupation.name.toLowerCase()} transitioning
-                into them.
-              </Body>
-            </React.Fragment>
+            <TransitionTable
+              selectedOccupation={selectedOccupation}
+              transitionData={transitions}
+            />
           );
         } else if (showTreemap) {
           return (
