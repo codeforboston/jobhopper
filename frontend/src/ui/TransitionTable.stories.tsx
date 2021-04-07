@@ -3,27 +3,26 @@ import React from 'react';
 import { Story, Meta } from '@storybook/react/types-6-0';
 import TransitionTable, { TransitionTableProps } from './TransitionTable';
 import transitionData from '../testing/data/transitionData';
-import states from '../testing/data/states';
 import occupations from '../testing/data/occupations';
 
 export default {
   title: 'JobHopper/TransitionTable',
   component: TransitionTable,
+  decorators: [
+    Story => (
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <Story />
+      </div>
+    ),
+  ],
 } as Meta;
 
 const Template: Story<TransitionTableProps> = args => (
   <TransitionTable {...args} />
 );
 
-export const State = Template.bind({});
-State.args = {
-  selectedState: states[0],
-  selectedOccupation: occupations[0],
-  transitionData,
-};
-
-export const National = Template.bind({});
-National.args = {
+export const Default = Template.bind({});
+Default.args = {
   selectedOccupation: occupations[0],
   transitionData,
 };

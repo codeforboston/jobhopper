@@ -17,11 +17,13 @@ Default.args = {
   transitions: transitions,
   selectedState: states[0],
   selectedOccupation: occupations[0],
+  setSelectedCategory: () => {},
 };
 
 export const Key: Story<TreemapKeyProps> = args => <TreemapKey {...args} />;
 Key.args = {
   categoryCodes: testCategoryCodes(),
+  selectedCategory: 11,
 };
 
 function testCategoryCodes() {
