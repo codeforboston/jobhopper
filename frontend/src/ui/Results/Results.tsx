@@ -1,8 +1,6 @@
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import Canvg from 'canvg';
-import jsPDF from 'jspdf';
 import React, { useMemo, useState } from 'react';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
@@ -44,59 +42,6 @@ const Results: React.FC<ResultsProps> = ({
     showTreemap = visualization === 'treemap' && hasTransitions,
     disabled = !hasTransitions || loading;
 
-  const exportPDF = async () => {
-    const svgElement = document.getElementById('treemap-svg');
-
-    if (svgElement) {
-      const svgString = new XMLSerializer().serializeToString(svgElement);
-
-      let pdf = new jsPDF('l', 'mm', [216, 279]);
-      let canvas = document.createElement('canvas');
-      canvas.width = 2151;
-      canvas.height = 1014;
-      let ctx = canvas.getContext('2d')!;
-      let v = await Canvg.from(ctx, svgString);
-      (await v).render();
-
-      let image = new Image();
-      let svg64 = btoa(svgString);
-      let b64start = 'data:image/svg+xml;base64,';
-      var image64 = b64start + svg64;
-      image.src = image64;
-      ctx.drawImage(image, 0, 0);
-      pdf.addImage(canvas, 'PNG', 14.81, 28.2, 252, 119);
-
-      const renderImage = async () => {
-        return document.images[0];
-      };
-
-      renderImage()
-        .then(response => {
-          pdf.addImage(response, 'JPEG', 10, 2.47, 43.74, 20.81);
-          pdf.setFontSize(9);
-          const blurbString = pdf.splitTextToSize(
-            'JobHopper is a Code for Boston project, and is an open source application built by volunteers.',
-            73.73
-          );
-          pdf.text(blurbString, 265, 9.52, { align: 'right' });
-          pdf.setFontSize(12);
-          pdf.text(
-            `Job Transitions from ${selectedOccupation?.name} (${selectedOccupation?.code}) to:`,
-            14.82,
-            23
-          );
-          pdf.setFontSize(10);
-          pdf.text(
-            `This treemap shows where ${selectedOccupation?.name} move to when they switch occupations. This data was calculated by academic researchers from around 16 million resumes of U.S. workers which were generously provided and parsed by Burning Glass Technologies`,
-            11.3,
-            197.85,
-            { maxWidth: 254.35 }
-          );
-        })
-        .then(() => pdf.save('treemap_report'));
-    }
-  };
-
   const [toggle, setToggle] = useState('fill');
 
   const [selectedValue, setSelectedValue] = useState<
@@ -104,10 +49,40 @@ const Results: React.FC<ResultsProps> = ({
   >('occupationDisplay');
 
   const chooseToggle = () => {
-    console.log('Toggle!');
-
+    // console.log('Toggle!');
     toggle === 'fill' ? setToggle('opacity') : setToggle('fill');
   };
+
+  const OccupationSalary =
+    visualization === 'matrix' ? (
+      ''
+    ) : (
+      <RadioGroup
+        value={selectedValue}
+        onChange={chooseToggle}
+        row
+        style={{
+          alignSelf: 'center',
+          flexDirection: 'row',
+          justifyContent: 'center',
+        }}
+      >
+        <FormControlLabel
+          value="occupationDisplay"
+          control={<GreenRadio />}
+          onChange={() => setSelectedValue('occupationDisplay')}
+          label="Occupation"
+          checked={selectedValue === 'occupationDisplay'}
+        />
+        <FormControlLabel
+          value="salaryDisplay"
+          control={<GreenRadio />}
+          onChange={() => setSelectedValue('salaryDisplay')}
+          label={`Salary ${selectedState ? selectedState.name : ''}`}
+          checked={selectedValue === 'salaryDisplay'}
+        />
+      </RadioGroup>
+    );
 
   return (
     <Column>
@@ -134,39 +109,8 @@ const Results: React.FC<ResultsProps> = ({
             disabled={disabled}
             selected={showTreemap}
           />
-          <StyledSecondary
-            label="Export Chart"
-            testid="treechartPdf"
-            onClick={exportPDF}
-            disabled={disabled}
-            selected={showTreemap}
-          />
+          {OccupationSalary}
         </Row>
-        <RadioGroup
-          value={selectedValue}
-          onChange={chooseToggle}
-          row
-          style={{
-            alignSelf: 'center',
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}
-        >
-          <FormControlLabel
-            value="occupationDisplay"
-            control={<GreenRadio />}
-            onChange={() => setSelectedValue('occupationDisplay')}
-            label="Occupation"
-            checked={selectedValue === 'occupationDisplay'}
-          />
-          <FormControlLabel
-            value="salaryDisplay"
-            control={<GreenRadio />}
-            onChange={() => setSelectedValue('salaryDisplay')}
-            label={`Salary ${selectedState ? selectedState.name : ''}`}
-            checked={selectedValue === 'salaryDisplay'}
-          />
-        </RadioGroup>
       </LabeledSection>
       {(() => {
         if (loading) {
