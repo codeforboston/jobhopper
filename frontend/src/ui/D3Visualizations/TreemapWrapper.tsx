@@ -1,3 +1,4 @@
+import { groupBy, sumBy, toPairs } from 'lodash';
 import React, { useMemo, useState } from 'react';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
@@ -5,6 +6,7 @@ import { getCategory, Transition } from 'src/domain/transition';
 import Treemap from './Treemap';
 import TreemapKey from './TreemapKey';
 import { Title, CaptionText } from './TreemapSubComponents';
+import useScrollToOnMount from './useScrollToOnMount';
 
 export interface TreemapWrapperProps {
   display: string;
@@ -21,6 +23,7 @@ export default function TreemapWrapper({
 }: TreemapWrapperProps) {
   const [selectedCategory, setSelectedCategory] = useState<number>();
   const categoryCodes = useCategoryCodes(transitions);
+  const scrollToRef = useScrollToOnMount<HTMLDivElement>();
 
   return (
     <div
@@ -33,7 +36,7 @@ export default function TreemapWrapper({
         width: '90vw',
       }}
     >
-      <Title>
+      <Title ref={scrollToRef}>
         Which occupations do {selectedOccupation.name} (
         {selectedOccupation.code}) move to?
       </Title>
@@ -64,12 +67,24 @@ export default function TreemapWrapper({
   );
 }
 
-const useCategoryCodes = (transitions: Transition[]) => {
+/** Gets a list of transition codes, sorted by decreasing total transition share */
+const useCategoryCodes = (transitions: Transition[]): number[] => {
   return useMemo(() => {
-    const categoryCodes = new Set<number>();
-    transitions.forEach(transition => {
-      categoryCodes.add(getCategory(transition));
-    });
+    const categoryCodes: number[] = [];
+    const totalRateByCode: { [code: string]: number } = {};
+
+    toPairs(groupBy(transitions, getCategory)).forEach(
+      ([stringCode, categoryTransitions]) => {
+        const code = Number(stringCode);
+        totalRateByCode[code] = sumBy(
+          categoryTransitions,
+          t => t.transitionRate
+        );
+        categoryCodes.push(code);
+      }
+    );
+
+    categoryCodes.sort((a, b) => totalRateByCode[b] - totalRateByCode[a]);
     return categoryCodes;
   }, [transitions]);
 };

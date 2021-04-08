@@ -11,6 +11,8 @@ import TreemapWrapper from '../D3Visualizations/TreemapWrapper';
 import GreenRadio from '../RadioButton';
 import TransitionTable from '../TransitionTable';
 
+const MIN_DISPLAY_TRANSITION_RATE = 0.002;
+
 export interface ResultsProps {
   selectedState?: State;
   selectedOccupation: Occupation;
@@ -121,7 +123,9 @@ const Results: React.FC<ResultsProps> = ({
           return (
             <TransitionTable
               selectedOccupation={selectedOccupation}
-              transitionData={transitions}
+              transitionData={transitions.filter(
+                t => t.transitionRate > MIN_DISPLAY_TRANSITION_RATE
+              )}
             />
           );
         } else if (showTreemap) {

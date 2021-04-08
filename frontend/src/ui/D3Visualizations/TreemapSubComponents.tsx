@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+const MAX_VISIBLE_CATEGORIES = 6;
+
 export const Title = styled.div`
   /* height: 5vh; */
   font-family: 'PT Sans';
@@ -15,6 +17,7 @@ export const KeyTitle = styled.div`
   flex: 1 0 100%;
   font-size: 18px;
   width: 100%;
+  margin-bottom: 6px;
 `;
 
 export const CaptionText = styled.div`
@@ -38,12 +41,13 @@ export interface KeyColorSquareProps {
 }
 
 export const KeyList = ({
-  keyEntries,
+  keyEntries: allKeyEntries,
   selectedCategory,
 }: {
   keyEntries: KeyEntryProps[];
   selectedCategory?: number;
 }) => {
+  const keyEntries = useFilterKeyEntries(selectedCategory, allKeyEntries);
   return (
     <div
       style={{
@@ -55,11 +59,29 @@ export const KeyList = ({
       }}
     >
       {keyEntries.map((entry, i) => (
-        <KeyEntry key={i} {...entry} selectedCategory={selectedCategory} />
+        <KeyEntry
+          key={entry.code}
+          {...entry}
+          selectedCategory={selectedCategory}
+        />
       ))}
     </div>
   );
 };
+
+function useFilterKeyEntries(
+  selectedCategory: number | undefined,
+  entries: KeyEntryProps[]
+): KeyEntryProps[] {
+  const visible = entries.slice(0, MAX_VISIBLE_CATEGORIES);
+  const visibleIfSelected = entries
+    .slice(MAX_VISIBLE_CATEGORIES)
+    .find(entry => entry.code === selectedCategory);
+  if (visibleIfSelected) {
+    visible[visible.length - 1] = visibleIfSelected;
+  }
+  return visible;
+}
 
 function KeyEntry({ code, name, color, selectedCategory }: KeyEntryProps) {
   const isSelected = code === selectedCategory;
@@ -67,17 +89,15 @@ function KeyEntry({ code, name, color, selectedCategory }: KeyEntryProps) {
     <div
       style={{
         display: 'flex',
-        flex: '0 0 30%',
+        flex: '1 0 30%',
         justifyContent: 'flex-start',
-        alignItems: 'center',
         margin: '2.5px 0 2.5px 5px',
-        height: '4em',
       }}
     >
       <KeyColorSquare color={color} isSelected={isSelected} />
 
-      <div style={{ height: '2em' }}>
-        {code} {name}
+      <div>
+        <b>{code}</b> {name}
       </div>
     </div>
   );
@@ -105,7 +125,7 @@ export const KeyContainer = styled.div`
   flex-direction: column;
   flex-wrap: wrap;
   font-family: 'PT Sans';
-  line-height: 30px;
   text-align: left;
-  margin: 4em 2em;
+  width: 100%;
+  margin: 4em 1em 0em 1em;
 `;
