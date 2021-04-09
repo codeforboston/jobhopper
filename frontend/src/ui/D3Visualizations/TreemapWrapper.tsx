@@ -1,3 +1,4 @@
+import { groupBy, sumBy, toPairs } from 'lodash';
 import React, { useMemo, useState } from 'react';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
@@ -5,6 +6,7 @@ import { getCategory, Transition } from 'src/domain/transition';
 import Treemap from './Treemap';
 import TreemapKey from './TreemapKey';
 import { Title, CaptionText } from './TreemapSubComponents';
+import useScrollToOnMount from './useScrollToOnMount';
 
 export interface TreemapWrapperProps {
   display: string;
@@ -21,6 +23,7 @@ export default function TreemapWrapper({
 }: TreemapWrapperProps) {
   const [selectedCategory, setSelectedCategory] = useState<number>();
   const categoryCodes = useCategoryCodes(transitions);
+  const scrollToRef = useScrollToOnMount<HTMLDivElement>();
 
   return (
     <div
@@ -33,10 +36,9 @@ export default function TreemapWrapper({
         width: '90vw',
       }}
     >
-      <Title>
-        Job Transitions from {selectedOccupation.name} (
-        {selectedOccupation.code})
-        {selectedState ? ` in ${selectedState.name}` : ` Nationally`}
+      <Title ref={scrollToRef}>
+        Which occupations do {selectedOccupation.name} (
+        {selectedOccupation.code}) move to?
       </Title>
       <div style={{ width: '100%' }}>
         <Treemap
@@ -51,11 +53,11 @@ export default function TreemapWrapper({
         selectedCategory={selectedCategory}
       />
       <CaptionText>
-        This visualization shows the occupations which {selectedOccupation.name}
-        s move to when they change occupation. The transition share is the
-        proportion of {selectedOccupation.name}s who move into a job in each
-        other occupation when they switch jobs. We only break out individual
-        occupations with transition shares greater than 0.2%.
+        The treemap above shows the occupations which {selectedOccupation.name}{' '}
+        move to when they change occupation based on the observations in our
+        dataset. The transition share is the percentage of these observed{' '}
+        {selectedOccupation.name} who have moved into each of the occupations
+        listed.
       </CaptionText>
       <CaptionText>
         *SOC (Standard Occupation Classification) code broad category, used by
@@ -65,12 +67,24 @@ export default function TreemapWrapper({
   );
 }
 
-const useCategoryCodes = (transitions: Transition[]) => {
+/** Gets a list of transition codes, sorted by decreasing total transition share */
+const useCategoryCodes = (transitions: Transition[]): number[] => {
   return useMemo(() => {
-    const categoryCodes = new Set<number>();
-    transitions.forEach(transition => {
-      categoryCodes.add(getCategory(transition));
-    });
+    const categoryCodes: number[] = [];
+    const totalRateByCode: { [code: string]: number } = {};
+
+    toPairs(groupBy(transitions, getCategory)).forEach(
+      ([stringCode, categoryTransitions]) => {
+        const code = Number(stringCode);
+        totalRateByCode[code] = sumBy(
+          categoryTransitions,
+          t => t.transitionRate
+        );
+        categoryCodes.push(code);
+      }
+    );
+
+    categoryCodes.sort((a, b) => totalRateByCode[b] - totalRateByCode[a]);
     return categoryCodes;
   }, [transitions]);
 };

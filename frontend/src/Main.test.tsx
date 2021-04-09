@@ -76,7 +76,7 @@ describe('Main', () => {
       '01-2345 | Doctor'
     );
 
-    await waitFor(() => expect(getByText(/Nationally/i)).toBeInTheDocument());
+    await waitFor(() => expect(getByText(/move to\?/i)).toBeInTheDocument());
 
     userEvent.click(getByTestId('treemap-button'));
 
@@ -98,9 +98,7 @@ describe('Main', () => {
     );
     await selectEvent.select(getByLabelText('state-select'), 'California');
 
-    await waitFor(() =>
-      expect(getByText(/in California/i)).toBeInTheDocument()
-    );
+    await waitFor(() => expect(getByText(/move to\?/i)).toBeInTheDocument());
 
     userEvent.click(getByTestId('treemap-button'));
 

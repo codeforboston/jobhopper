@@ -2,25 +2,26 @@
 
 ## Option 1 (easiest): Docker
 
-1. Install Docker
+Run all commands in the `stack` directory (`cd stack` from the root directory).
+
+1. Install Docker and Docker Compose
 
    On Mac and Windows, the easiest way is to install [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
    Or you can install [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) directly.
 
-2. Create a copy of `.env.template` in the `docker` directory. Replace the `SECRET_KEY` value with your Django key, and replace the `ONET_PASSWORD` with the O*NET account password (ping the jobhopper channel if you don't know the password). Rename the file `.env.`
+2. Copy the `compose/.env.template` file to `compose/.env`. Replace the `SECRET_KEY` value with your Django key, and replace the `ONET_PASSWORD` with the O\*NET account password (ping the jobhopper channel if you don't know the password).
 
-3. Build the Docker image by running `docker-compose build` in the `docker` directory. You will need to run this whenever the dependencies for the frontend or api change.
+3. Build the Docker images by running `./dev build`. You will need to run this whenever the dependencies for the frontend or api change.
 
-4. Start the services by running `docker-compose up` in the `docker` directory.
+4. Start the app by running `./dev up`.
 
-   You can start a shell in the Django container with `docker-compose exec api bash`, and a shell in the database container with `docker-compose exec db bash`.
+   You can start a shell in the Django container with `./dev shell api`, and a shell in the database container with `./dev shell db`.
 
-   To start `psql`, an interactive PostgreSQL shell, open a database shell and run `psql -U [your username] -d jobhopper_dev`.
+   You can start `psql`, an interactive PostgreSQL shell, with `./dev psql`.
 
-5. To Run tests, once the container is running, this command will work in a new command window to execute the tests against the running API container:
-`docker exec jobhopper_api_1 bash -c "python migrate.py test"`
-
+5. To run backend tests, once the container is running, this command will work in a new command window to execute the tests against the running API container:
+   `./compose/dev-deployment exec api python manage.py test`
 
 ## Option 2: Clone and run
 

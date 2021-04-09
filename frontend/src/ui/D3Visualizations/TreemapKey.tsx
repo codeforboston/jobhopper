@@ -11,9 +11,7 @@ export default function TreemapKey({
   categoryCodes,
   selectedCategory,
 }: TreemapKeyProps) {
-  const keyEntries = categoryCodes
-    .map(getCategoryForCode)
-    .sort((a, b) => Number(a.code) - Number(b.code));
+  const keyEntries = categoryCodes.map(getCategoryForCode);
 
   return (
     <KeyContainer>

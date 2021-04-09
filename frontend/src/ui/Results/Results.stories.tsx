@@ -6,6 +6,7 @@ import states from '../../testing/data/states';
 import transitionData from '../../testing/data/transitionData';
 import Results, { ResultsProps } from './Results';
 
+
 export default {
   title: 'JobHopper/Results',
   component: Results,
@@ -16,16 +17,27 @@ const Template: Story<ResultsProps> = args => <Results {...args} />;
 export const WaitingForSelection = Template.bind({});
 WaitingForSelection.args = {
   loading: false,
+  selectedState: undefined,
+  selectedOccupation: undefined,
+  error: undefined,
+  transitions: [],
 };
 
 export const Loading = Template.bind({});
 Loading.args = {
   loading: true,
+  selectedState: undefined,
+  selectedOccupation: undefined,
+  transitions: [],
+  error: undefined,
 };
 
 export const Error = Template.bind({});
 Error.args = {
   loading: false,
+  selectedState: undefined,
+  selectedOccupation: undefined,
+  transitions: [],
   error: 'error loading transitions',
 };
 
@@ -35,10 +47,13 @@ Display.args = {
   selectedState: states[0],
   selectedOccupation: occupations[0],
   transitions: transitionData,
+  error: undefined,
 };
 
 export const EmptyResults = Template.bind({});
 EmptyResults.args = {
   loading: false,
   transitions: [],
+  selectedState: undefined,
+  selectedOccupation: undefined,
 };

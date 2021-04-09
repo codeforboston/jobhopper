@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Scripts for working with the development environment.
+
+cd $(dirname $0)
+
+function down() {
+  ./compose/dev-deployment down $@
+}
+
+function wipe-db() {
+  down -v
+}
+
+function up() {
+  down && ./compose/dev-deployment up $@
+}
+
+function build() {
+  ./compose/dev-deployment build $@
+}
+
+case "$1" in
+  up|down|build|wipe-db)
+    $@
+    ;;
+  shell)
+    ./compose/dev-deployment exec ${2:-api} sh
+    ;;
+  psql)
+    ./compose/dev-deployment exec db psql -U postgres -d jobhopper
+    ;;
+  *)
+    echo "Usage: dev up|build|down|wipe-db|psql|shell [api|db|frontend]"
+    ;;
+esac

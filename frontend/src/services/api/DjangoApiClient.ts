@@ -36,7 +36,7 @@ export default class DjangoApiClient implements Api {
       .get('/transitions-extended/', {
         params: {
           soc: request.sourceOccupation.code,
-          min_transition_probability: 0.002,
+          min_transition_probability: 0,
           area_title: request.state?.name,
         },
       })
