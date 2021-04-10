@@ -122,11 +122,11 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
 
     def _set_params(self, request):
         """
-       Set parameters based on the request. Custom parameters are identified by their openapi.Parameter name
+        Set parameters based on the request. Custom parameters are identified by their openapi.Parameter name
 
-       :param request: User-input parameters
-       :return: Relevant parameters from the request
-       """
+        :param request: User-input parameters
+        :return: Relevant parameters from the request
+        """
         self.keyword_search = request.query_params.get("keyword_search")
         self.onet_limit = request.query_params.get("onet_limit")
         self.obs_limit = request.query_params.get("min_weighted_obs")
@@ -138,26 +138,26 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         """
-       Custom queryset used that is a combination of querysets from a couple models. Overwriting to prevent
-       schema generation warning.
-       """
+        Custom queryset used that is a combination of querysets from a couple models. Overwriting to prevent
+        schema generation warning.
+        """
         pass
 
     @staticmethod
     def search_onet_keyword(keyword: str,
                             limit: int = 20) -> Dict[str, Any]:
         """
-       Search for a keyword that will be matched to SOC codes via the O*Net API
+        Search for a keyword that will be matched to SOC codes via the O*Net API
 
-       :param keyword: Keyword that's requested (user search)
-       :param limit: Limit to number of results (should expose this as a parameter)
-       :return: JSON response, e.g. {'keyword': 'doctor', ...
+        :param keyword: Keyword that's requested (user search)
+        :param limit: Limit to number of results (should expose this as a parameter)
+        :return: JSON response, e.g. {'keyword': 'doctor', ...
                                      'career': [{'href': '',
                                                'code': '29-1216.00',
                                                'title': 'General Internal Medicine Physicians',
                                                'tags': {'bright_outlook': ...},
                                      ...]}
-       """
+        """
         headers = {"Accept": "application/json"}
         username = config("ONET_USERNAME")
         password = config("ONET_PASSWORD")
