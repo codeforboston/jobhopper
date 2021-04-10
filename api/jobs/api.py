@@ -122,11 +122,11 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
 
     def _set_params(self, request):
         """
-        Set parameters based on the request. Custom parameters are identified by their openapi.Parameter name
+       Set parameters based on the request. Custom parameters are identified by their openapi.Parameter name
 
-        :param request: User-input parameters
-        :return: Relevant parameters from the request
-        """
+       :param request: User-input parameters
+       :return: Relevant parameters from the request
+       """
         self.keyword_search = request.query_params.get("keyword_search")
         self.onet_limit = request.query_params.get("onet_limit")
         self.obs_limit = request.query_params.get("min_weighted_obs")
@@ -138,26 +138,26 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         """
-        Custom queryset used that is a combination of querysets from a couple models. Overwriting to prevent
-        schema generation warning.
-        """
+       Custom queryset used that is a combination of querysets from a couple models. Overwriting to prevent
+       schema generation warning.
+       """
         pass
 
     @staticmethod
     def search_onet_keyword(keyword: str,
                             limit: int = 20) -> Dict[str, Any]:
         """
-        Search for a keyword that will be matched to SOC codes via the O*Net API
+       Search for a keyword that will be matched to SOC codes via the O*Net API
 
-        :param keyword: Keyword that's requested (user search)
-        :param limit: Limit to number of results (should expose this as a parameter)
-        :return: JSON response, e.g. {'keyword': 'doctor', ...
-                                      'career': [{'href': '',
-                                                'code': '29-1216.00',
-                                                'title': 'General Internal Medicine Physicians',
-                                                'tags': {'bright_outlook': ...},
-                                      ...]}
-        """
+       :param keyword: Keyword that's requested (user search)
+       :param limit: Limit to number of results (should expose this as a parameter)
+       :return: JSON response, e.g. {'keyword': 'doctor', ...
+                                     'career': [{'href': '',
+                                               'code': '29-1216.00',
+                                               'title': 'General Internal Medicine Physicians',
+                                               'tags': {'bright_outlook': ...},
+                                     ...]}
+       """
         headers = {"Accept": "application/json"}
         username = config("ONET_USERNAME")
         password = config("ONET_PASSWORD")
@@ -180,8 +180,8 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
         ------------------------
         * keyword_search: User-input keyword search for related professions
         * onet_limit: Limit to the number of results pulled back from O*NET; capped by MAX_ONET_LIMIT. Responses will
-            only include smart-search SOCs with transitions data available. If no response is found from O*NET, all
-            available SOC codes are returned.
+           only include smart-search SOCs with transitions data available. If no response is found from O*NET, all
+           available SOC codes are returned.
         * min_weighted_obs: Minimum number of observed transitions (weighted) for a response to be included
         """
         # Parameters are pulled from request query, as defined by openapi.Parameter
@@ -217,9 +217,14 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
 
         # SOC codes in transitions data that are close to an exact match to the keyword - tiered matching, since O*NET
         # does not include older SOC codes that exist in the transitions data
+        for soc_entry in available_socs:
+            soc_string = soc_entry.get("soc_title").lower() + soc_entry.get("soc_code")
+            soc_entry["input_match_score"] = fuzz.partial_ratio(self.keyword_search.lower(),
+                                                                soc_string)
+
         fuzz_soc_codes = [soc.get("soc_code") for soc in available_socs
-                          if fuzz.partial_ratio(self.keyword_search.lower(),
-                                                soc.get("soc_title").lower() + soc.get("soc_code")) >= self.FUZZ_LIMIT]
+                          if soc.get("input_match_score") >= self.FUZZ_LIMIT]
+
         fuzz_soc_codes = set(fuzz_soc_codes)
         log.info(f"SOC codes/titles that are a close exact match to the keyword search {fuzz_soc_codes}")
 
@@ -229,6 +234,12 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
 
         smart_socs = [soc for soc in available_socs
                       if soc.get("soc_code") in smart_soc_codes]
+
+        # Order response in by the highest fuzzy match score
+        smart_socs = sorted(smart_socs,
+                            key=lambda k: k.get("input_match_score"),
+                            reverse=True)
+        log.debug(f"Sorted smart_socs based on strength of match to input: {smart_socs}")
 
         return Response(smart_socs)
 
@@ -285,7 +296,7 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
     BLS_TRANSITIONS = namedtuple("BlsTransitions", ("bls", "transitions"))
 
     DEFAULT_AREA = "U.S."
-    DEFAULT_SOC = "35-3031"         # 35-3031 is waiters and waitresses
+    DEFAULT_SOC = "35-3031"  # 35-3031 is waiters and waitresses
     DEFAULT_TRANSITION_PROBABILITY = 0.01
     SOC_SWAGGER_PARAM = openapi.Parameter("soc",
                                           openapi.IN_QUERY,
@@ -389,7 +400,7 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
                          .filter(soc1=self.source_soc)
                          .filter(pi__gte=self.min_transition_probability)
                          ),
-            )
+        )
 
         # Convert bls_transitions QuerySet to dicts & join the results
         # List of dicts, each containing metadata on SOCs and transitions
@@ -427,6 +438,6 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
         #   serializer = BlsTransitionsSerializer(bls_transitions)
         #   return Response(serializer.data)
         return Response({
-            "source_soc":  source_soc_info,
+            "source_soc": source_soc_info,
             "transition_rows": transitions,
         })
