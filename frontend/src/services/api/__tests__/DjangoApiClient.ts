@@ -12,6 +12,8 @@ const selectedState: State = {
   name: 'Massachusetts',
 };
 
+var occupation = 'computer programmer';
+
 describe('DjangoApiClient', () => {
   it('Can be constructed', () => {
     expect(new DjangoApiClient()).toBeDefined();
@@ -24,7 +26,7 @@ describe('DjangoApiClient', () => {
     });
 
     it('Fetches Occupations (SOC list)', async () => {
-      const occupations = await client.getOccupations();
+      const occupations = await client.getOccupations(occupation);
       expect(occupations).not.toHaveLength(0);
       expect(occupations).toContainEqual(sourceOccupation);
     });

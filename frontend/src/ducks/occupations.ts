@@ -6,7 +6,7 @@ import api from '../services/api';
 
 export const fetchOccupations = createAsyncThunk(
   'occupations/fetchOccupations',
-  () => api.getOccupations()
+  () => api.getOccupations('')
 );
 
 type SliceState = {
