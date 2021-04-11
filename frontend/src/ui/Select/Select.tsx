@@ -2,14 +2,37 @@ import { useTheme } from '@material-ui/core';
 import React from 'react';
 
 import ReactSelect, { Props } from 'react-select';
+import AsyncSelect from 'react-select/async';
+
 import { Occupation } from '../../domain/occupation';
 import { State } from '../../domain/state';
+import DjangoApiClient from '../../services/api/DjangoApiClient';
 
 export interface SelectProps<T> extends Props<T> {
   loading?: boolean;
   error?: string;
   disabled?: boolean;
 }
+
+const fetchMatchOccupations = async (input: string) => {
+  /*
+   * Fetch occupations matching the given input string via the soc-smart-list endpoint in the DjangoApiClient
+   */
+  console.log('Fetching occupations matching the input ' + input);
+  // TODO: Change the input.length to input complete
+  if (input && input.length > 5) {
+    const occupationSearch = {
+      occupation: input,
+    };
+    const client = new DjangoApiClient();
+    const occupations = await client.getOccupations(input);
+
+    return occupations.map((occupation: { name: string; code: string }) => ({
+      label: occupation.code + ' | ' + occupation.name,
+      value: occupation.code,
+    }));
+  }
+};
 
 export const Select = <T,>({
   options,
@@ -51,6 +74,50 @@ export const Select = <T,>({
   );
 };
 
+export const SelectAsync = <T,>({
+  options,
+  getOptionLabel,
+  getOptionValue,
+  placeholder,
+  loading,
+  error,
+  disabled,
+  fetchOptions = (input: string) => {},
+  ...rest
+}: SelectProps<T>): JSX.Element => {
+  const theme = useTheme();
+  return (
+    <div>
+      <AsyncSelect
+        cacheOptions
+        defaultOptions
+        loadOptions={fetchOptions}
+        placeholder={loading ? 'Loading...' : error || placeholder}
+        isSearchable
+        options={options}
+        getOptionLabel={getOptionLabel}
+        getOptionValue={getOptionValue}
+        styles={{
+          menu: base => ({ ...base, zIndex: 100 }),
+          control: base => ({
+            ...base,
+            backgroundColor: theme.palette.primary.light,
+          }),
+          placeholder: base => ({
+            ...base,
+            color: error
+              ? theme.palette.error.main
+              : theme.palette.primary.main,
+          }),
+        }}
+        isLoading={loading}
+        isDisabled={disabled || loading || !!error}
+        {...rest}
+      />
+    </div>
+  );
+};
+
 export interface OccupationSelectProps
   extends Omit<SelectProps<Occupation>, 'options'> {
   occupations: Occupation[];
@@ -62,7 +129,8 @@ export const OccupationSelect = ({
   onSelectOccupation = () => {},
   ...rest
 }: OccupationSelectProps): JSX.Element => (
-  <Select
+  <SelectAsync
+    loadOptions={fetchMatchOccupations}
     aria-label="occupation-select"
     options={occupations}
     placeholder={'Select occupation...'}
