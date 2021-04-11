@@ -25,20 +25,12 @@ const fetchMatchOccupations = async (input: string) => {
     const client = new DjangoApiClient();
     const occupations = await client.getOccupations(input);
 
-    /*
-    return occupations.map((occupation: { name: string; code: string }) => ({
-      label: occupation.code + ' | ' + occupation.name,
-      value: occupation.code,
-    }));
-    
-    return occupations.map(function(occupation) {
-      console.log('Occupation returned: ' + occupation.name + '|' + occupation.code)
-      return ({
-        label: occupation.code + ' | ' + occupation.name,
-        value: occupation.code
-      })
-    });
-    */
+    // Sort by occupation SOC code if there is not input yet
+    if (input === '') {
+      occupations.sort((job1, job2) => job1.code.localeCompare(job2.code));
+    }
+
+    // Each occupation has the name and code attributes. These attributes are handled by OccupationSelect.
     return occupations.map(function (occupation) {
       return occupation;
     });
