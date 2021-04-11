@@ -26,9 +26,13 @@ afterEach(() => {
 describe('OccupationSelect', () => {
   it('Can use OccupationSelect', async () => {
     const mockOnChange = jest.fn();
+    const mockFetchOptions = async () => {
+      return [{ code: '01-2345', name: 'Doctor' }];
+    };
 
     const { container, getByLabelText } = render(
       <OccupationSelect
+        fetchOptions={mockFetchOptions}
         occupations={[{ code: '01-2345', name: 'Doctor' }]}
         onChange={mockOnChange}
       />
@@ -73,7 +77,7 @@ describe('Main', () => {
 
     await selectEvent.select(
       getByLabelText('occupation-select'),
-      '01-2345 | Doctor'
+      '11-1011 | Chief Executives'
     );
 
     await waitFor(() => expect(getByText(/move to\?/i)).toBeInTheDocument());
@@ -94,7 +98,7 @@ describe('Main', () => {
 
     await selectEvent.select(
       getByLabelText('occupation-select'),
-      '01-2345 | Doctor'
+      '11-1011 | Chief Executives'
     );
     await selectEvent.select(getByLabelText('state-select'), 'California');
 
