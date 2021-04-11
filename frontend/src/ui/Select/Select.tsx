@@ -1,4 +1,5 @@
 import { useTheme } from '@material-ui/core';
+import { type } from 'os';
 import React from 'react';
 
 import ReactSelect, { Props } from 'react-select';
@@ -20,17 +21,27 @@ const fetchMatchOccupations = async (input: string) => {
    */
   console.log('Fetching occupations matching the input ' + input);
   // TODO: Change the input.length to input complete
-  if (input && input.length > 5) {
-    const occupationSearch = {
-      occupation: input,
-    };
+  if (input.length >= 0) {
     const client = new DjangoApiClient();
     const occupations = await client.getOccupations(input);
 
+    /*
     return occupations.map((occupation: { name: string; code: string }) => ({
       label: occupation.code + ' | ' + occupation.name,
       value: occupation.code,
     }));
+    
+    return occupations.map(function(occupation) {
+      console.log('Occupation returned: ' + occupation.name + '|' + occupation.code)
+      return ({
+        label: occupation.code + ' | ' + occupation.name,
+        value: occupation.code
+      })
+    });
+    */
+    return occupations.map(function (occupation) {
+      return occupation;
+    });
   }
 };
 
