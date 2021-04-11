@@ -30,7 +30,7 @@ const fetchMatchOccupations = async (input: string) => {
       occupations.sort((job1, job2) => job1.code.localeCompare(job2.code));
     }
 
-    // Each occupation has the name and code attributes. These attributes are handled by OccupationSelect.
+    // Each occupation has the name and code attributes. These attributes are handled by OccupationSele
     return occupations.map(function (occupation) {
       return occupation;
     });
