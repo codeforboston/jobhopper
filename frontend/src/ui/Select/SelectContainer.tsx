@@ -42,13 +42,12 @@ export const OccupationSelectContainer: React.FC = () => {
    */
   const dispatch = useDispatch();
 
-  const { occupations, loading, error } = useOccupationsState();
+  const { occupations, error } = useOccupationsState();
 
   return (
     <OccupationSelect
       fetchOptions={debounceMatchOccupations}
       onSelectOccupation={occupation => dispatch(selectOccupation(occupation))}
-      loading={loading}
       error={error}
       occupations={occupations}
     />

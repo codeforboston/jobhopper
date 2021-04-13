@@ -1,20 +1,17 @@
 import { useTheme } from '@material-ui/core';
 import React from 'react';
-
-import AwesomeDebouncePromise from 'awesome-debounce-promise';
-
-import ReactSelect, { Props } from 'react-select';
-import AsyncSelect from 'react-select/async';
-
+import ReactSelect, { Props as SyncProps } from 'react-select';
+import AsyncSelect, { Props as AsyncProps } from 'react-select/async';
 import { Occupation } from '../../domain/occupation';
 import { State } from '../../domain/state';
-import DjangoApiClient from '../../services/api/DjangoApiClient';
 
-export interface SelectProps<T> extends Props<T> {
+interface StatusProps {
   loading?: boolean;
   error?: string;
   disabled?: boolean;
 }
+
+export interface SelectProps<T> extends SyncProps<T>, StatusProps {}
 
 export const Select = <T,>({
   options,
@@ -56,27 +53,26 @@ export const Select = <T,>({
   );
 };
 
+export interface AsyncSelectProps<T> extends AsyncProps<T>, StatusProps {}
+
 export const SelectAsync = <T,>({
-  options,
   getOptionLabel,
   getOptionValue,
   placeholder,
   loading,
   error,
   disabled,
-  fetchOptions = (input: string) => {},
+  loadOptions,
   ...rest
-}: SelectProps<T>): JSX.Element => {
+}: AsyncSelectProps<T>): JSX.Element => {
   const theme = useTheme();
   return (
     <div>
       <AsyncSelect
         cacheOptions
         defaultOptions
-        loadOptions={fetchOptions}
+        loadOptions={loadOptions}
         placeholder={loading ? 'Loading...' : error || placeholder}
-        isSearchable
-        options={options}
         getOptionLabel={getOptionLabel}
         getOptionValue={getOptionValue}
         styles={{
@@ -101,21 +97,20 @@ export const SelectAsync = <T,>({
 };
 
 export interface OccupationSelectProps
-  extends Omit<SelectProps<Occupation>, 'options'> {
-  occupations: Occupation[];
+  extends Omit<AsyncSelectProps<Occupation>, 'loadOptions'> {
+  fetchOptions: (input: string) => void | Promise<Occupation[]>;
   onSelectOccupation?: (occupation: Occupation) => void;
 }
 
 export const OccupationSelect = ({
   occupations,
   onSelectOccupation = () => {},
-  fetchOptions = (input: string) => {},
+  fetchOptions: loadOptions = (input: string) => {},
   ...rest
 }: OccupationSelectProps): JSX.Element => (
-  <SelectAsync
-    loadOptions={fetchOptions}
+  <SelectAsync<Occupation>
+    loadOptions={loadOptions}
     aria-label="occupation-select"
-    options={occupations}
     placeholder={'Select occupation...'}
     getOptionLabel={({ name, code }) => `${code} | ${name}`}
     getOptionValue={({ code }) => code}
