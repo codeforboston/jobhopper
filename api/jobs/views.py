@@ -4,7 +4,8 @@ from .models import JobClass, BlsOesFakes
 from .serializers import BlsOesSerializer
 from django.template import loader
 
-# Create your views here.
+# Note: See api.py for views
+
 def index(request):
     jobs = JobClass.objects.all()
     template = loader.get_template("jobs/index.html")

@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:12.4-alpine
+    # Comment this volume section to spin up a new database every time you run docker-compose up
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: jobhopper
+
+  api:
+    environment:
+      ONET_USERNAME: ${ONET_USERNAME}
+      ONET_PASSWORD: ${ONET_PASSWORD}
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_NAME: jobhopper
+      DB_HOST: db
+      WAIT_HOSTS: db:5432
+
+volumes:
+  db-data:

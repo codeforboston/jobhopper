@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# Scripts for working with the production environment.
+
+cd $(dirname $0)
+
+STACK_NAME=jobhopper-prod
+DB_VOLUME_NAME="${STACK_NAME}_db-data"
+
+function retry() {
+  n=0
+  pause=10
+  until [ "$n" -ge 5 ]
+  do
+    $@ && return
+    n=$((n+1)) 
+    echo "$@ failed. Retrying in $pause seconds..."
+    sleep $pause
+  done
+  echo "$@ failed after $n attempts"
+  return 1
+}
+
+function down() {
+  docker stack rm $STACK_NAME
+}
+
+function wipe-db() {
+  docker volume rm -f $DB_VOLUME_NAME
+}
+
+function up() {
+  # Export env flags manually; stack doesn't read from the env file.
+  # https://github.com/moby/moby/issues/29133#issuecomment-278198683
+  env $(cat compose/.env | grep ^[A-Z] | xargs) \
+    docker stack up \
+      -c compose/common.yml \
+      -c compose/deploy.prod.yml \
+      $STACK_NAME
+}
+
+function build() {
+  ./compose/prod-builder build frontend api
+
+  # The gateway image depends on the frontend image so build it after.
+  ./compose/prod-builder build gateway
+}
+
+function push() {
+  # Push production images to Docker Hub. Must be logged in with push access to
+  # the repos in https://hub.docker.com/u/jobhopper
+
+  ./compose/prod-builder push gateway api
+}
+
+case "$1" in
+  up|update)
+    up
+    ;;
+  build|down|push)
+    $1
+    ;;
+  publish)
+    build && push
+    ;;
+  restart)
+    down && retry up
+    ;;
+  wipe-db)
+    down && retry wipe-db
+    ;;
+  *)
+    echo "Usage: prod build|push|publish|up|update|restart|down|wipe-db"
+    ;;
+esac

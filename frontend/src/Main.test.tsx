@@ -69,39 +69,26 @@ describe('Main', () => {
   it('Can show national transitions', async () => {
     await waitForPageToLoad();
 
-    const {
-      getByTestId,
-      getByLabelText,
-      getByText,
-      queryByText,
-    } = renderResult;
+    const { getByTestId, getByLabelText, getByText } = renderResult;
 
     await selectEvent.select(
       getByLabelText('occupation-select'),
       '01-2345 | Doctor'
     );
 
-    await waitFor(() =>
-      expect(getByText(/Job Transitions.*Nationally/i)).toBeInTheDocument()
-    );
+    await waitFor(() => expect(getByText(/move to\?/i)).toBeInTheDocument());
 
     userEvent.click(getByTestId('treemap-button'));
 
     await waitFor(() => {
       expect(getByTestId('treemap')).toBeInTheDocument();
-      expect(queryByText(/Job Transitions/i)).not.toBeInTheDocument();
     });
   });
 
   it('Can show state transitions', async () => {
     await waitForPageToLoad();
 
-    const {
-      getByLabelText,
-      getByText,
-      getByTestId,
-      queryByText,
-    } = renderResult;
+    const { getByLabelText, getByText, getByTestId } = renderResult;
 
     await new Promise(resolve => setTimeout(resolve, 100));
 
@@ -111,15 +98,13 @@ describe('Main', () => {
     );
     await selectEvent.select(getByLabelText('state-select'), 'California');
 
-    await waitFor(() =>
-      expect(getByText(/Job Transitions.*California/i)).toBeInTheDocument()
-    );
+    await waitFor(() => expect(getByText(/move to\?/i)).toBeInTheDocument());
 
     userEvent.click(getByTestId('treemap-button'));
 
     await waitFor(() => {
       expect(getByTestId('treemap')).toBeInTheDocument();
-      expect(queryByText(/Job Transitions/i)).not.toBeInTheDocument();
+      expect(renderResult.getAllByText(/California/i)).not.toBe(null);
     });
   });
 });

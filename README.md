@@ -1,4 +1,4 @@
-![Job Hopper Logo](./frontend/src/ui/assets/jobHopperLogo.png)
+![JobHopper Logo](./frontend/src/ui/assets/jobHopperLogo.png)
 
 - Development (`develop`)
   - [App](https://jobhopper-dev.web.app/)
@@ -7,22 +7,27 @@
 
 ## General Information
 
-Jobhopper is an application for analyzing and querying career mobility and outside options data set to help workers, public sector professionals, and policymakers to improve career training, career paths, and career mobility options.
+JobHopper is an application for analyzing and querying career mobility and outside options data set to help workers, public sector professionals, and policymakers to improve career training, career paths, and career mobility options.
 
 # Installation Overview
 
 For details on setup, see [Installation](./docs/Installation.md)
 
+# Contributing
+
+See [Contributing](./docs/Contributing.md) for how to commit and submit code to the project!
+
 # Technologies Used
 
 | Front End          | Logic & Data Processing: | Database: |
 | ------------------ | ------------------------ | --------- |
-| React (JavaScript) | Django (Python 3.7)      | Postgres  |
+| React (Typescript) | Django (Python 3.7)      | Postgres  |
 
-For more details, see [Architecture](./docs/Architecture.md)
-Also details on [Data Setup](./docs/DataREADME.md) and [Django Data Migrations](./docs/DjangoData.md) are available.
+For details, see
+
+- [Architecture](./docs/Architecture.md)
+- [Database Setup](./docs/DataREADME.md)
 
 ## Additional Resources
 
-The following provides details on how the data was sourced etc.
-[Data References](./docs/References.md)
+For details on the data, see [Data Sources](./docs/References.md).

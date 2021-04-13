@@ -76,7 +76,7 @@ describe('Occupations', () => {
 describe('Transitions', () => {
   it('updates the list of transitions', async () => {
     const store = createStore();
-    expect(store.getState().transitions.transitions).toHaveLength(0);
+    expect(store.getState().transitions.transitions).toBeUndefined();
 
     mockedApi.getTransitions.mockResolvedValue(transitions);
 
@@ -90,7 +90,7 @@ describe('Transitions', () => {
 
   it('handles update error', async () => {
     const store = createStore();
-    expect(store.getState().transitions.transitions).toHaveLength(0);
+    expect(store.getState().transitions.transitions).toBeUndefined();
 
     const errorMessage = 'test error fetching';
     mockedApi.getTransitions.mockRejectedValue(new Error(errorMessage));
@@ -98,7 +98,7 @@ describe('Transitions', () => {
     const payload: GetTransitionRequest = { sourceOccupation: occupations[0] };
 
     await store.dispatch(fetchTransitions(payload));
-    expect(store.getState().transitions.transitions).toHaveLength(0);
+    expect(store.getState().transitions.transitions).toBeUndefined();
     expect(store.getState().transitions.loading).toBeFalsy();
     expect(store.getState().transitions.error).toEqual(errorMessage);
   });
@@ -115,7 +115,7 @@ describe('Transitions', () => {
     const payload: GetTransitionRequest = { sourceOccupation: occupations[0] };
 
     await store.dispatch(fetchTransitions(payload));
-    expect(store.getState().transitions.transitions).toHaveLength(0);
+    expect(store.getState().transitions.transitions).toBeUndefined();
     expect(store.getState().transitions.loading).toBeFalsy();
     expect(store.getState().transitions.error).toBeUndefined();
   });

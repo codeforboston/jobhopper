@@ -1,16 +1,21 @@
 import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import RadioGroup from '@material-ui/core/RadioGroup';
 import React, { useMemo, useState } from 'react';
+import { Occupation } from 'src/domain/occupation';
+import { State } from 'src/domain/state';
 import { Transition } from 'src/domain/transition';
 import ResultError from 'src/ui/Results/ResultError';
 import { Column, LabeledSection, Row, StyledSecondary } from '../Common';
-import Treemap from '../D3Visualizations/Treemap';
+import TreemapWrapper from '../D3Visualizations/TreemapWrapper';
+import GreenRadio from '../RadioButton';
 import TransitionTable from '../TransitionTable';
-import { Occupation } from 'src/domain/occupation';
-import { State } from 'src/domain/state';
+
+const MIN_DISPLAY_TRANSITION_RATE = 0.002;
 
 export interface ResultsProps {
   selectedState?: State;
-  selectedOccupation?: Occupation;
+  selectedOccupation: Occupation;
   loading?: boolean;
   transitions?: Transition[];
   error?: string;
@@ -39,6 +44,48 @@ const Results: React.FC<ResultsProps> = ({
     showTreemap = visualization === 'treemap' && hasTransitions,
     disabled = !hasTransitions || loading;
 
+  const [toggle, setToggle] = useState('fill');
+
+  const [selectedValue, setSelectedValue] = useState<
+    'occupationDisplay' | 'salaryDisplay'
+  >('occupationDisplay');
+
+  const chooseToggle = () => {
+    // console.log('Toggle!');
+    toggle === 'fill' ? setToggle('opacity') : setToggle('fill');
+  };
+
+  const OccupationSalary =
+    visualization === 'matrix' ? (
+      ''
+    ) : (
+      <RadioGroup
+        value={selectedValue}
+        onChange={chooseToggle}
+        row
+        style={{
+          alignSelf: 'center',
+          flexDirection: 'row',
+          justifyContent: 'center',
+        }}
+      >
+        <FormControlLabel
+          value="occupationDisplay"
+          control={<GreenRadio />}
+          onChange={() => setSelectedValue('occupationDisplay')}
+          label="Occupation"
+          checked={selectedValue === 'occupationDisplay'}
+        />
+        <FormControlLabel
+          value="salaryDisplay"
+          control={<GreenRadio />}
+          onChange={() => setSelectedValue('salaryDisplay')}
+          label={`Salary ${selectedState ? selectedState.name : ''}`}
+          checked={selectedValue === 'salaryDisplay'}
+        />
+      </RadioGroup>
+    );
+
   return (
     <Column>
       <LabeledSection
@@ -47,7 +94,7 @@ const Results: React.FC<ResultsProps> = ({
       >
         <Row>
           <StyledSecondary
-            label="See a Matrix"
+            label="See a Table"
             testid="matrix-button"
             onClick={() => {
               setVisualization('matrix');
@@ -64,6 +111,7 @@ const Results: React.FC<ResultsProps> = ({
             disabled={disabled}
             selected={showTreemap}
           />
+          {OccupationSalary}
         </Row>
       </LabeledSection>
       {(() => {
@@ -75,12 +123,20 @@ const Results: React.FC<ResultsProps> = ({
           return (
             <TransitionTable
               selectedOccupation={selectedOccupation}
-              selectedState={selectedState}
-              transitionData={transitions}
+              transitionData={transitions.filter(
+                t => t.transitionRate > MIN_DISPLAY_TRANSITION_RATE
+              )}
             />
           );
         } else if (showTreemap) {
-          return <Treemap data={transitions} />;
+          return (
+            <TreemapWrapper
+              display={selectedValue}
+              selectedOccupation={selectedOccupation}
+              selectedState={selectedState}
+              transitions={transitions}
+            />
+          );
         }
       })()}
     </Column>

@@ -8,6 +8,11 @@ import django_filters
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.pagination import LimitOffsetPagination
+import requests
+from requests.auth import HTTPBasicAuth
+from typing import Dict, Any
+from decouple import config
+from rapidfuzz import fuzz
 from .serializers import (
     BlsOesSerializer,
     StateNamesSerializer,
@@ -15,7 +20,12 @@ from .serializers import (
     OccupationTransitionsSerializer,
     BlsTransitionsSerializer,
 )
+import logging
 
+log = logging.getLogger()
+
+
+# Documentation for Django generally refers to these views as views.py rather than api.py
 
 class BlsOesFilter(django_filters.FilterSet):
     """
@@ -77,6 +87,150 @@ class SocListSimpleViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SocListSerializer
     throttle_classes = [AnonRateThrottle]
     filter_class = SocListFilter
+
+
+class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    ViewSet for finding SOC codes matching a user's requested keyword
+    """
+    serializer_class = SocListSerializer
+    permission_classes = [permissions.AllowAny]
+    throttle_classes = [AnonRateThrottle]
+
+    # Default API parameters for O*NET observations and (weighted) minimum number of transitions observed
+    DEFAULT_ONET_LIMIT = 10
+    MAX_ONET_LIMIT = 50
+    DEFAULT_OBS_LIMIT = 1000
+
+    # Fuzz.partial_ratio score limit for tiered exact match on SOC title/code and keyword
+    FUZZ_LIMIT = 90
+
+    # Include a manual parameter that can be included in the request query (+ swagger_auto_schema decorator)
+    KEYWORD_PARAMETER = openapi.Parameter("keyword_search",
+                                          openapi.IN_QUERY,
+                                          description="Keyword search via O*NET",
+                                          type=openapi.TYPE_STRING)
+    ONET_LIMIT_PARAMETER = openapi.Parameter("onet_limit",
+                                             openapi.IN_QUERY,
+                                             description=f"Limit to O*NET search results",
+                                             type=openapi.TYPE_INTEGER)
+
+    OBS_LIMIT_PARAM = openapi.Parameter("min_weighted_obs",
+                                        openapi.IN_QUERY,
+                                        description="Minimum (weighted) observed transitions from source SOC",
+                                        type=openapi.TYPE_NUMBER)
+
+    def _set_params(self, request):
+        """
+        Set parameters based on the request. Custom parameters are identified by their openapi.Parameter name
+
+        :param request: User-input parameters
+        :return: Relevant parameters from the request
+        """
+        self.keyword_search = request.query_params.get("keyword_search")
+        self.onet_limit = request.query_params.get("onet_limit")
+        self.obs_limit = request.query_params.get("min_weighted_obs")
+
+        if not self.onet_limit or int(self.onet_limit) > self.MAX_ONET_LIMIT:
+            self.onet_limit = self.DEFAULT_ONET_LIMIT
+        if not self.obs_limit:
+            self.obs_limit = self.DEFAULT_OBS_LIMIT
+
+    def get_queryset(self):
+        """
+        Custom queryset used that is a combination of querysets from a couple models. Overwriting to prevent
+        schema generation warning.
+        """
+        pass
+
+    @staticmethod
+    def search_onet_keyword(keyword: str,
+                            limit: int = 20) -> Dict[str, Any]:
+        """
+        Search for a keyword that will be matched to SOC codes via the O*Net API
+
+        :param keyword: Keyword that's requested (user search)
+        :param limit: Limit to number of results (should expose this as a parameter)
+        :return: JSON response, e.g. {'keyword': 'doctor', ...
+                                      'career': [{'href': '',
+                                                'code': '29-1216.00',
+                                                'title': 'General Internal Medicine Physicians',
+                                                'tags': {'bright_outlook': ...},
+                                      ...]}
+        """
+        headers = {"Accept": "application/json"}
+        username = config("ONET_USERNAME")
+        password = config("ONET_PASSWORD")
+        try:
+            response = requests.get(f"https://services.onetcenter.org/ws/mnm/search?keyword={keyword}",
+                                    headers=headers,
+                                    params={'end': limit},
+                                    auth=HTTPBasicAuth(username, password))
+
+            return response.json()
+
+        except Exception as e:
+            log.warning(e)
+            return None
+
+    @swagger_auto_schema(manual_parameters=[KEYWORD_PARAMETER, ONET_LIMIT_PARAMETER, OBS_LIMIT_PARAM])
+    def list(self, request):
+        """
+        Query parameters:
+        ------------------------
+        * keyword_search: User-input keyword search for related professions
+        * onet_limit: Limit to the number of results pulled back from O*NET; capped by MAX_ONET_LIMIT. Responses will
+            only include smart-search SOCs with transitions data available. If no response is found from O*NET, all
+            available SOC codes are returned.
+        * min_weighted_obs: Minimum number of observed transitions (weighted) for a response to be included
+        """
+        # Parameters are pulled from request query, as defined by openapi.Parameter
+        self._set_params(request=request)
+
+        # Django QuerySet with all objects in the SocDescription model
+        # model_to_dict serializes each object in the model into a JSON/dict
+        available_socs = (SocDescription
+                          .objects
+                          .filter(total_transition_obs__gte=self.obs_limit))
+        available_socs = [model_to_dict(item)
+                          for item in available_socs]
+        available_soc_codes = [soc.get("soc_code") for soc in available_socs]
+        available_soc_codes = set(available_soc_codes)
+
+        # Query for O*NET Socs
+        onet_soc_codes = None
+        if self.keyword_search:
+            try:
+                onet_socs = self.search_onet_keyword(keyword=self.keyword_search,
+                                                     limit=self.onet_limit)
+                log.info(f"Smart search results: {onet_socs}")
+                onet_soc_codes = onet_socs.get("career")
+                onet_soc_codes = [soc.get("code", "") for soc in onet_soc_codes]
+                onet_soc_codes = set([soc.split(".")[0] for soc in onet_soc_codes])
+                log.info(f"Smart search SOC codes: {onet_soc_codes}")
+            except Exception as e:
+                log.info(f"Unable to find search results from O*NET for keyword {self.keyword_search} | {e}")
+
+        # Combine O*NET and available transition SOCs to return a response
+        if not onet_soc_codes:
+            return Response(available_socs)
+
+        # SOC codes in transitions data that are close to an exact match to the keyword - tiered matching, since O*NET
+        # does not include older SOC codes that exist in the transitions data
+        fuzz_soc_codes = [soc.get("soc_code") for soc in available_socs
+                          if fuzz.partial_ratio(self.keyword_search.lower(),
+                                                soc.get("soc_title").lower() + soc.get("soc_code")) >= self.FUZZ_LIMIT]
+        fuzz_soc_codes = set(fuzz_soc_codes)
+        log.info(f"SOC codes/titles that are a close exact match to the keyword search {fuzz_soc_codes}")
+
+        # SOC codes in both O*NET and transitions data, + SOC codes whose title closely matches the search parameter
+        smart_soc_codes = onet_soc_codes.intersection(available_soc_codes)
+        smart_soc_codes = smart_soc_codes.union(fuzz_soc_codes)
+
+        smart_socs = [soc for soc in available_socs
+                      if soc.get("soc_code") in smart_soc_codes]
+
+        return Response(smart_socs)
 
 
 class StateViewSet(viewsets.ReadOnlyModelViewSet):
@@ -156,8 +310,10 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
 
     def _set_params(self, request):
         """
-        :param request:
-        :return:
+        Set parameters based on the request. Custom parameters are identified by their openapi.Parameter name
+
+        :param request: User-input parameters
+        :return: Relevant parameters from the request
         """
         area_title = request.query_params.get("area_title")
         source_soc = request.query_params.get("soc")

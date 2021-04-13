@@ -12,30 +12,29 @@ import {
 import Results from './Results';
 
 export const ResultsContainer = () => {
-  const {
-    selectedState,
-    selectedOccupation,
-    loading,
-    transitions,
-    error,
-  } = useResultLoader();
-
-  return (
-    <Results
-      selectedState={selectedState}
-      selectedOccupation={selectedOccupation}
-      loading={loading}
-      transitions={transitions}
-      error={error}
-    />
+  const { selectedOccupation } = useOccupationsState();
+  const { selectedState, loading, transitions, error } = useResultLoader(
+    selectedOccupation
   );
+
+  if (selectedOccupation) {
+    return (
+      <Results
+        selectedState={selectedState}
+        selectedOccupation={selectedOccupation}
+        loading={loading}
+        transitions={transitions}
+        error={error}
+      />
+    );
+  }
+  return <div />; // normally we'll not hit this. We expect to have a valid selectedOccupation.
 };
 
-function useResultLoader() {
+function useResultLoader(selectedOccupation: any) {
   const dispatch = useDispatch();
   const { error, loading, transitions } = useTransitionsState(),
-    { selectedState } = useStateState(),
-    { selectedOccupation } = useOccupationsState();
+    { selectedState } = useStateState();
 
   const loadTransitions = useCallback(
     (sourceOccupation: Occupation, state?: State) =>
@@ -67,7 +66,6 @@ function useResultLoader() {
 
   return {
     selectedState,
-    selectedOccupation,
     transitions,
     loading,
     error,

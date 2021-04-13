@@ -8,16 +8,19 @@ export const fetchTransitions = createAsyncThunk(
   'transitions/fetchTransitions',
   (payload: GetTransitionRequest) => api.getTransitions(payload)
 );
-
 type SliceState = {
-  transitions: Transition[];
+  transitions?: Transition[];
   error?: string;
   loading: boolean;
 };
 
 const slice = createSlice({
   name: 'transitions',
-  initialState: { transitions: [], error: '', loading: false } as SliceState,
+  initialState: {
+    transitions: undefined,
+    error: '',
+    loading: false,
+  } as SliceState,
   reducers: {
     clearTransitions: state => {
       state.transitions = [];
@@ -34,7 +37,7 @@ const slice = createSlice({
     );
     builder.addCase(fetchTransitions.pending, state => {
       state.loading = true;
-      state.transitions = [];
+      state.transitions = undefined;
       state.error = undefined;
     });
     builder.addCase(
@@ -42,7 +45,7 @@ const slice = createSlice({
       (state, { error: { name, message = 'Error fetching transitions' } }) => {
         state.error = name === 'AbortError' ? undefined : message;
         state.loading = false;
-        state.transitions = [];
+        state.transitions = undefined;
       }
     );
   },
