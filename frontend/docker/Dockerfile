@@ -1,5 +1,7 @@
 FROM node:14.15-alpine as debug
  
+RUN apk add --no-cache g++ make python
+
 # Project root
 WORKDIR /app
  
