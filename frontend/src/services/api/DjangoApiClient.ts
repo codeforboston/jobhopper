@@ -1,4 +1,5 @@
 import axiosModule, { AxiosInstance } from 'axios';
+import { sortBy } from 'lodash';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
 import { Transition } from 'src/domain/transition';
@@ -32,7 +33,13 @@ export default class DjangoApiClient implements Api {
         },
       })
       .then(response => response.data)
-      .then((data: unknown) => array(data, occupation));
+      .then((data: unknown) => array(data, occupation))
+      .then(occupations => {
+        if (request === '') {
+          return sortBy(occupations, ({ code }) => code);
+        }
+        return occupations;
+      });
   }
 
   getStates(): Promise<State[]> {

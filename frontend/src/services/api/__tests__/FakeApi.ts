@@ -16,7 +16,7 @@ describe('Fake API', () => {
 
   it('retrieves occupations', async () => {
     const api = new FakeApi();
-    const occupations: Occupation[] = await api.getOccupations();
+    const occupations: Occupation[] = await api.getOccupations('software');
     occupations.forEach(({ name, code }) => {
       expect(typeof name).toBe('string');
       expect(typeof code).toBe('string');

@@ -1,12 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { sortBy } from 'lodash';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Occupation } from '../domain/occupation';
 import api from '../services/api';
 
 export const fetchOccupations = createAsyncThunk(
   'occupations/fetchOccupations',
-  () => api.getOccupations('')
+  (searchKeyword: string) => api.getOccupations(searchKeyword)
 );
 
 type SliceState = {
@@ -33,7 +32,7 @@ const slice = createSlice({
     builder.addCase(
       fetchOccupations.fulfilled,
       (state, { payload: occupations }) => {
-        state.occupations = sortBy(occupations, ({ code }) => code);
+        state.occupations = occupations;
         state.loading = false;
         state.error = undefined;
       }
