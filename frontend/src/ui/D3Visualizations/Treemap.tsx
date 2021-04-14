@@ -10,6 +10,7 @@ import { Container, Svg } from './styledDivs';
 import ToolTip from './ToolTip';
 import useResizeObserver from './useResizeObserver';
 import './d3css.css';
+import { PopUp } from './PopUp';
 
 export type CategoryNode = {
   name: string;
@@ -94,8 +95,6 @@ export default function Treemap({
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
   const svgRef = useRef<SVGSVGElement>(null);
-  const leftTooltipPosition = useRef<string>('0');
-  const topTooltipPosition = useRef<string>('0');
 
   const [hoveredInfo, setHoveredInfo] = useState();
   const [selectedInfo, setSelectedInfo] = useState();
@@ -111,68 +110,23 @@ export default function Treemap({
         .select(d.currentTarget.parentElement)
         .select('.outline');
 
-      hoveredNode = outlineNode;
-      hoveredNode.classed('outline-hovered', true);
-
       if (targetCode === selectedCode) {
         selectedNode!.classed('ouline-selected', true);
+      } else {
+        hoveredNode = outlineNode;
+        hoveredNode.classed('outline-hovered', true);
       }
 
       setHoveredInfo(i);
       setSelectedCategory(category(i.data));
       i.data.category = getCategoryForCode(category(i.data)).name;
 
-      toolTipDiv.html(
-        `${name(i.data)} ${Math.round(transitionRate(i.data) * 10000) / 100}%`
-      );
-
-      const horizontalNodeMiddle = i.x0 + (i.x1 - i.x0) / 2;
-      const verticalNodeStart = i.y0;
-      const verticalNodeEnd = i.y1;
-
-      const toolTipElement = toolTipDiv.node() as HTMLDivElement;
-      const tooltipBounds = {
-        width: toolTipElement.clientWidth,
-        height: toolTipElement.clientHeight,
-      };
-
       const svgBounds = {
         width: svg.node()!.clientWidth,
         height: svg.node()!.clientHeight,
       };
 
-      if (tooltipBounds.width) {
-        const newLeftPosition =
-          horizontalNodeMiddle + tooltipBounds.width / 2 < svgBounds.width + 1
-            ? horizontalNodeMiddle - tooltipBounds.width / 2 < 0
-              ? 20 + 'px'
-              : horizontalNodeMiddle - tooltipBounds.width / 2 + 'px'
-            : svgBounds.width - tooltipBounds.width - 20 + 'px';
-        leftTooltipPosition.current = newLeftPosition;
-      }
-
-      if (tooltipBounds.height) {
-        const buffer = 3;
-        const newTopPosition =
-          tooltipBounds.height &&
-          verticalNodeStart - tooltipBounds.height - buffer < 0
-            ? verticalNodeEnd + buffer + 'px'
-            : verticalNodeStart - tooltipBounds.height - buffer + 'px';
-        topTooltipPosition.current = newTopPosition;
-      }
-
-      toolTipContainerDiv
-        .style('left', leftTooltipPosition.current)
-        .style('top', topTooltipPosition.current);
-
-      tooltip
-        .transition()
-        .style('visibility', 'visible')
-        .transition()
-        .delay(250)
-        .duration(500)
-        .style('opacity', '1')
-        .ease(d3.easeCubicInOut);
+      popUpLabel.show(d, i, svgBounds);
     };
 
     const mouseout = (d: any, i: any) => {
@@ -190,7 +144,7 @@ export default function Treemap({
       setHoveredInfo(undefined);
       setSelectedCategory(undefined);
 
-      tooltip.style('visibility', 'hidden');
+      popUpLabel.hide();
     };
 
     const click = (d: any, i: any) => {
@@ -239,6 +193,8 @@ export default function Treemap({
         hourlyArray.push(e.hourlyPay);
       });
     });
+
+    let popUpLabel: PopUp;
 
     const opacity = createOpacityScale(hourlyArray);
 
@@ -321,24 +277,8 @@ export default function Treemap({
           : formatHourlyPay(d.data);
       });
 
-    const tooltipGroup = svg.append('g');
-
-    const tooltip = tooltipGroup
-      .append('foreignObject')
-      .attr('id', 'toolTipObj')
-      .attr('class', 'tool-tip-obj')
-      .attr('width', svg.node()!.clientWidth)
-      .attr('height', svg.node()!.clientHeight);
-
-    const toolTipContainerDiv = tooltip
-      .append('xhtml:div')
-      .attr('id', 'tooltipcontainer')
-      .attr('class', 'tool-tip-container');
-
-    const toolTipDiv = toolTipContainerDiv
-      .append('xhtml:div')
-      .attr('class', 'tool-tip-div')
-      .html('tooltext');
+    // prepare pop up -- starts out hidden
+    popUpLabel = new PopUp(svg);
   }, [dimensions.width, dimensions.height, data, setSelectedCategory, display]);
 
   useLayoutEffect(() => {
