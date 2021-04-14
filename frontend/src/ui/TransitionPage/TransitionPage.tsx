@@ -23,13 +23,13 @@ const TransitionPage: React.FC = () => {
       <LandingBlurb />
       <LabeledSection
         title="Enter occupation"
-        subtitle="Type in an occupation by name or SOC code."
+        subtitle="Type in an occupation by name or SOC code to see nationwide occupational transitions."
       >
         <OccupationSelectContainer />
       </LabeledSection>
       <LabeledSection
         title="Enter State (Optional)"
-        subtitle="If no state is entered, national wage data will be shown."
+        subtitle="Type in a state to see state-level average wage data. If no state is entered, national wage data will be shown."
       >
         <StateSelectContainer />
       </LabeledSection>
