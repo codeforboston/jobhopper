@@ -248,9 +248,8 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
         smart_soc_codes = available_fuzz_codes + available_onet_codes
         log.info(f'Combined SOC codes: {smart_soc_codes}')
 
+        # Get actual metadata
         smart_socs = [available_soc_codes.get(soc) for soc in smart_soc_codes]
-
-        log.debug(f"Sorted smart_socs based on strength of match to input: {smart_socs}")
 
         return Response(smart_socs)
 
