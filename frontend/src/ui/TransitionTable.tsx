@@ -22,12 +22,13 @@ const TransitionTable = ({
 
   const title = `Which occupations do ${selectedOccupation.name}  (${selectedOccupation.code}) move to?`;
 
-  const scrollToOnMount = useCallback((ref: any) => {
-    console.log('ref', ref);
-    (ref?.tableContainerDiv?.current as HTMLDivElement)?.scrollIntoView?.({
-      behavior: 'smooth',
-    });
-  }, []);
+  const scrollToOnMount = useCallback(
+    (ref: any) =>
+      (ref?.tableContainerDiv?.current as HTMLDivElement)?.scrollIntoView?.({
+        behavior: 'smooth',
+      }),
+    []
+  );
 
   return (
     <>
