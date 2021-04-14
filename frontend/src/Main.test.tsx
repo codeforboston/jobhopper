@@ -77,7 +77,7 @@ describe('Main', () => {
 
     await selectEvent.select(
       getByLabelText('occupation-select'),
-      '11-1011 | Chief Executives'
+      '01-2345 | Doctor'
     );
 
     await waitFor(() => expect(getByText(/move to\?/i)).toBeInTheDocument());
@@ -98,7 +98,7 @@ describe('Main', () => {
 
     await selectEvent.select(
       getByLabelText('occupation-select'),
-      '11-1011 | Chief Executives'
+      '01-2345 | Doctor'
     );
     await selectEvent.select(getByLabelText('state-select'), 'California');
 
