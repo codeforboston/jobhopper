@@ -238,12 +238,13 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
                                 for soc in fuzz_soc_codes
                                 if soc not in onet_soc_codes]
 
-        # Order response in by the highest fuzzy match score
+        # Order fuzzy-match occupations by the highest fuzzy match score
         available_fuzz_codes = sorted(available_fuzz_codes,
                                       key=lambda k: k.get("input_match_score"),
                                       reverse=True)
         available_fuzz_codes = [soc.get('soc_code') for soc in available_fuzz_codes]
 
+        # Return the fuzzy-matched occupations in best-worst score order and O*NET codes in their original order
         smart_soc_codes = available_fuzz_codes + available_onet_codes
         log.info(f'Combined SOC codes: {smart_soc_codes}')
 
