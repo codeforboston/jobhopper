@@ -1,11 +1,10 @@
-import React from 'react';
-import MaterialTable from 'material-table';
-import { Transition } from '../domain/transition';
 import { Typography, useTheme } from '@material-ui/core';
-import OnetLink from './OnetLink';
-import DataHelper from 'src/services/api/DataHelper';
-// leaving these two lines from develop branch. used in TransitionTableProps
+import MaterialTable from 'material-table';
+import React, { useCallback } from 'react';
 import { Occupation } from 'src/domain/occupation';
+import DataHelper from 'src/services/api/DataHelper';
+import { Transition } from '../domain/transition';
+import OnetLink from './OnetLink';
 import { Body } from './Typography';
 
 export interface TransitionTableProps {
@@ -23,16 +22,17 @@ const TransitionTable = ({
 
   const title = `Which occupations do ${selectedOccupation.name}  (${selectedOccupation.code}) move to?`;
 
+  const scrollToOnMount = useCallback((ref: any) => {
+    console.log('ref', ref);
+    (ref?.tableContainerDiv?.current as HTMLDivElement)?.scrollIntoView?.({
+      behavior: 'smooth',
+    });
+  }, []);
+
   return (
     <>
       <MaterialTable
-        tableRef={(ref: any) =>
-          (ref?.tableContainerDiv?.current as HTMLDivElement)?.scrollIntoView?.(
-            {
-              behavior: 'smooth',
-            }
-          )
-        }
+        tableRef={scrollToOnMount}
         style={centerWide}
         columns={[
           {
