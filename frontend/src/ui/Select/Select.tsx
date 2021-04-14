@@ -1,5 +1,6 @@
 import { useTheme } from '@material-ui/core';
-import React from 'react';
+import AwesomeDebouncePromise from 'awesome-debounce-promise';
+import React, { useMemo } from 'react';
 import ReactSelect, { Props as SyncProps } from 'react-select';
 import AsyncSelect, { Props as AsyncProps } from 'react-select/async';
 import { Occupation } from '../../domain/occupation';
@@ -66,12 +67,19 @@ export const SelectAsync = <T,>({
   ...rest
 }: AsyncSelectProps<T>): JSX.Element => {
   const theme = useTheme();
+  // AwesomeDebouncePromise avoids an issue with lodash debounce where debounce
+  // returns the result of the previous query
+  const debouncedLoadOptions = useMemo(
+    () => AwesomeDebouncePromise(loadOptions, 500),
+    [loadOptions]
+  );
+
   return (
     <div>
       <AsyncSelect
         cacheOptions
         defaultOptions
-        loadOptions={loadOptions}
+        loadOptions={debouncedLoadOptions}
         placeholder={loading ? 'Loading...' : error || placeholder}
         getOptionLabel={getOptionLabel}
         getOptionValue={getOptionValue}
@@ -103,7 +111,6 @@ export interface OccupationSelectProps
 }
 
 export const OccupationSelect = ({
-  occupations,
   onSelectOccupation = () => {},
   fetchOptions: loadOptions = (input: string) => {},
   ...rest
