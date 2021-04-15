@@ -152,11 +152,11 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
         :param keyword: Keyword that's requested (user search)
         :param limit: Limit to number of results (should expose this as a parameter)
         :return: JSON response, e.g. {'keyword': 'doctor', ...
-                                      'career': [{'href': '',
-                                                'code': '29-1216.00',
-                                                'title': 'General Internal Medicine Physicians',
-                                                'tags': {'bright_outlook': ...},
-                                      ...]}
+                                     'career': [{'href': '',
+                                               'code': '29-1216.00',
+                                               'title': 'General Internal Medicine Physicians',
+                                               'tags': {'bright_outlook': ...},
+                                     ...]}
         """
         headers = {"Accept": "application/json"}
         username = config("ONET_USERNAME")
@@ -176,12 +176,16 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
     @swagger_auto_schema(manual_parameters=[KEYWORD_PARAMETER, ONET_LIMIT_PARAMETER, OBS_LIMIT_PARAM])
     def list(self, request):
         """
+        Query O*NET to get occupations matching the meaning or letter of the keyword. Filter O*NET results against our
+        transitions API. Also include SOCs in our transitions data (but not O*NET) that match closely to the keyword.
+        Return the SOC codes in our transitions data from best-worst ranked, then O*NET results in their original order.
+
         Query parameters:
         ------------------------
         * keyword_search: User-input keyword search for related professions
         * onet_limit: Limit to the number of results pulled back from O*NET; capped by MAX_ONET_LIMIT. Responses will
-            only include smart-search SOCs with transitions data available. If no response is found from O*NET, all
-            available SOC codes are returned.
+           only include smart-search SOCs with transitions data available. If no response is found from O*NET, all
+           available SOC codes are returned.
         * min_weighted_obs: Minimum number of observed transitions (weighted) for a response to be included
         """
         # Parameters are pulled from request query, as defined by openapi.Parameter
@@ -194,41 +198,58 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
                           .filter(total_transition_obs__gte=self.obs_limit))
         available_socs = [model_to_dict(item)
                           for item in available_socs]
-        available_soc_codes = [soc.get("soc_code") for soc in available_socs]
-        available_soc_codes = set(available_soc_codes)
+        # Transform list of dicts into a lookup dict {soc_code: {soc_code: , soc_title: , total_transition_obs: }}
+        available_soc_codes = {soc.get("soc_code"): soc for soc in available_socs}
 
-        # Query for O*NET Socs
+        # Query for O*NET Socs if there is a keyword
         onet_soc_codes = None
         if self.keyword_search:
             try:
                 onet_socs = self.search_onet_keyword(keyword=self.keyword_search,
                                                      limit=self.onet_limit)
-                log.info(f"Smart search results: {onet_socs}")
+                log.debug(f"Smart search results: {onet_socs}")
                 onet_soc_codes = onet_socs.get("career")
                 onet_soc_codes = [soc.get("code", "") for soc in onet_soc_codes]
-                onet_soc_codes = set([soc.split(".")[0] for soc in onet_soc_codes])
+                onet_soc_codes = [soc.split(".")[0] for soc in onet_soc_codes]
                 log.info(f"Smart search SOC codes: {onet_soc_codes}")
             except Exception as e:
                 log.info(f"Unable to find search results from O*NET for keyword {self.keyword_search} | {e}")
 
-        # Combine O*NET and available transition SOCs to return a response
-        if not onet_soc_codes:
+        # Default response when there is not yet a keyword typed
+        if not self.keyword_search:
             return Response(available_socs)
 
         # SOC codes in transitions data that are close to an exact match to the keyword - tiered matching, since O*NET
         # does not include older SOC codes that exist in the transitions data
+        for soc_entry in available_socs:
+            soc_string = soc_entry.get("soc_title").lower() + soc_entry.get("soc_code")
+            soc_entry["input_match_score"] = fuzz.partial_ratio(self.keyword_search.lower(),
+                                                                soc_string)
+
         fuzz_soc_codes = [soc.get("soc_code") for soc in available_socs
-                          if fuzz.partial_ratio(self.keyword_search.lower(),
-                                                soc.get("soc_title").lower() + soc.get("soc_code")) >= self.FUZZ_LIMIT]
+                          if soc.get("input_match_score") >= self.FUZZ_LIMIT]
+
         fuzz_soc_codes = set(fuzz_soc_codes)
         log.info(f"SOC codes/titles that are a close exact match to the keyword search {fuzz_soc_codes}")
 
         # SOC codes in both O*NET and transitions data, + SOC codes whose title closely matches the search parameter
-        smart_soc_codes = onet_soc_codes.intersection(available_soc_codes)
-        smart_soc_codes = smart_soc_codes.union(fuzz_soc_codes)
+        available_onet_codes = [soc for soc in onet_soc_codes if soc in available_soc_codes]
+        available_fuzz_codes = [available_soc_codes.get(soc)
+                                for soc in fuzz_soc_codes
+                                if soc not in onet_soc_codes]
 
-        smart_socs = [soc for soc in available_socs
-                      if soc.get("soc_code") in smart_soc_codes]
+        # Order fuzzy-match occupations by the highest fuzzy match score
+        available_fuzz_codes = sorted(available_fuzz_codes,
+                                      key=lambda k: k.get("input_match_score"),
+                                      reverse=True)
+        available_fuzz_codes = [soc.get('soc_code') for soc in available_fuzz_codes]
+
+        # Return the fuzzy-matched occupations in best-worst score order and O*NET codes in their original order
+        smart_soc_codes = available_fuzz_codes + available_onet_codes
+        log.info(f'Combined SOC codes: {smart_soc_codes}')
+
+        # Get actual metadata
+        smart_socs = [available_soc_codes.get(soc) for soc in smart_soc_codes]
 
         return Response(smart_socs)
 
@@ -285,7 +306,7 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
     BLS_TRANSITIONS = namedtuple("BlsTransitions", ("bls", "transitions"))
 
     DEFAULT_AREA = "U.S."
-    DEFAULT_SOC = "35-3031"         # 35-3031 is waiters and waitresses
+    DEFAULT_SOC = "35-3031"  # 35-3031 is waiters and waitresses
     DEFAULT_TRANSITION_PROBABILITY = 0.01
     SOC_SWAGGER_PARAM = openapi.Parameter("soc",
                                           openapi.IN_QUERY,
@@ -389,7 +410,7 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
                          .filter(soc1=self.source_soc)
                          .filter(pi__gte=self.min_transition_probability)
                          ),
-            )
+        )
 
         # Convert bls_transitions QuerySet to dicts & join the results
         # List of dicts, each containing metadata on SOCs and transitions
@@ -427,6 +448,6 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
         #   serializer = BlsTransitionsSerializer(bls_transitions)
         #   return Response(serializer.data)
         return Response({
-            "source_soc":  source_soc_info,
+            "source_soc": source_soc_info,
             "transition_rows": transitions,
         })
