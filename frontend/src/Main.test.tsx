@@ -26,9 +26,13 @@ afterEach(() => {
 describe('OccupationSelect', () => {
   it('Can use OccupationSelect', async () => {
     const mockOnChange = jest.fn();
+    const mockFetchOptions = async () => {
+      return [{ code: '01-2345', name: 'Doctor' }];
+    };
 
     const { container, getByLabelText } = render(
       <OccupationSelect
+        fetchOptions={mockFetchOptions}
         occupations={[{ code: '01-2345', name: 'Doctor' }]}
         onChange={mockOnChange}
       />

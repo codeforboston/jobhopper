@@ -1,28 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   fetchOccupations,
-  useOccupationsState,
   selectOccupation,
+  useOccupationsState,
 } from '../../ducks/occupations';
-import { fetchStates, useStateState, selectState } from '../../ducks/states';
+import { fetchStates, selectState, useStateState } from '../../ducks/states';
 import { OccupationSelect, StateSelect } from './Select';
 
 export const OccupationSelectContainer: React.FC = () => {
+  /*
+   * Construct select container to render OccupationSelect, which displays available transition source occupations
+   */
   const dispatch = useDispatch();
 
-  const { occupations, loading, error } = useOccupationsState();
+  const fetchOptions = useCallback(
+    async (keyword: string) => {
+      const action: any = await dispatch(fetchOccupations(keyword));
+      return action.payload || [];
+    },
+    [dispatch]
+  );
 
-  useEffect(() => {
-    dispatch(fetchOccupations());
-  }, [dispatch]);
+  const { error } = useOccupationsState();
 
   return (
     <OccupationSelect
+      fetchOptions={fetchOptions}
       onSelectOccupation={occupation => dispatch(selectOccupation(occupation))}
-      loading={loading}
       error={error}
-      occupations={occupations}
     />
   );
 };

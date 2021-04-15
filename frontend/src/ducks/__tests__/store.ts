@@ -53,7 +53,7 @@ describe('Occupations', () => {
 
     mockedApi.getOccupations.mockResolvedValue(occupations);
 
-    await store.dispatch(fetchOccupations());
+    await store.dispatch(fetchOccupations('software'));
     expect(store.getState().occupations.occupations).toEqual(occupations);
     expect(store.getState().occupations.error).toBeUndefined();
     expect(store.getState().occupations.loading).toBeFalsy();
@@ -66,7 +66,7 @@ describe('Occupations', () => {
     const errorMessage = 'test error fetching';
     mockedApi.getOccupations.mockRejectedValue(new Error(errorMessage));
 
-    await store.dispatch(fetchOccupations());
+    await store.dispatch(fetchOccupations('software'));
     expect(store.getState().occupations.occupations).toHaveLength(0);
     expect(store.getState().occupations.error).toEqual(errorMessage);
     expect(store.getState().occupations.loading).toBeFalsy();

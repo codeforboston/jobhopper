@@ -1,5 +1,4 @@
-// also exported from '@storybook/react' if you can deal with breaking changes in 6.1
-import { Meta, Story } from '@storybook/react/types-6-0';
+import { Meta, Story } from '@storybook/react';
 import React from 'react';
 import occupations from '../../testing/data/occupations';
 import states from '../../testing/data/states';
@@ -30,7 +29,10 @@ const OccupationsTemplate: Story<OccupationSelectProps> = args => (
   <OccupationSelect {...args} />
 );
 OccupationsTemplate.args = {
-  occupations,
+  fetchOptions: input => {
+    console.log('fetchOptions', input);
+    return Promise.resolve(occupations);
+  },
   onSelectOccupation: o => console.log('occupation', o),
 };
 
@@ -46,7 +48,16 @@ ErrorOccupations.args = {
   error: 'Error loading occupations',
 };
 
-export const States: Story<StateSelectProps> = args => (
+const StatesTemplate: Story<StateSelectProps> = args => (
   <StateSelect {...args} />
 );
-States.args = { states, onSelectState: s => console.log('state', s) };
+StatesTemplate.args = { states, onSelectState: s => console.log('state', s) };
+
+export const NormalStates = StatesTemplate.bind({});
+NormalStates.args = { ...StatesTemplate.args };
+
+export const LoadingStates = StatesTemplate.bind({});
+LoadingStates.args = { ...StatesTemplate.args, loading: true };
+
+export const ErrorStates = StatesTemplate.bind({});
+ErrorStates.args = { ...StatesTemplate.args, error: 'Error loading states' };
