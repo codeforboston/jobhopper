@@ -53,11 +53,15 @@ export default function TreemapWrapper({
         selectedCategory={selectedCategory}
       />
       <CaptionText>
-        The treemap above shows the occupations which {selectedOccupation.name}{' '}
-        move to when they change occupation based on the observations in our
-        dataset. The transition share is the percentage of these observed{' '}
-        {selectedOccupation.name} who have moved into each of the occupations
-        listed.
+        This visualization shows the occupations which {selectedOccupation.name}{' '}
+        move to when they change occupation. The size of the box represents the
+        transition share, which is the proportion of {selectedOccupation.name}{' '}
+        who move into a job in each other occupation when they switch jobs. We
+        only break out individual occupations with transition shares greater
+        than 0.2%. In the "occupation" view, the colors of the boxes represent
+        occupation groups. In the "salary" view, the colors of the boxes
+        represent the hourly pay of the occupation{' '}
+        {selectedState ? ' in ' + selectedState.name : 'Nationally.'}
       </CaptionText>
       <CaptionText>
         *SOC (Standard Occupation Classification) code broad category, used by
