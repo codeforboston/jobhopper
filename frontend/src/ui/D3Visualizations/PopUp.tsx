@@ -59,7 +59,6 @@ export class PopUp {
   }
 
   show(d: any, i: any, svgBounds: { width: number; height: number }) {
-    console.log(this.toolTip);
     const toolTipDiv = this.toolTip.select('.tool-tip-div');
     const toolTipContainerDiv = this.toolTip.select('.tool-tip-container');
     toolTipDiv.html(

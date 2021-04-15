@@ -3,9 +3,19 @@ import { groupBy } from 'lodash';
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { Occupation } from '../../domain/occupation';
 import { State } from '../../domain/state';
-import { getCategory, Transition } from '../../domain/transition';
+import { Transition } from '../../domain/transition';
 import { categories, getCategoryForCode } from './category';
-import { colorScaleMajorOccupation, createOpacityScale } from './d3Utilities';
+import {
+  colorScaleMajorOccupation,
+  createOpacityScale,
+  name,
+  transitionRate,
+  code,
+  category,
+  hourlyPay,
+  formatHourlyPay,
+  formatTransitionRate,
+} from './d3Utilities';
 import { Container, Svg } from './styledDivs';
 import ToolTip from './ToolTip';
 import useResizeObserver from './useResizeObserver';
@@ -54,38 +64,6 @@ const groupData = (data: Transition[]): TreeRootNode => {
     children: categoryGroups,
   };
 };
-
-function isTransition(node: TreeNode): node is Transition {
-  return (node as Transition).transitionRate !== undefined;
-}
-
-function name(node: TreeNode): string {
-  return isTransition(node) ? node.name : '';
-}
-
-function transitionRate(node: TreeNode): number {
-  return isTransition(node) ? node.transitionRate : 0;
-}
-
-function code(node: TreeNode): string {
-  return isTransition(node) ? node.code : '0';
-}
-
-export function category(node: TreeNode): number {
-  return isTransition(node) ? getCategory(node) : 0;
-}
-
-function hourlyPay(node: TreeNode): number {
-  return isTransition(node) ? node.hourlyPay : 0;
-}
-
-function formatHourlyPay(i: TreeNode): string {
-  return `$${Math.round(hourlyPay(i))}`;
-}
-
-function formatTransitionRate(i: TreeNode): string {
-  return `${Math.round(transitionRate(i) * 10000) / 100}%`;
-}
 
 export default function Treemap({
   transitions: data,

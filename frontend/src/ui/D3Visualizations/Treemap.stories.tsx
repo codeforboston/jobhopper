@@ -1,10 +1,11 @@
 import React from 'react';
 import { Story, Meta } from '@storybook/react/types-6-0';
-import Treemap, { TreemapProps, category } from './Treemap';
+import Treemap, { TreemapProps } from './Treemap';
 import transitions from '../../testing/data/transitionData';
 import states from '../../testing/data/states';
 import occupations from '../../testing/data/occupations';
 import TreemapKey, { TreemapKeyProps } from './TreemapKey';
+import { category } from './d3Utilities';
 
 export default {
   title: 'JobHopper/D3Visualizations/Treemap',
