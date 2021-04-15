@@ -8,7 +8,7 @@ export type GetTransitionRequest = {
 };
 
 export default interface Api {
-  getOccupations: () => Promise<Occupation[]>;
+  getOccupations: (request: string) => Promise<Occupation[]>;
 
   getStates: () => Promise<State[]>;
 

@@ -1,6 +1,5 @@
 import React from 'react';
-// also exported from '@storybook/react' if you can deal with breaking changes in 6.1
-import { Story, Meta } from '@storybook/react/types-6-0';
+import { Story, Meta } from '@storybook/react';
 
 import TransitionPage, { ContainerContext } from './TransitionPage';
 import * as Select from '../Select/Select.stories';
@@ -15,7 +14,7 @@ export default {
 const Template: Story<{
   resultsArgs: typeof Results.Display.args;
   occupationSelectArgs: typeof Select.NormalOccupations.args;
-  stateSelectArgs: typeof Select.States.args;
+  stateSelectArgs: typeof Select.NormalStates.args;
   resultsStory: typeof Results.Display;
 }> = ({ resultsArgs, occupationSelectArgs, stateSelectArgs, resultsStory }) => (
   <ContainerContext.Provider
@@ -24,7 +23,7 @@ const Template: Story<{
         Select.NormalOccupations,
         occupationSelectArgs
       ),
-      StateSelectContainer: bindArgs(Select.States, stateSelectArgs),
+      StateSelectContainer: bindArgs(Select.NormalStates, stateSelectArgs),
       ResultsContainer: bindArgs(resultsStory, resultsArgs),
     }}
   >
@@ -37,5 +36,5 @@ Default.args = {
   resultsStory: Results.Display,
   resultsArgs: Results.Display.args,
   occupationSelectArgs: Select.NormalOccupations.args,
-  stateSelectArgs: Select.States.args,
+  stateSelectArgs: Select.NormalStates.args,
 };

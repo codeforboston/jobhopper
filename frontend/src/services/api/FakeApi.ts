@@ -15,7 +15,7 @@ export default class FakeApi implements Api {
     console.log('FakeApi.getStates');
     return resolveWithDelay(states);
   };
-  getOccupations = () => {
+  getOccupations = (request: string) => {
     console.log('FakeApi.getOccupations');
     return resolveWithDelay(occupations);
   };

@@ -1,4 +1,5 @@
 import axiosModule, { AxiosInstance } from 'axios';
+import { sortBy } from 'lodash';
 import { Occupation } from 'src/domain/occupation';
 import { State } from 'src/domain/state';
 import { Transition } from 'src/domain/transition';
@@ -17,11 +18,28 @@ export default class DjangoApiClient implements Api {
     });
   }
 
-  getOccupations(): Promise<Occupation[]> {
+  getOccupations(request: string): Promise<Occupation[]> {
+    /*
+     * Get occupations from the soc-smart-list Django API endpoint based on parameters defined in Api.ts
+     * Limit O*NET results to 30 (to be filtered against existing transitions data)
+     * Limit occupations returned to those with over 2000 (weighted) observations
+     */
     return this.axios
-      .get('/soc-list/')
+      .get('/soc-smart-list/', {
+        params: {
+          keyword_search: request,
+          onet_limit: 30,
+          min_weighted_obs: 2000,
+        },
+      })
       .then(response => response.data)
-      .then((data: unknown) => array(data, occupation));
+      .then((data: unknown) => array(data, occupation))
+      .then(occupations => {
+        if (request === '') {
+          return sortBy(occupations, ({ code }) => code);
+        }
+        return occupations;
+      });
   }
 
   getStates(): Promise<State[]> {
