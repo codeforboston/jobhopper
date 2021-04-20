@@ -1,0 +1,60 @@
+.treemap-container {
+  --text-font-size: 18px;
+  --percent-font-size: 20px;
+}
+
+.outline {
+  pointer-events: none;
+  fill: transparent;
+}
+
+.outline-selected {
+  outline: 4px solid #2e724a;
+  outline-offset: -4px;
+}
+
+.outline-hovered {
+  outline: 3px solid #2878c8;
+  outline-offset: -3px;
+}
+
+.node-labels {
+  pointer-events: none;
+}
+
+.node-label-title {
+  font-size: var(--text-font-size);
+  max-height: 2.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: black;
+}
+
+.node-label-data {
+  font-size: var(--percent-font-size);
+  font-weight: bolder;
+  padding: 0 6px 6px 6px;
+  color: black;
+}
+
+.tool-tip-obj {
+  visibility: hidden;
+  z-index: 10;
+  padding: 6px;
+  pointer-events: none;
+  position: relative;
+}
+
+.tool-tip-container {
+  height: 5%;
+  min-width: 20%;
+  max-width: 35%;
+  position: absolute;
+}
+
+.tool-tip-div {
+  background-color: white;
+  border-radius: 5px;
+  text-align: center;
+  padding: 3px 10px;
+}

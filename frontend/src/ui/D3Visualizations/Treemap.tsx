@@ -3,15 +3,24 @@ import { groupBy } from 'lodash';
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { Occupation } from '../../domain/occupation';
 import { State } from '../../domain/state';
-import { getCategory, Transition } from '../../domain/transition';
+import { Transition } from '../../domain/transition';
 import { categories, getCategoryForCode } from './category';
-import { colorScaleMajorOccupation, createOpacityScale } from './d3Utilities';
+import {
+  colorScaleMajorOccupation,
+  createOpacityScale,
+  name,
+  transitionRate,
+  code,
+  category,
+  hourlyPay,
+  formatHourlyPay,
+  formatTransitionRate,
+} from './d3Utilities';
 import { Container, Svg } from './styledDivs';
 import ToolTip from './ToolTip';
 import useResizeObserver from './useResizeObserver';
-
-const textFontSize = 18;
-const percentFontSize = 20;
+import './d3css.css';
+import { PopUp } from './PopUp';
 
 export type CategoryNode = {
   name: string;
@@ -56,44 +65,6 @@ const groupData = (data: Transition[]): TreeRootNode => {
   };
 };
 
-function isTransition(node: TreeNode): node is Transition {
-  return (node as Transition).transitionRate !== undefined;
-}
-
-function name(node: TreeNode): string {
-  return isTransition(node) ? node.name : '';
-}
-
-function transitionRate(node: TreeNode): number {
-  return isTransition(node) ? node.transitionRate : 0;
-}
-
-function code(node: TreeNode): string {
-  return isTransition(node) ? node.code : '0';
-}
-
-export function category(node: TreeNode): number {
-  return isTransition(node) ? getCategory(node) : 0;
-}
-
-function hourlyPay(node: TreeNode): number {
-  return isTransition(node) ? node.hourlyPay : 0;
-}
-
-function formatHourlyPay(i: TreeNode): string {
-  return `$${Math.round(hourlyPay(i))}`;
-}
-
-function formatTransitionRate(i: TreeNode): string {
-  return `${Math.round(transitionRate(i) * 10000) / 100}%`;
-}
-
-const outlineStyle: { selected: string; hovered: string; none: string } = {
-  selected: '4px solid #2E724A',
-  hovered: '3px solid #2878C8',
-  none: 'none',
-};
-
 export default function Treemap({
   transitions: data,
   setSelectedCategory,
@@ -102,8 +73,6 @@ export default function Treemap({
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useResizeObserver(containerRef);
   const svgRef = useRef<SVGSVGElement>(null);
-  const leftTooltipPosition = useRef<string>('0');
-  const topTooltipPosition = useRef<string>('0');
 
   const [hoveredInfo, setHoveredInfo] = useState();
   const [selectedInfo, setSelectedInfo] = useState();
@@ -119,89 +88,41 @@ export default function Treemap({
         .select(d.currentTarget.parentElement)
         .select('.outline');
 
-      hoveredNode = outlineNode;
-      hoveredNode.style('outline', outlineStyle.hovered);
-      hoveredNode.style('outline-offset', '-3px');
-
       if (targetCode === selectedCode) {
-        selectedNode!.style('outline', outlineStyle.selected);
-        selectedNode!.style('outline-offset', '-4px');
+        selectedNode!.classed('ouline-selected', true);
+      } else {
+        hoveredNode = outlineNode;
+        hoveredNode.classed('outline-hovered', true);
       }
 
       setHoveredInfo(i);
       setSelectedCategory(category(i.data));
       i.data.category = getCategoryForCode(category(i.data)).name;
 
-      toolTipDiv.html(
-        `${name(i.data)} ${Math.round(transitionRate(i.data) * 10000) / 100}%`
-      );
-
-      const horizontalNodeMiddle = i.x0 + (i.x1 - i.x0) / 2;
-      const verticalNodeStart = i.y0;
-      const verticalNodeEnd = i.y1;
-
-      const toolTipElement = toolTipDiv.node() as HTMLDivElement;
-      const tooltipBounds = {
-        width: toolTipElement.clientWidth,
-        height: toolTipElement.clientHeight,
-      };
-
       const svgBounds = {
         width: svg.node()!.clientWidth,
         height: svg.node()!.clientHeight,
       };
 
-      if (tooltipBounds.width) {
-        const newLeftPosition =
-          horizontalNodeMiddle + tooltipBounds.width / 2 < svgBounds.width + 1
-            ? horizontalNodeMiddle - tooltipBounds.width / 2 < 0
-              ? 20 + 'px'
-              : horizontalNodeMiddle - tooltipBounds.width / 2 + 'px'
-            : svgBounds.width - tooltipBounds.width - 20 + 'px';
-        leftTooltipPosition.current = newLeftPosition;
-      }
-
-      if (tooltipBounds.height) {
-        const buffer = 3;
-        const newTopPosition =
-          tooltipBounds.height &&
-          verticalNodeStart - tooltipBounds.height - buffer < 0
-            ? verticalNodeEnd + buffer + 'px'
-            : verticalNodeStart - tooltipBounds.height - buffer + 'px';
-        topTooltipPosition.current = newTopPosition;
-      }
-
-      toolTipContainerDiv
-        .style('left', leftTooltipPosition.current)
-        .style('top', topTooltipPosition.current);
-
-      tooltip
-        .transition()
-        .style('visibility', 'visible')
-        .transition()
-        .delay(250)
-        .duration(500)
-        .style('opacity', '1')
-        .ease(d3.easeCubicInOut);
+      popUpLabel.show(d, i, svgBounds);
     };
 
     const mouseout = (d: any, i: any) => {
       const targetCode = code(i.data);
 
       if (targetCode !== selectedCode) {
-        hoveredNode?.style('outline', outlineStyle.none);
-        hoveredNode?.style('outline-offset', '0');
+        hoveredNode?.classed('outline-hovered', false);
         hoveredNode = undefined;
       }
       if (targetCode === selectedCode) {
-        selectedNode!.style('outline', outlineStyle.selected);
-        selectedNode!.style('outline-offset', '-4px');
+        hoveredNode?.classed('outline-hovered', false);
+        selectedNode!.classed('outline-selected', true);
       }
 
       setHoveredInfo(undefined);
       setSelectedCategory(undefined);
 
-      tooltip.style('visibility', 'hidden');
+      popUpLabel.hide();
     };
 
     const click = (d: any, i: any) => {
@@ -211,20 +132,21 @@ export default function Treemap({
         .select('.outline');
 
       if (targetCode === selectedCode) {
-        selectedNode!.style('outline', outlineStyle.none);
+        selectedNode!.classed('outline-selected', false);
         selectedCode = undefined;
         selectedNode = undefined;
         setSelectedInfo(undefined);
         setHoveredInfo(i);
-        hoveredNode?.style('outline', outlineStyle.hovered);
-        hoveredNode?.style('outline-offset', '-3px');
+        hoveredNode?.classed('outline-hovered', true);
       } else {
-        selectedNode?.style('outline', outlineStyle.none);
+        selectedNode?.classed('outline-selected', false);
+
         selectedCode = targetCode;
         selectedNode = outlineNode;
         hoveredNode = outlineNode;
-        selectedNode.style('outline', outlineStyle.selected);
-        selectedNode.style('outline-offset', '-4px');
+
+        hoveredNode.classed('outline-hovered', false);
+        selectedNode.classed('outline-selected', true);
         setSelectedInfo(i);
 
         i.data.category = getCategoryForCode(category(i.data)).name;
@@ -249,6 +171,8 @@ export default function Treemap({
         hourlyArray.push(e.hourlyPay);
       });
     });
+
+    let popUpLabel: PopUp;
 
     const opacity = createOpacityScale(hourlyArray);
 
@@ -293,7 +217,6 @@ export default function Treemap({
     nodes
       .append('rect')
       .attr('class', 'outline')
-      .attr('pointer-events', 'none')
       .attr('width', d => d.x1 - d.x0)
       .attr('height', d => d.y1 - d.y0)
       .style('fill', 'transparent');
@@ -301,9 +224,9 @@ export default function Treemap({
     // add node labels
     const textHolder = nodes
       .append('foreignObject')
+      .attr('class', 'node-labels')
       .attr('width', d => d.x1 - d.x0)
       .attr('height', d => d.y1 - d.y0)
-      .style('pointer-events', 'none')
       .style('display', d => {
         if (Math.round(transitionRate(d.data) * 10000) / 100 < 0.5) {
           return 'none';
@@ -316,56 +239,24 @@ export default function Treemap({
     textHolder
       .append('xhtml:div')
       .style('padding', '6px')
+      .attr('class', 'node-label-title')
       .html(
         d => `${name(d.data).replace(/ /g, '&nbsp;').replace(/\s/g, '&nbsp;')}`
       )
-      .attr('data-width', d => d.x1 - d.x0)
-      .style('font-size', `${textFontSize} px`)
-      .style('max-height', '2.5em')
-      .style('overflow', 'hidden')
-      .style('text-overflow', 'ellipsis');
+      .attr('data-width', d => d.x1 - d.x0);
 
     //add transition percent
     textHolder
       .append('xhtml:div')
+      .attr('class', 'node-label-data')
       .html(d => {
         return display === 'occupationDisplay'
           ? formatTransitionRate(d.data)
           : formatHourlyPay(d.data);
-      })
-      .style('font-size', `${percentFontSize} px`)
-      .style('font-weight', 'bolder')
-      .style('padding', '0 6px 6px 6px')
-      .style('color', 'black');
+      });
 
-    const tooltipGroup = svg.append('g');
-
-    const tooltip = tooltipGroup
-      .append('foreignObject')
-      .attr('id', 'toolTipObj')
-      .style('visibility', 'hidden')
-      .style('z-index', 10)
-      .style('padding', '6px')
-      .attr('pointer-events', 'none')
-      .style('position', 'relative')
-      .attr('width', svg.node()!.clientWidth)
-      .attr('height', svg.node()!.clientHeight);
-
-    const toolTipContainerDiv = tooltip
-      .append('xhtml:div')
-      .attr('id', 'tooltipcontainer')
-      .style('height', '5%')
-      .style('min-width', '20%')
-      .style('max-width', '35%')
-      .style('position', 'absolute');
-
-    const toolTipDiv = toolTipContainerDiv
-      .append('xhtml:div')
-      .style('background-color', 'white')
-      .style('border-radius', '5px')
-      .style('text-align', 'center')
-      .style('padding', '3px 10px')
-      .html('tooltext');
+    // prepare pop up -- starts out hidden
+    popUpLabel = new PopUp(svg);
   }, [dimensions.width, dimensions.height, data, setSelectedCategory, display]);
 
   useLayoutEffect(() => {
@@ -373,7 +264,12 @@ export default function Treemap({
   }, [renderTreemap]);
 
   return (
-    <Container ref={containerRef} data-testid="treemap" id="treemap-container">
+    <Container
+      ref={containerRef}
+      data-testid="treemap"
+      id="treemap-container"
+      className="treemap-container"
+    >
       <Svg ref={svgRef} id="treemap-svg" />
       <ToolTip info={hoveredInfo || selectedInfo} />
     </Container>
