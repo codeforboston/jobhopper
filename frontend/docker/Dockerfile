@@ -1,4 +1,4 @@
-FROM node:14.15-alpine as debug
+FROM node:12-alpine as debug
  
 RUN apk add --no-cache g++ make python
 
@@ -10,6 +10,8 @@ COPY package*.json ./
  
 # Installs all node packages
 RUN npm install
+# In windows, this may be needed.
+# RUN npm install awesome-debounce-promise
  
 # Copies everything over to Docker environment
 COPY . .
