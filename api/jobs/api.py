@@ -214,6 +214,7 @@ class SocListSmartViewSet(viewsets.ReadOnlyModelViewSet):
                 log.info(f"Smart search SOC codes: {onet_soc_codes}")
             except Exception as e:
                 log.info(f"Unable to find search results from O*NET for keyword {self.keyword_search} | {e}")
+                onet_soc_codes = []
 
         # Default response when there is not yet a keyword typed
         if not self.keyword_search:

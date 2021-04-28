@@ -97,7 +97,7 @@ export const SelectAsync = <T,>({
           }),
         }}
         isLoading={loading}
-        isDisabled={disabled || loading || !!error}
+        isDisabled={disabled || loading}
         {...rest}
       />
     </div>
