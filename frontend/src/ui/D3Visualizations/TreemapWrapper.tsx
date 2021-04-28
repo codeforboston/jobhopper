@@ -56,11 +56,11 @@ export default function TreemapWrapper({
         This visualization shows the occupations which {selectedOccupation.name}{' '}
         move to when they change occupation. The size of the box represents the
         transition share, which is the proportion of {selectedOccupation.name}{' '}
-        who move into a job in each other occupation when they switch jobs. We
-        only break out individual occupations with transition shares greater
-        than 0.2%. In the "occupation" view, the colors of the boxes represent
-        occupation groups. In the "salary" view, the colors of the boxes
-        represent the hourly pay of the occupation{' '}
+        who move into a job in each other occupation when they switch
+        occupations. We only break out individual occupations with transition
+        shares greater than 0.2%. In the "occupation" view, the colors of the
+        boxes represent occupation groups. In the "salary" view, the colors of
+        the boxes represent the hourly pay of the occupation{' '}
         {selectedState ? ' in ' + selectedState.name : 'Nationally.'}
       </CaptionText>
       <CaptionText>

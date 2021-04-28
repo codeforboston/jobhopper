@@ -115,11 +115,13 @@ const Explanation = ({ occupationName }: { occupationName: string }) => (
   <Body style={centerWide}>
     The table above shows the occupations which {occupationName} move to when
     they change occupation based on the observations in our dataset. The
-    transition share is the percentage of these observed {occupationName} who
-    have moved into each of the occupations listed. Only transition shares
-    greater than 0.2% are shown. The information related to salary information
-    is sourced from bls and includes 2017 to 2019 with a preference for the most
-    recent data per soc code.
+    transition share is the proportion of {occupationName} who move into a job
+    in each other occupation when they switch occupations. Only transition
+    shares greater than 0.2% are shown. The wage and salary information is sourced from 
+    the Bureau of Labor Statistics, covering the most recent available data for each SOC 
+    code (from either 2018 or 2019). For occupations where the BLS provides only hourly 
+    wage data, we impute annual salary by multiplying by 2080 (52 weeks * 40 hours). 
+    For occupations where the BLS provides only annual salary data, we impute hourly wage by dividing by 2080.
   </Body>
 );
 

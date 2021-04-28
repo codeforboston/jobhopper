@@ -441,8 +441,16 @@ class BlsTransitionsViewSet(viewsets.ReadOnlyModelViewSet):
             destination_soc = transition.get("soc2")
             destination_metadata = destination_soc_map.get(destination_soc)
             if destination_metadata:
+                # Fill in missing data to avoid issues downstream.
+                if destination_metadata['annual_mean_wage'] is None and destination_metadata['hourly_mean_wage'] is not None:
+                    destination_metadata['annual_mean_wage'] = destination_metadata['hourly_mean_wage'] * 52 * 40
+
+                if destination_metadata['hourly_mean_wage'] is None and destination_metadata['annual_mean_wage'] is not None:
+                    destination_metadata['hourly_mean_wage'] = destination_metadata['annual_mean_wage'] / 52 / 40
+
                 destination_metadata = {f"soc2_{key}": val
                                         for key, val in destination_metadata.items()}
+                
                 transition.update(destination_metadata)
 
         # Alternative for simple response that just lists the results from each model:
